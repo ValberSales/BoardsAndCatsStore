@@ -3,6 +3,10 @@ package br.edu.utfpr.pb.pw44s.server.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_invoice")
@@ -15,16 +19,29 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @NotNull
+    private LocalDate date;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private InvoiceStatus status;
+
+    @NotNull
+    private BigDecimal total;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotNull
-    private boolean delivery;
+    // O campo 'delivery' foi REMOVIDO por ser sempre verdadeiro.
 
-    @ManyToOne
+    // O endereço agora é obrigatório.
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false) // Alterado para false
     private Address address;
 
-
-
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InvoiceItems> items = new ArrayList<>();
 }

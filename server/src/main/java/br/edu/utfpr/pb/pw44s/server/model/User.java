@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -15,6 +16,7 @@ import java.util.Collection;
 @Table(name = "tb_user")
 @Getter
 @Setter
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -23,10 +25,12 @@ public class User implements UserDetails {
 
     @NotNull(message = "{utfpr.pw44s.user.username.NotNull}")
     @Size(min = 4, max = 255)
+    @Column(unique = true, nullable = false)
     private String username;
 
     @NotNull
     @Size(min = 4, max = 255)
+    @Column(nullable = false)
     private String displayName;
 
     @NotNull
