@@ -1,7 +1,9 @@
 package br.edu.utfpr.pb.pw44s.server.service;
 
+import br.edu.utfpr.pb.pw44s.server.dto.InvoiceCreateDTO;
 import br.edu.utfpr.pb.pw44s.server.model.Invoice;
 import br.edu.utfpr.pb.pw44s.server.model.InvoiceStatus;
+import br.edu.utfpr.pb.pw44s.server.model.User;
 
 import java.util.List;
 
@@ -18,4 +20,6 @@ public interface IInvoiceService extends ICrudService<Invoice, Long> {
     Invoice markAsShipped(Long invoiceId, String trackingCode);
 
     Invoice markAsDelivered(Long invoiceId);
+
+    Invoice createOrder(InvoiceCreateDTO invoiceCreateDTO, User user);
 }

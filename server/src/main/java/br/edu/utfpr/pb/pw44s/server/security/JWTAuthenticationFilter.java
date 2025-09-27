@@ -1,8 +1,8 @@
 package br.edu.utfpr.pb.pw44s.server.security;
 
+import br.edu.utfpr.pb.pw44s.server.dto.UserDTO;
 import br.edu.utfpr.pb.pw44s.server.model.User;
 import br.edu.utfpr.pb.pw44s.server.security.dto.AuthenticationResponse;
-import br.edu.utfpr.pb.pw44s.server.security.dto.UserResponseDTO;
 import br.edu.utfpr.pb.pw44s.server.service.AuthService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -76,7 +76,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        User user = (User) authService.loadUserByUsername(authResult.getName());
+        User user = (User) authResult.getPrincipal();
         // o método create() da classe JWT é utilizado para criação de um novo token JWT
         String token = JWT.create()
                 // o objeto authResult possui os dados do usuário autenticado, nesse caso o método getName() retorna o username do usuário foi autenticado no método attemptAuthentication.
@@ -90,7 +90,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
         response.getWriter().write(
                 new ObjectMapper().writeValueAsString(
-                        new AuthenticationResponse(token, new UserResponseDTO(user))
+                        new AuthenticationResponse(token, new UserDTO(user))
                 )
         );
     }

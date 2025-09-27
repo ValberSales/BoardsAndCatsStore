@@ -20,17 +20,14 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
 
-    // MUDANÇA 2: O tipo do campo agora é a interface
     private final IUserService userService;
 
-    // MUDANÇA 3: O construtor agora recebe a interface
     public UserController(IUserService userService) {
         this.userService = userService;
     }
 
     @PostMapping
     public void createUser(@Valid @RequestBody User user) {
-        // Nenhuma mudança aqui, o método 'save' existe na interface.
         this.userService.save( user );
     }
 

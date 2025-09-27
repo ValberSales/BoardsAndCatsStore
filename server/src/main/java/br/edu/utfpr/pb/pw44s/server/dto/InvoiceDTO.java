@@ -17,7 +17,6 @@ public class InvoiceDTO {
     private InvoiceStatus status;
     private BigDecimal total;
     private String trackingCode;
-
     private UserDTO user;
     private AddressDTO address;
     private List<InvoiceItemsDTO> items;

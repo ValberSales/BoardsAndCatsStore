@@ -2,13 +2,13 @@ package br.edu.utfpr.pb.pw44s.server.model;
 
 public enum InvoiceStatus {
 
-    PENDING,    // Pedido criado, aguardando pagamento.
+    PENDING,
 
-    PAID,       // Pagamento foi confirmado.
+    PAID,
 
-    SHIPPED,    // Pedido foi enviado para o endereço de entrega.
+    SHIPPED,
 
-    DELIVERED,  // Pedido foi entregue ao cliente.
+    DELIVERED,
 
-    CANCELED    // Pedido foi cancelado (pelo usuário ou pelo sistema).
+    CANCELED
 }
