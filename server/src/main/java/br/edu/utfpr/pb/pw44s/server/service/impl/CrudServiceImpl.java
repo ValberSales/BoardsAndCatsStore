@@ -10,22 +10,26 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class CrudServiceImpl<T, ID extends Serializable> 
+@Transactional
+public abstract class CrudServiceImpl<T, ID extends Serializable>
         implements ICrudService<T, ID> {
 
     protected abstract JpaRepository<T, ID> getRepository();
 
     @Override
+    @Transactional(readOnly = true)
     public List<T> findAll() {
         return getRepository().findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<T> findAll(Sort sort) {
         return getRepository().findAll(sort);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<T> findAll(Pageable pageable) {
         return getRepository().findAll(pageable);
     }
@@ -51,11 +55,13 @@ public abstract class CrudServiceImpl<T, ID extends Serializable>
     }
 
     @Override
+    @Transactional(readOnly = true)
     public T findById(ID id) {
         return getRepository().findById(id).orElse(null);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean exists(ID id) {
         return getRepository().existsById(id);
     }
@@ -80,4 +86,4 @@ public abstract class CrudServiceImpl<T, ID extends Serializable>
     public void deleteAll() {
         getRepository().deleteAll();
     }
-} 
+}

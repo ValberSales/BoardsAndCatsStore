@@ -2,7 +2,8 @@ package br.edu.utfpr.pb.pw44s.server.controller;
 
 import br.edu.utfpr.pb.pw44s.server.error.ApiError;
 import br.edu.utfpr.pb.pw44s.server.model.User;
-import br.edu.utfpr.pb.pw44s.server.service.UserService;
+// MUDANÇA 1: Import da interface em vez da classe de serviço antiga
+import br.edu.utfpr.pb.pw44s.server.service.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,14 +20,17 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
-    
-    public UserController(UserService userService) {
+    // MUDANÇA 2: O tipo do campo agora é a interface
+    private final IUserService userService;
+
+    // MUDANÇA 3: O construtor agora recebe a interface
+    public UserController(IUserService userService) {
         this.userService = userService;
     }
 
     @PostMapping
     public void createUser(@Valid @RequestBody User user) {
+        // Nenhuma mudança aqui, o método 'save' existe na interface.
         this.userService.save( user );
     }
 
@@ -38,13 +42,13 @@ public class UserController {
         BindingResult result = exception.getBindingResult();
         Map<String, String> errors = new HashMap<>();
         for (FieldError fieldError : result.getFieldErrors()) {
-            errors.put( fieldError.getField(), 
-                        fieldError.getDefaultMessage());
+            errors.put( fieldError.getField(),
+                    fieldError.getDefaultMessage());
         }
 
         return new ApiError("Validation error.",
-                            HttpStatus.BAD_REQUEST.value(),
-                            request.getServletPath(),
-                            errors);
+                HttpStatus.BAD_REQUEST.value(),
+                request.getServletPath(),
+                errors);
     }
 }

@@ -41,7 +41,7 @@ public class Address {
     private String zip;
 
     @Size(min = 4, max = 255)
-    private String complement; // Corretamente sem @NotNull, pois é opcional
+    private String complement;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

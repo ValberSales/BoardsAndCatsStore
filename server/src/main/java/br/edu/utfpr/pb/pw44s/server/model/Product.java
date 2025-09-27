@@ -1,6 +1,7 @@
 package br.edu.utfpr.pb.pw44s.server.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -45,4 +46,9 @@ public class Product {
     @NotNull
     @Column(nullable = false)
     private Boolean promo;
+
+    @NotNull
+    @Min(value = 0, message = "O estoque não pode ser negativo.")
+    @Column(nullable = false)
+    private Integer stock;
 }

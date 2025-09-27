@@ -29,18 +29,23 @@ public class Invoice {
     @NotNull
     private BigDecimal total;
 
+    @Column(name = "tracking_code")
+    private String trackingCode;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // O campo 'delivery' foi REMOVIDO por ser sempre verdadeiro.
-
-    // O endereço agora é obrigatório.
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false) // Alterado para false
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_method_id", nullable = false)
+    private PaymentMethod paymentMethod;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InvoiceItems> items = new ArrayList<>();
