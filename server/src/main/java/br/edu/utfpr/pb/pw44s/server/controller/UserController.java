@@ -1,51 +1,38 @@
 package br.edu.utfpr.pb.pw44s.server.controller;
 
-import br.edu.utfpr.pb.pw44s.server.error.ApiError;
+import br.edu.utfpr.pb.pw44s.server.dto.UserCreateDTO;
+import br.edu.utfpr.pb.pw44s.server.dto.UserDTO;
 import br.edu.utfpr.pb.pw44s.server.model.User;
-// MUDANÇA 1: Import da interface em vez da classe de serviço antiga
 import br.edu.utfpr.pb.pw44s.server.service.IUserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     private final IUserService userService;
+    private final ModelMapper modelMapper;
 
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService, ModelMapper modelMapper) { // MUDANÇA: Injetando ModelMapper
         this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
-    @PostMapping
-    public void createUser(@Valid @RequestBody User user) {
-        this.userService.save( user );
+    @PostMapping("register")
+    public ResponseEntity<UserDTO> register(@RequestBody @Valid UserCreateDTO userCreateDTO) {
+
+        User userToSave = modelMapper.map(userCreateDTO, User.class);
+
+        User savedUser = userService.save(userToSave);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(savedUser, UserDTO.class));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleException(MethodArgumentNotValidException exception,
-                                    HttpServletRequest request) {
-
-        BindingResult result = exception.getBindingResult();
-        Map<String, String> errors = new HashMap<>();
-        for (FieldError fieldError : result.getFieldErrors()) {
-            errors.put( fieldError.getField(),
-                    fieldError.getDefaultMessage());
-        }
-
-        return new ApiError("Validation error.",
-                HttpStatus.BAD_REQUEST.value(),
-                request.getServletPath(),
-                errors);
-    }
 }
