@@ -91,6 +91,17 @@ public class AddressController extends CrudController<Address, AddressDTO, Long>
         return ResponseEntity.noContent().build();
     }
 
+    @Override
+    @GetMapping
+    public ResponseEntity<List<AddressDTO>> findAll() {
+        User user = getAuthenticatedUser();
+        List<Address> addresses = addressService.findByUserId(user.getId());
+        List<AddressDTO> dtos = addresses.stream()
+                .map(address -> modelMapper.map(address, AddressDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
 
     private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

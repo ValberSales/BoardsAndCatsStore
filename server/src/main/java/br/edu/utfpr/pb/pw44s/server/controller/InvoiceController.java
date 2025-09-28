@@ -35,7 +35,7 @@ public class InvoiceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(savedInvoice, InvoiceDTO.class));
     }
 
-    @GetMapping("my")
+    @GetMapping
     public ResponseEntity<List<InvoiceDTO>> findMyInvoices(@AuthenticationPrincipal User user) {
         List<Invoice> invoices = invoiceService.findByUserId(user.getId());
         List<InvoiceDTO> dtos = invoices.stream()

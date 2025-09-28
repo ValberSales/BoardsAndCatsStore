@@ -54,8 +54,21 @@ public class InvoiceServiceImpl extends CrudServiceImpl<Invoice, Long>
 
         Invoice invoice = new Invoice();
         invoice.setUser(user);
-        invoice.setAddress(address);
-        invoice.setPaymentMethod(paymentMethod);
+
+        InvoiceAddressEmbeddable embeddableAddress = new InvoiceAddressEmbeddable();
+        embeddableAddress.setStreet(address.getStreet());
+        embeddableAddress.setCity(address.getCity());
+        embeddableAddress.setState(address.getState());
+        embeddableAddress.setZip(address.getZip());
+        invoice.setShippingAddress(embeddableAddress);
+
+
+        InvoicePaymentEmbeddable embeddablePayment = new InvoicePaymentEmbeddable();
+        embeddablePayment.setDescription(
+                String.format("%s - %s", paymentMethod.getType(), paymentMethod.getDescription())
+        );
+        invoice.setPaymentMethod(embeddablePayment);
+
 
         List<InvoiceItems> items = invoiceCreateDTO.getItems().stream().map(itemDto -> {
             InvoiceItems item = new InvoiceItems();

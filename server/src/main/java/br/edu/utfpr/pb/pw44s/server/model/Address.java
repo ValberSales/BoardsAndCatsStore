@@ -31,7 +31,7 @@ public class Address {
     private String city;
 
     @NotNull
-    @Size(min = 4, max = 255)
+    @Size(min = 2, max = 255)
     @Column(nullable = false)
     private String state;
 

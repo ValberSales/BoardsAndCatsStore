@@ -1,6 +1,8 @@
 package br.edu.utfpr.pb.pw44s.server.controller;
 
+import br.edu.utfpr.pb.pw44s.server.dto.AddressDTO;
 import br.edu.utfpr.pb.pw44s.server.dto.PaymentMethodDTO;
+import br.edu.utfpr.pb.pw44s.server.model.Address;
 import br.edu.utfpr.pb.pw44s.server.model.PaymentMethod;
 import br.edu.utfpr.pb.pw44s.server.model.User;
 import br.edu.utfpr.pb.pw44s.server.service.ICrudService;
@@ -40,8 +42,9 @@ public class PaymentMethodController extends CrudController<PaymentMethod, Payme
         return this.modelMapper;
     }
 
-    @GetMapping("my")
-    public ResponseEntity<List<PaymentMethodDTO>> findMyPaymentMethods() {
+    @Override
+    @GetMapping
+    public ResponseEntity<List<PaymentMethodDTO>> findAll() {
         User user = getAuthenticatedUser();
         List<PaymentMethod> paymentMethods = paymentMethodService.findByUserId(user.getId());
         return ResponseEntity.ok(paymentMethods.stream()
