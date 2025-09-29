@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
-public class InvoiceItemsDTO {
+public class OrderItemsDTO {
 
     private ProductDTO product;
     private Integer quantity;

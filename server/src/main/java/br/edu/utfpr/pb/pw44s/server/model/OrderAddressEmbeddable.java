@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Data
 @NoArgsConstructor
-public class InvoiceAddressEmbeddable {
+public class OrderAddressEmbeddable {
     private String street;
     private String city;
     private String state;

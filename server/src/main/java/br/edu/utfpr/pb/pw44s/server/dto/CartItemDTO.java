@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class InvoiceCreateItemDTO {
-
+public class CartItemDTO {
     @NotNull
     private Long productId;
 
