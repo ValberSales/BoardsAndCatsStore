@@ -53,7 +53,7 @@ Siga os passos abaixo para executar a aplicação localmente.
 
 ```bash
 # 1. Clone o repositório
-git clone <url-do-seu-repositorio>
+git clone <url-do-repositorio>
 
 # 2. Navegue até a pasta do servidor
 cd server
