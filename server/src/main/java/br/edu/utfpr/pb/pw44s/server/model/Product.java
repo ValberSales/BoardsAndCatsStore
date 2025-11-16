@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.math.BigDecimal;
+import java.util.ArrayList; // Importar ArrayList
+import java.util.List;      // Importar List
 
 @Entity
 @Table(name = "tb_product")
@@ -51,4 +53,14 @@ public class Product {
     @Min(value = 0, message = "O estoque não pode ser negativo.")
     @Column(nullable = false)
     private Integer stock;
+
+    // ##### NOVOS CAMPOS DE IMAGEM #####
+
+    @Column(name = "image_url")
+    private String imageUrl; // Para a "imagem_principal"
+
+    @ElementCollection
+    @CollectionTable(name = "tb_product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_url")
+    private List<String> otherImages = new ArrayList<>(); // Para "outras_imagens"
 }
