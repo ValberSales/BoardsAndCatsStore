@@ -59,14 +59,20 @@ public class WebSecurity {
         // configura a authorização das requisições
         http.authorizeHttpRequests((authorize) -> authorize
                 //permite que a rota "/users" seja acessada, mesmo sem o usuário estar autenticado desde que o método HTTP da requisição seja POST
-                .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users/**").permitAll() // Mantido para /users/register
                 //permite que a rota "/error" seja acessada por qualquer requisição mesmo o usuário não estando autenticado
                 .requestMatchers("/error/**").permitAll()
                 //permite que a rota "/h2-console" seja acessada por qualquer requisição mesmo o usuário não estando autenticado
                 .requestMatchers("/h2-console/**").permitAll()
 
+                // Rotas públicas de consulta
                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
+
+                // Adiciona as novas rotas do carrinho e checkout como autenticadas
+                .requestMatchers(HttpMethod.GET, "/cart").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/cart").authenticated()
+                .requestMatchers(HttpMethod.POST, "/orders/checkout").authenticated()
 
                 //as demais rotas da aplicação só podem ser acessadas se o usuário estiver autenticado
                 .anyRequest().authenticated()

@@ -9,8 +9,9 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+// import org.springframework.security.core.Authentication; // Removido
+// import org.springframework.security.core.context.SecurityContextHolder; // Removido
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -40,61 +41,44 @@ public class AddressController extends CrudController<Address, AddressDTO, Long>
         return this.modelMapper;
     }
 
-
-    @GetMapping("my")
-    public ResponseEntity<List<AddressDTO>> findMyAddresses() {
-        User user = getAuthenticatedUser();
-        List<Address> addresses = addressService.findByUserId(user.getId());
-        return ResponseEntity.ok(addresses.stream()
-                .map(address -> modelMapper.map(address, AddressDTO.class))
-                .collect(Collectors.toList()));
-    }
-
-    @Override
     @PostMapping
-    public ResponseEntity<AddressDTO> create(@RequestBody @Valid AddressDTO dto) {
-        User user = getAuthenticatedUser();
+    public ResponseEntity<AddressDTO> create(@RequestBody @Valid AddressDTO dto,
+                                             @AuthenticationPrincipal User user) {
         Address address = modelMapper.map(dto, Address.class);
         address.setUser(user);
         Address savedAddress = addressService.save(address);
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(savedAddress, AddressDTO.class));
     }
 
-    @Override
     @GetMapping("{id}")
-    public ResponseEntity<AddressDTO> findOne(@PathVariable Long id) {
-        User user = getAuthenticatedUser();
+    public ResponseEntity<AddressDTO> findOne(@PathVariable Long id,
+                                              @AuthenticationPrincipal User user) {
         Address address = findAddressAndCheckOwner(id, user);
         return ResponseEntity.ok(modelMapper.map(address, AddressDTO.class));
     }
 
-    @Override
     @PutMapping("{id}")
-    public ResponseEntity<AddressDTO> update(@PathVariable Long id, @RequestBody @Valid AddressDTO dto) {
-        User user = getAuthenticatedUser();
+    public ResponseEntity<AddressDTO> update(@PathVariable Long id,
+                                             @RequestBody @Valid AddressDTO dto,
+                                             @AuthenticationPrincipal User user) {
         findAddressAndCheckOwner(id, user);
-
         Address addressToUpdate = modelMapper.map(dto, Address.class);
         addressToUpdate.setId(id);
         addressToUpdate.setUser(user);
-
         Address updatedAddress = addressService.save(addressToUpdate);
         return ResponseEntity.ok(modelMapper.map(updatedAddress, AddressDTO.class));
     }
 
-    @Override
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        User user = getAuthenticatedUser();
+    public ResponseEntity<Void> delete(@PathVariable Long id,
+                                       @AuthenticationPrincipal User user) {
         findAddressAndCheckOwner(id, user);
         addressService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Override
     @GetMapping
-    public ResponseEntity<List<AddressDTO>> findAll() {
-        User user = getAuthenticatedUser();
+    public ResponseEntity<List<AddressDTO>> findAll(@AuthenticationPrincipal User user) {
         List<Address> addresses = addressService.findByUserId(user.getId());
         List<AddressDTO> dtos = addresses.stream()
                 .map(address -> modelMapper.map(address, AddressDTO.class))
@@ -102,18 +86,12 @@ public class AddressController extends CrudController<Address, AddressDTO, Long>
         return ResponseEntity.ok(dtos);
     }
 
-
-    private User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (User) authentication.getPrincipal();
-    }
-
     private Address findAddressAndCheckOwner(Long addressId, User loggedUser) {
         Address address = addressService.findById(addressId);
         if (address == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Endereço não encontrado.");
         }
-        if (!address.getUser().getId().equals(loggedUser.getId())) {
+        if (address.getUser().getId().equals(loggedUser.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado.");
         }
         return address;
