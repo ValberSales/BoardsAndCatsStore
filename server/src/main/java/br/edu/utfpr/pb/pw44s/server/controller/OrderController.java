@@ -2,15 +2,13 @@ package br.edu.utfpr.pb.pw44s.server.controller;
 
 import br.edu.utfpr.pb.pw44s.server.dto.*;
 import br.edu.utfpr.pb.pw44s.server.model.Order;
-import br.edu.utfpr.pb.pw44s.server.model.OrderStatus;
 import br.edu.utfpr.pb.pw44s.server.model.User;
 import br.edu.utfpr.pb.pw44s.server.service.IOrderService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal; // Import limpo
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,58 +27,25 @@ public class OrderController {
         this.modelMapper = modelMapper;
     }
 
-    //Endpoints do Carrinho (CART)
-    @GetMapping("cart")
-    public ResponseEntity<OrderDTO> getCart() {
-        User user = getAuthenticatedUser();
-        Order cart = orderService.getCart(user);
-        if (cart == null) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(modelMapper.map(cart, OrderDTO.class));
-    }
-
-    @PostMapping("cart/items")
-    public ResponseEntity<OrderDTO> addItemToCart(@RequestBody @Valid CartItemDTO cartItemDTO) {
-        User user = getAuthenticatedUser();
-        Order updatedCart = orderService.addItemToCart(cartItemDTO, user);
-        return ResponseEntity.ok(modelMapper.map(updatedCart, OrderDTO.class));
-    }
-
-    @PutMapping("cart/items/{productId}")
-    public ResponseEntity<OrderDTO> updateItemQuantity(@PathVariable Long productId,
-                                                       @RequestBody @Valid CartItemDTO cartItemDTO) {
-        User user = getAuthenticatedUser();
-        Order updatedCart = orderService.updateItemQuantity(productId, cartItemDTO, user);
-        return ResponseEntity.ok(modelMapper.map(updatedCart, OrderDTO.class));
-    }
-
-    @DeleteMapping("cart/items/{productId}")
-    public ResponseEntity<OrderDTO> removeItemFromCart(@PathVariable Long productId) {
-        User user = getAuthenticatedUser();
-        Order updatedCart = orderService.removeItemFromCart(productId, user);
-        return ResponseEntity.ok(modelMapper.map(updatedCart, OrderDTO.class));
-    }
-
-    @DeleteMapping("cart")
-    public ResponseEntity<Void> clearCart() {
-        User user = getAuthenticatedUser();
-        orderService.clearCart(user);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("cart/checkout")
-    public ResponseEntity<OrderDTO> checkout(@RequestBody @Valid CheckoutDTO checkoutDTO) {
-        User user = getAuthenticatedUser();
-        Order finalizedOrder = orderService.checkout(checkoutDTO, user);
+    /**
+     * MODIFICADO: Este é o novo endpoint de checkout.
+     * Ele chama o IOrderService para converter o Carrinho (Cart) salvo
+     * em um Pedido (Order) finalizado.
+     */
+    @PostMapping("checkout")
+    public ResponseEntity<OrderDTO> checkout(@RequestBody @Valid CheckoutDTO checkoutDTO,
+                                             @AuthenticationPrincipal User user) {
+        Order finalizedOrder = orderService.checkoutFromCart(checkoutDTO, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(finalizedOrder, OrderDTO.class));
     }
 
-    //Endpoints de Pedidos Finalizados (ORDER)
+    // ##### Endpoints de Pedidos Finalizados #####
+
     @GetMapping
-    public ResponseEntity<List<OrderDTO>> findMyOrders() {
-        User user = getAuthenticatedUser();
+    public ResponseEntity<List<OrderDTO>> findMyOrders(@AuthenticationPrincipal User user) {
+
         List<Order> orders = orderService.findFinalizedByUserId(user.getId());
+
         List<OrderDTO> dtos = orders.stream()
                 .map(order -> modelMapper.map(order, OrderDTO.class))
                 .collect(Collectors.toList());
@@ -88,25 +53,21 @@ public class OrderController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<OrderDTO> findOne(@PathVariable Long id) {
-        User user = getAuthenticatedUser();
+    public ResponseEntity<OrderDTO> findOne(@PathVariable Long id,
+                                            @AuthenticationPrincipal User user) {
         Order order = findOrderAndCheckOwner(id, user);
         return ResponseEntity.ok(modelMapper.map(order, OrderDTO.class));
     }
 
     @PostMapping("{id}/cancel")
-    public ResponseEntity<OrderDTO> cancel(@PathVariable Long id) {
-        User user = getAuthenticatedUser();
+    public ResponseEntity<OrderDTO> cancel(@PathVariable Long id,
+                                           @AuthenticationPrincipal User user) {
         findOrderAndCheckOwner(id, user);
         Order canceledOrder = orderService.cancel(id);
         return ResponseEntity.ok(modelMapper.map(canceledOrder, OrderDTO.class));
     }
 
-    //Métodos de Apoio
-    private User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (User) authentication.getPrincipal();
-    }
+    // ##### Métodos de Apoio #####
 
     private Order findOrderAndCheckOwner(Long orderId, User loggedUser) {
         Order order = orderService.findById(orderId);
@@ -116,10 +77,7 @@ public class OrderController {
         if (!order.getUser().getId().equals(loggedUser.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado.");
         }
-        if (order.getStatus().equals(OrderStatus.CART)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Operação não permitida em um carrinho.");
-        }
+
         return order;
     }
-
 }

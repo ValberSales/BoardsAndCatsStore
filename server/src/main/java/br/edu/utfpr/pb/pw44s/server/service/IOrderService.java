@@ -1,16 +1,16 @@
 package br.edu.utfpr.pb.pw44s.server.service;
 
-import br.edu.utfpr.pb.pw44s.server.dto.CartItemDTO;
 import br.edu.utfpr.pb.pw44s.server.dto.CheckoutDTO;
 import br.edu.utfpr.pb.pw44s.server.model.Order;
 import br.edu.utfpr.pb.pw44s.server.model.OrderStatus;
 import br.edu.utfpr.pb.pw44s.server.model.User;
+import br.edu.utfpr.pb.pw44s.server.service.ICrudService;
 
 import java.util.List;
 
 public interface IOrderService extends ICrudService<Order, Long> {
 
-    // Métodos de Pedidos Finalizados
+    // #### MÉTODOS DE GESTÃO DE PEDIDOS (ANTIGOS E NOVOS) ####
     List<Order> findFinalizedByUserId(Long userId);
     List<Order> findByStatus(OrderStatus status);
     Order cancel(Long invoiceId);
@@ -18,11 +18,13 @@ public interface IOrderService extends ICrudService<Order, Long> {
     Order markAsShipped(Long invoiceId, String trackingCode);
     Order markAsDelivered(Long invoiceId);
 
-    // Métodos do Carrinho de Compras
-    Order getCart(User user);
-    Order addItemToCart(CartItemDTO cartItemDTO, User user);
-    Order checkout(CheckoutDTO checkoutDTO, User user);
-    Order updateItemQuantity(Long productId, CartItemDTO cartItemDTO, User user);
-    Order removeItemFromCart(Long productId, User user);
-    void clearCart(User user);
+    /**
+     * NOVO MÉTODO: Cria um Pedido (Order) com base no Carrinho (Cart)
+     * salvo do usuário.
+     * @param checkoutDTO DTO com ID do endereço e pagamento.
+     * @param user O usuário autenticado.
+     * @return O Pedido finalizado e salvo.
+     */
+    Order checkoutFromCart(CheckoutDTO checkoutDTO, User user);
+
 }

@@ -1,12 +1,14 @@
 package br.edu.utfpr.pb.pw44s.server.service.impl;
 
-import br.edu.utfpr.pb.pw44s.server.dto.CartItemDTO;
+import br.edu.utfpr.pb.pw44s.server.dto.CartResponseDTO;
 import br.edu.utfpr.pb.pw44s.server.dto.CheckoutDTO;
 import br.edu.utfpr.pb.pw44s.server.model.*;
 import br.edu.utfpr.pb.pw44s.server.repository.AddressRepository;
+import br.edu.utfpr.pb.pw44s.server.repository.CartRepository;
 import br.edu.utfpr.pb.pw44s.server.repository.OrderRepository;
 import br.edu.utfpr.pb.pw44s.server.repository.PaymentMethodRepository;
 import br.edu.utfpr.pb.pw44s.server.repository.ProductRepository;
+import br.edu.utfpr.pb.pw44s.server.service.ICartService;
 import br.edu.utfpr.pb.pw44s.server.service.IOrderService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
@@ -25,15 +26,21 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
     private final ProductRepository productRepository;
     private final AddressRepository addressRepository;
     private final PaymentMethodRepository paymentMethodRepository;
+    private final ICartService cartService;
+    private final CartRepository cartRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository,
                             ProductRepository productRepository,
                             AddressRepository addressRepository,
-                            PaymentMethodRepository paymentMethodRepository) {
+                            PaymentMethodRepository paymentMethodRepository,
+                            ICartService cartService,
+                            CartRepository cartRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.addressRepository = addressRepository;
         this.paymentMethodRepository = paymentMethodRepository;
+        this.cartService = cartService;
+        this.cartRepository = cartRepository;
     }
 
     @Override
@@ -41,140 +48,110 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
         return this.orderRepository;
     }
 
-    //Lógica do Carrinho
-    @Override
-    @Transactional(readOnly = true)
-    public Order getCart(User user) {
-        return orderRepository.findTopByUserIdAndStatus(user.getId(), OrderStatus.CART).orElse(null);
-    }
-
-    @Override
-    @Transactional
-    public Order addItemToCart(CartItemDTO cartItemDTO, User user) {
-        Order cart = getCart(user);
-        if (cart == null) {
-            cart = new Order();
-            cart.setStatus(OrderStatus.CART);
-            cart.setUser(user);
-            cart.setDate(LocalDate.now());
-        }
-
-        Product product = productRepository.findById(cartItemDTO.getProductId())
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
-
-        Optional<OrderItems> existingItemOpt = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(cartItemDTO.getProductId()))
-                .findFirst();
-
-        if (existingItemOpt.isPresent()) {
-            OrderItems existingItem = existingItemOpt.get();
-            existingItem.setQuantity(existingItem.getQuantity() + cartItemDTO.getQuantity());
-            existingItem.setSubtotal(existingItem.getUnitPrice().multiply(new BigDecimal(existingItem.getQuantity())));
-        } else {
-            OrderItems newItem = new OrderItems();
-            newItem.setProduct(product);
-            newItem.setQuantity(cartItemDTO.getQuantity());
-            newItem.setUnitPrice(product.getPrice());
-            newItem.setSubtotal(product.getPrice().multiply(new BigDecimal(cartItemDTO.getQuantity())));
-            newItem.setOrder(cart);
-            cart.getItems().add(newItem);
-        }
-
-        recalculateCartTotal(cart);
-        return orderRepository.save(cart);
-    }
-
+    /**
+     * NOVO MÉTODO DE CHECKOUT
+     * 1. Pega o carrinho validado do CartService.
+     * 2. Valida endereço e pagamento.
+     * 3. Converte o Carrinho (Cart) em Pedido (Order).
+     * 4. Valida e decrementa o estoque.
+     * 5. Salva o novo Pedido.
+     * 6. Exclui o Carrinho.
+     */
     @Override
     @Transactional
-    public Order updateItemQuantity(Long productId, CartItemDTO cartItemDTO, User user) {
-        Order cart = getCartOrThrow(user);
-
-        OrderItems item = findItemInCartByProductIdOrThrow(cart, productId);
-
-        item.setQuantity(cartItemDTO.getQuantity());
-        item.setSubtotal(item.getUnitPrice().multiply(new BigDecimal(cartItemDTO.getQuantity())));
-
-        recalculateCartTotal(cart);
-        return orderRepository.save(cart);
-    }
-
-    @Override
-    @Transactional
-    public Order removeItemFromCart(Long productId, User user) {
-        Order cart = getCartOrThrow(user);
-
-        OrderItems itemToRemove = findItemInCartByProductIdOrThrow(cart, productId);
-
-        cart.getItems().remove(itemToRemove);
-
-        recalculateCartTotal(cart);
-        return orderRepository.save(cart);
-    }
-
-    @Override
-    @Transactional
-    public void clearCart(User user) {
-        Order cart = getCart(user);
-        if (cart != null) {
-            orderRepository.delete(cart);
-        }
-    }
-
-    @Override
-    @Transactional
-    public Order checkout(CheckoutDTO checkoutDTO, User user) {
-        Order cart = getCartOrThrow(user);
-        if (cart.getItems().isEmpty()) {
+    public Order checkoutFromCart(CheckoutDTO checkoutDTO, User user) {
+        // 1. Pega o carrinho validado (com preços e estoques já checados)
+        CartResponseDTO cartDTO = cartService.getAndValidateCart(user);
+        if (cartDTO == null || cartDTO.getItems().isEmpty()) {
             throw new RuntimeException("Carrinho está vazio.");
         }
 
+        // 2. Valida Endereço e Pagamento
         Address address = addressRepository.findById(checkoutDTO.getAddressId()).orElseThrow(() -> new RuntimeException("Endereço não encontrado!"));
         PaymentMethod paymentMethod = paymentMethodRepository.findById(checkoutDTO.getPaymentMethodId()).orElseThrow(() -> new RuntimeException("Método de Pagamento não encontrado!"));
         if (!address.getUser().getId().equals(user.getId()) || !paymentMethod.getUser().getId().equals(user.getId())) {
             throw new RuntimeException("Endereço ou Método de Pagamento inválido.");
         }
 
+        // 3. Cria a nova entidade Order
+        Order order = new Order();
+        order.setUser(user);
+        order.setDate(LocalDate.now());
+        order.setStatus(OrderStatus.PENDING);
+
+        // Copia o endereço para o "embedded"
         OrderAddressEmbeddable embeddableAddress = new OrderAddressEmbeddable();
         embeddableAddress.setStreet(address.getStreet());
         embeddableAddress.setCity(address.getCity());
         embeddableAddress.setState(address.getState());
         embeddableAddress.setZip(address.getZip());
-        cart.setShippingAddress(embeddableAddress);
+        order.setShippingAddress(embeddableAddress);
 
+        // Copia o pagamento para o "embedded"
         OrderPaymentEmbeddable embeddablePayment = new OrderPaymentEmbeddable();
         embeddablePayment.setDescription(String.format("%s - %s", paymentMethod.getType(), paymentMethod.getDescription()));
-        cart.setPaymentMethod(embeddablePayment);
+        order.setPaymentMethod(embeddablePayment);
 
-        cart.setStatus(OrderStatus.PENDING);
-        cart.setDate(LocalDate.now());
+        // 4. Converte os Itens e Valida Estoque (Validação final "contratual")
+        BigDecimal total = BigDecimal.ZERO;
+        for (var cartItemDTO : cartDTO.getItems()) {
+            // Busca o produto real DENTRO da transação para garantir
+            Product product = productRepository.findById(cartItemDTO.getProduct().getId())
+                    .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + cartItemDTO.getProduct().getName()));
 
-        for (var item : cart.getItems()) {
-            Product product = productRepository.findById(item.getProduct().getId())
-                    .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
-            if (product.getStock() < item.getQuantity()) {
+            // Checagem final de estoque
+            if (product.getStock() < cartItemDTO.getQuantity()) {
                 throw new RuntimeException("Estoque insuficiente para o produto: " + product.getName());
             }
-            product.setStock(product.getStock() - item.getQuantity());
-            productRepository.save(product);
+
+            // Decrementa o estoque
+            product.setStock(product.getStock() - cartItemDTO.getQuantity());
+            productRepository.save(product); // Salva o estoque atualizado
+
+            // Cria o OrderItem
+            OrderItems orderItem = new OrderItems();
+            orderItem.setOrder(order);
+            orderItem.setProduct(product);
+            orderItem.setQuantity(cartItemDTO.getQuantity());
+            orderItem.setUnitPrice(cartItemDTO.getPriceAtSave()); // Usa o preço validado!
+            orderItem.setSubtotal(cartItemDTO.getPriceAtSave().multiply(new BigDecimal(cartItemDTO.getQuantity())));
+
+            order.getItems().add(orderItem);
+            total = total.add(orderItem.getSubtotal());
         }
 
-        return orderRepository.save(cart);
+        order.setTotal(total);
+
+        // 5. Salva o novo Pedido
+        Order savedOrder = orderRepository.save(order);
+
+        // 6. Exclui o carrinho
+        cartRepository.deleteById(cartDTO.getId());
+
+        return savedOrder;
     }
 
-    //Lógica de Pedidos Finalizados
+
+    // #############################################
+    // LÓGICA DE PEDIDOS FINALIZADOS
+    // #############################################
+
     @Override
     @Transactional(readOnly = true)
     public List<Order> findFinalizedByUserId(Long userId) {
-        return orderRepository.findByUserIdAndStatusNot(userId, OrderStatus.CART);
+        // Modificado para usar o método de repositório mais limpo
+        return orderRepository.findByUserId(userId);
     }
 
     @Override
     @Transactional
     public Order cancel(Long invoiceId) {
         Order order = findByIdOrThrow(invoiceId);
+        // Validação mantida
         if (!order.getStatus().equals(OrderStatus.PENDING) && !order.getStatus().equals(OrderStatus.PAID)) {
             throw new RuntimeException("Não é possível cancelar um pedido com status " + order.getStatus());
         }
+        // Restaura o estoque
         for (var item : order.getItems()) {
             Product product = item.getProduct();
             product.setStock(product.getStock() + item.getQuantity());
@@ -187,6 +164,7 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
     @Override
     @Transactional
     public Order confirmPayment(Long invoiceId) {
+        // ... (lógica mantida)
         Order order = findByIdOrThrow(invoiceId);
         if (!order.getStatus().equals(OrderStatus.PENDING)) {
             throw new RuntimeException("Apenas pedidos com status PENDING podem ser pagos.");
@@ -198,6 +176,7 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
     @Override
     @Transactional
     public Order markAsShipped(Long invoiceId, String trackingCode) {
+        // ... (lógica mantida)
         Order order = findByIdOrThrow(invoiceId);
         if (!order.getStatus().equals(OrderStatus.PAID)) {
             throw new RuntimeException("Apenas pedidos com status PAID podem ser enviados.");
@@ -210,6 +189,7 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
     @Override
     @Transactional
     public Order markAsDelivered(Long invoiceId) {
+        // ... (lógica mantida)
         Order order = findByIdOrThrow(invoiceId);
         if (!order.getStatus().equals(OrderStatus.SHIPPED)) {
             throw new RuntimeException("Apenas pedidos com status SHIPPED podem ser marcados como entregues.");
@@ -219,25 +199,9 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
     }
 
 
-    //Métodos de Apoio
-    private void recalculateCartTotal(Order cart) {
-        BigDecimal total = cart.getItems().stream()
-                .map(OrderItems::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        cart.setTotal(total);
-    }
-
-    private Order getCartOrThrow(User user) {
-        return orderRepository.findTopByUserIdAndStatus(user.getId(), OrderStatus.CART)
-                .orElseThrow(() -> new RuntimeException("Carrinho não encontrado."));
-    }
-
-    private OrderItems findItemInCartByProductIdOrThrow(Order cart, Long productId) {
-        return cart.getItems().stream()
-                .filter(item -> item.getProduct() != null && item.getProduct().getId().equals(productId))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado no carrinho."));
-    }
+    // #############################################
+    // MÉTODOS DE APOIO
+    // #############################################
 
     private Order findByIdOrThrow(Long invoiceId) {
         return orderRepository.findById(invoiceId)
@@ -248,11 +212,6 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
     @Transactional(readOnly = true)
     public List<Order> findByStatus(OrderStatus status) {
         return orderRepository.findByStatus(status);
-    }
-
-    @Override
-    public Order save(Order order) {
-        return super.save(order);
     }
 
 }
