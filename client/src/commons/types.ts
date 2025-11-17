@@ -1,41 +1,38 @@
-export interface IUserRegister {
-    displayName: string;
-    username: string;
-    password: string;
-}
-
+// Tipos de Resposta e Usuário
 export interface IResponse {
-    status?: number;
-    success?: boolean;
-    message?: string;
-    data?: any;
+  status?: number;
+  success?: boolean;
+  message?: string;
+  data?: any;
 }
-
+export interface IUserRegister {
+  displayName: string;
+  username: string;
+  password: string;
+  phone: string;
+}
 export interface IUserLogin {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
 }
-
 export interface Authorities {
   authority: string;
 }
-
 export interface AuthenticatedUser {
   displayName: string;
   username: string;
   authorities: Authorities[];
 }
-
 export interface AuthenticationResponse {
   token: string;
   user: AuthenticatedUser;
 }
 
-export  interface  ICategory {
-    id?:  number;
-    name:  string;
+// Tipos de Entidade
+export interface ICategory {
+  id?: number;
+  name: string;
 }
-
 export interface IProduct {
   id?: number;
   name: string;
@@ -46,31 +43,9 @@ export interface IProduct {
   stock: number;
   mechanics?: string;
   players?: string;
-  editor?: string;
-
-  imageUrl: string; 
+  editor?: string; 
+  imageUrl: string;
   otherImages?: string[];
-  
-}
-
-export interface ICartItemPayload {
-  productId: number;
-  quantity: number;
-}
-
-export interface ICartSyncPayload {
-  items: ICartItemPayload[];
-}
-
-export interface ICartItemResponse {
-  product: IProduct;
-  quantity: number;
-  priceAtSave: number;
-  validationMessage?: string;
-}
-
-export interface ICartResponse {
-  id: number;
-  items: ICartItemResponse[];
-  total: number;
+  duracao?: string;
+  idadeRecomendada?: string;
 }

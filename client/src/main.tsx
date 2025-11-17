@@ -1,36 +1,44 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './index.css'
 
-import App from "@/App.tsx";
+import { PrimeReactProvider } from 'primereact/api';
+import 'primereact/resources/primereact.min.css'; 
+import 'primeicons/primeicons.css';               
+import 'primeflex/primeflex.css';                 
 
-import { PrimeReactProvider } from "primereact/api";
-import { BrowserRouter } from "react-router-dom";
 
-import 'primereact/resources/themes/lara-light-purple/theme.css'; //theme
-import 'primereact/resources/primereact.min.css'; //core css
-import 'primeicons/primeicons.css'; //icons
-import 'primeflex/primeflex.css'; // flex
-import './App.css';
-import { AuthProvider } from "@/context/AuthContext";
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext.tsx';
 
 const themeId = "theme-link";
-const themeHref =
-  "https://unpkg.com/primereact/resources/themes/lara-light-purple/theme.css";
-const link = document.createElement("link");
-link.id = themeId;
-link.rel = "stylesheet";
-link.href = themeHref;
-document.head.appendChild(link);
+let themeHref = "https://unpkg.com/primereact/resources/themes/lara-light-purple/theme.css";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <PrimeReactProvider>
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  themeHref = "https://unpkg.com/primereact/resources/themes/lara-dark-purple/theme.css";
+}
+
+let link = document.getElementById(themeId) as HTMLLinkElement;
+if (link) {
+  link.href = themeHref;
+} else {
+  link = document.createElement("link");
+  link.id = themeId;
+  link.rel = "stylesheet";
+  link.href = themeHref;
+  document.head.appendChild(link);
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <PrimeReactProvider>
+      <BrowserRouter>
         <AuthProvider>
           <App />
         </AuthProvider>
-      </PrimeReactProvider>
-    </BrowserRouter>
-  </StrictMode>
-);
+      </BrowserRouter>
+    </PrimeReactProvider>
+  </React.StrictMode>,
+)

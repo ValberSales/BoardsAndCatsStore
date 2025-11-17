@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.math.BigDecimal;
-import java.util.ArrayList; // Importar ArrayList
-import java.util.List;      // Importar List
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_product")
@@ -41,7 +41,7 @@ public class Product {
 
     private String mechanics;
 
-    private String players;
+    private String players; // (Corresponde a "quantidade_jogadores" do JSON)
 
     private String editor;
 
@@ -54,13 +54,17 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
-    // ##### NOVOS CAMPOS DE IMAGEM #####
-
     @Column(name = "image_url")
-    private String imageUrl; // Para a "imagem_principal"
+    private String imageUrl; // (Corresponde a "imagem_principal")
 
     @ElementCollection
     @CollectionTable(name = "tb_product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
-    private List<String> otherImages = new ArrayList<>(); // Para "outras_imagens"
+    private List<String> otherImages = new ArrayList<>(); // (Corresponde a "outras_imagens")
+
+    @Column(name = "duracao")
+    private String duracao;
+
+    @Column(name = "idade_recomendada")
+    private String idadeRecomendada;
 }

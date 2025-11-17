@@ -9,19 +9,33 @@ import { InputSwitch } from "primereact/inputswitch";
 
 const TopMenu: React.FC = () => {
   const navigate = useNavigate();
-  const user = "user@email.com";
+  const { authenticated, authenticatedUser, handleLogout } = useAuth();
+
+
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     return localStorage.getItem("theme") === "dark";
   });
-  const { authenticated, handleLogout } = useAuth();
+
 
   useEffect(() => {
     const themeLink = document.getElementById("theme-link") as HTMLLinkElement;
-    themeLink.href = darkMode
-      ? "https://unpkg.com/primereact/resources/themes/lara-dark-blue/theme.css"
-      : "https://unpkg.com/primereact/resources/themes/lara-light-blue/theme.css";
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
+    
+    if (themeLink) {
+
+      const currentThemeHref = themeLink.href;
+      let newThemeHref: string;
+
+      if (darkMode) {
+        newThemeHref = currentThemeHref.replace("light", "dark");
+      } else {
+        newThemeHref = currentThemeHref.replace("dark", "light");
+      }
+      
+      themeLink.href = newThemeHref;
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
+    }
+  }, [darkMode]); 
+
 
   const handleLogoutClick = () => {
     handleLogout();
@@ -29,42 +43,8 @@ const TopMenu: React.FC = () => {
   };
 
   const items: MenuItem[] = authenticated
-    ? [
-        { label: "Home", icon: "pi pi-home", command: () => navigate("/") },
-        {
-          label: "Categorias",
-          icon: "pi pi-box",
-          items: [
-            {
-              label: "Listar",
-              icon: "pi pi-list",
-              command: () => navigate("/categories"),
-            },
-            {
-              label: "Novo",
-              icon: "pi pi-plus",
-              command: () => navigate("/categories/new"),
-            },            
-          ],
-        },
-        {
-          label: "Produtos",
-          icon: "pi pi-box",
-          items: [
-            {
-              label: "Listar",
-              icon: "pi pi-list",
-              command: () => navigate("/products"),
-            },
-            {
-              label: "Novo",
-              icon: "pi pi-plus",
-              command: () => navigate("/products/new"),
-            },
-          ],
-        },        
-      ]
-    : [];
+    ? [ { label: "Home", icon: "pi pi-home", command: () => navigate("/") } ]
+    : [ { label: "Home", icon: "pi pi-home", command: () => navigate("/") } ];
 
   const start = (
     <div
@@ -72,17 +52,18 @@ const TopMenu: React.FC = () => {
       onClick={() => navigate("/")}
     >
       <img
-        src="/assets/images/utfpr-logo-nb.png"
+        src="/images/logo-placeholder.png" 
         alt="Logo"
         height={32}
         style={{ objectFit: "contain" }}
       />
-      <span className="font-bold text-lg hidden sm:block">PW44S</span>
+      <span className="font-bold text-lg hidden sm:block">Boards and Cats</span>
     </div>
   );
 
   const end = (
     <div className="flex align-items-center gap-3">
+      {/* Bloco do InputSwitch */}
       <div className="flex items-center gap-2">
         <i
           className={`pi pi-sun ${
@@ -102,17 +83,32 @@ const TopMenu: React.FC = () => {
         />
       </div>
 
-      {authenticated && (
+      {authenticated ? (
         <>
-          <span className="font-semibold hidden sm:block">{user}</span>
+          <span className="font-semibold hidden sm:block">{authenticatedUser?.displayName}</span>
           <Avatar
             image="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Caleb"
-            shape="square"
+            shape="circle"
           />
           <Button
             icon="pi pi-sign-out"
-            className="p-button-text"
+            className="p-button-text p-button-danger"
             onClick={handleLogoutClick}
+            tooltip="Sair"
+            tooltipOptions={{ position: 'bottom' }}
+          />
+        </>
+      ) : (
+        <>
+          <Button
+            label="Login"
+            icon="pi pi-sign-in"
+            className="p-button-text"
+            onClick={() => navigate("/login")}
+          />
+          <Button
+            label="Registrar"
+            onClick={() => navigate("/register")}
           />
         </>
       )}
@@ -128,10 +124,9 @@ const TopMenu: React.FC = () => {
         right: 0,
         width: "100%",
         zIndex: 1000,
-        backgroundColor: "var(--surface-ground)",
+        backgroundColor: "var(--surface-ground)", 
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       }}
-      className="fixed top-0 left-0 w-full z-50"
     >
       <Menubar model={items} start={start} end={end} />
     </div>

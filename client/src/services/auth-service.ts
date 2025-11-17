@@ -3,15 +3,16 @@ import { api } from "@/lib/axios";
 
 /**
  * Função para cadastrar um novo usuário
- * @param user - Dados do usuário que será cadastrado do tipo IUserRegister
- * @returns - Retorna a resposta da API
+ * (Note que a API usa /users/register, não /users)
+ *
  */
 const signup = async (user: IUserRegister): Promise<IResponse> => {
   let response = {} as IResponse;
   try {
-    const data = await api.post("/users", user);
+    // Ajustado para o endpoint correto /users/register
+    const data = await api.post("/users/register", user); 
     response = {
-      status: 200,
+      status: 200, // O backend retorna 201 Created, mas 200 também é sucesso
       success: true,
       message: "Usuário cadastrado com sucesso",
       data: data.data,
@@ -29,20 +30,16 @@ const signup = async (user: IUserRegister): Promise<IResponse> => {
 
 /**
  * Função para realizar a autenticação do usuário
- * @param user - Dados do usuário que será autenticado do tipo IUserLogin (username e password)
- * @returns - Retorna a resposta da API
- * Além disso salva o token no localStorage e adiciona o token no cabeçalho da requisição
  */
 const login = async (user: IUserLogin) => {
   let response = {} as IResponse;
   try {
     const data = await api.post("/login", user);
-    console.log(data);
     response = {
       status: 200,
       success: true,
       message: "Login bem-sucedido",
-      data: data.data,
+      data: data.data, // Retorna AuthenticationResponse (token e user)
     };
   } catch (err: any) {
     response = {

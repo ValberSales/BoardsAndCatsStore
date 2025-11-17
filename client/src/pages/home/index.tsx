@@ -4,14 +4,9 @@ import ProductService from "@/services/product-service";
 import CategoryService from "@/services/category-service";
 import { Toast } from "primereact/toast";
 import { Carousel } from "primereact/carousel";
-import { ProductCard } from "@/components/product-card";
+import { ProductCard } from "@/components/product-card"; 
 
-const CATEGORY_ORDER = [
-  "Jogos de Tabuleiro",
-  "Card Games",
-  "Acessórios"
-];
-
+const CATEGORY_ORDER = ["Jogos de Tabuleiro", "Card Games", "Acessórios"];
 const sortCategories = (categories: ICategory[]): ICategory[] => {
   return [...categories].sort((a, b) => {
     const indexA = CATEGORY_ORDER.indexOf(a.name);
@@ -30,30 +25,30 @@ export const HomePage = () => {
 
   useEffect(() => {
     loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const [categoryResponse, productResponse] = await Promise.all([
+      // Busca categorias e produtos da API em paralelo
+      const [catRes, prodRes] = await Promise.all([
         CategoryService.findAll(),
         ProductService.findAll(),
       ]);
-
-      if (categoryResponse.status === 200 && Array.isArray(categoryResponse.data)) {
-        setCategories(sortCategories(categoryResponse.data)); 
+      
+      if (catRes.status === 200 && Array.isArray(catRes.data)) {
+        setCategories(sortCategories(catRes.data));
       } else {
-        toast.current?.show({
+         toast.current?.show({
           severity: "error",
           summary: "Erro",
           detail: "Não foi possível carregar as categorias.",
           life: 3000,
         });
       }
-
-      if (productResponse.status === 200 && Array.isArray(productResponse.data)) {
-        setProducts(productResponse.data);
+      
+      if (prodRes.status === 200 && Array.isArray(prodRes.data)) {
+        setProducts(prodRes.data);
       } else {
         toast.current?.show({
           severity: "error",
@@ -74,10 +69,9 @@ export const HomePage = () => {
     }
   };
   
+  // Lógica para pegar 10 produtos aleatórios de uma lista
   const getRandomProducts = (allProducts: IProduct[], maxItems: number): IProduct[] => {
-    if (allProducts.length <= maxItems) {
-      return allProducts;
-    }
+    if (allProducts.length <= maxItems) return allProducts;
     const shuffled = [...allProducts];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -86,9 +80,7 @@ export const HomePage = () => {
     return shuffled.slice(0, maxItems);
   };
   
-  // 2. Toda a função productTemplate foi REMOVIDA
-
-  // Configurações de responsividade do Carrossel
+  // Configuração de responsividade do carrossel do PrimeReact
   const responsiveOptions = [
     { breakpoint: '1400px', numVisible: 4, numScroll: 1 },
     { breakpoint: '1200px', numVisible: 3, numScroll: 1 },
@@ -97,48 +89,45 @@ export const HomePage = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4" style={{ paddingTop: '70px' }}>
+    <div style={{ paddingTop: '70px' }}> {/* Espaço para a Navbar fixa */}
       <Toast ref={toast} />
 
-      {loading && <p className="text-center">Carregando...</p>}
+      {loading && <p className="text-center p-4">Carregando...</p>}
       
-      {categories.map((category) => {
-        
-        const allCategoryProducts = products.filter(
-          (p) => p.category.id === category.id
-        );
-        
-        const randomCategoryProducts = getRandomProducts(allCategoryProducts, 10);
+      <div className="container mx-auto px-4">
+        {/* Mapeia as categorias (já ordenadas) */}
+        {categories.map((category) => {
+          // Filtra os produtos para esta categoria
+          const allCategoryProducts = products.filter(
+            (p) => p.category.id === category.id
+          );
+          
+          // Pega uma amostra aleatória de 10 produtos
+          const randomCategoryProducts = getRandomProducts(allCategoryProducts, 10);
 
-        if (randomCategoryProducts.length === 0) {
-          return null;
-        }
+          if (randomCategoryProducts.length === 0) return null;
 
-        return (
-          <div key={category.id} className="mb-5">
-            <h1 className="text-3xl font-bold mb-4">{category.name}</h1>
-            <Carousel
-              value={randomCategoryProducts}
-              // 3. O template agora simplesmente renderiza o novo componente
-              itemTemplate={(product: IProduct) => (
-                <div className="p-3"> {/* Espaçamento entre os cards */}
-                  <ProductCard product={product} />
-                </div>
-              )}
-              numVisible={4}
-              numScroll={1}
-              responsiveOptions={responsiveOptions}
-            />
-          </div>
-        );
-      })}
-
-      {!loading && products.length === 0 && (
-         <div className="text-center p-5">
-            <h2 className="text-2xl">Nenhum produto encontrado.</h2>
-            <p>Por favor, verifique se o backend está rodando e o data.sql foi executado.</p>
-         </div>
-      )}
+          return (
+            <div key={category.id} className="my-5">
+              {/* Título da Prateleira */}
+              <h1 className="text-3xl font-bold mb-4">{category.name}</h1>
+              
+              {/* Carrossel da Prateleira */}
+              <Carousel
+                value={randomCategoryProducts}
+                itemTemplate={(product: IProduct) => (
+                  <div className="p-2"> {/* Espaçamento entre os cards */}
+                    <ProductCard product={product} />
+                  </div>
+                )}
+                numVisible={4}
+                numScroll={1}
+                responsiveOptions={responsiveOptions}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

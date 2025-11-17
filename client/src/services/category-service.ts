@@ -5,13 +5,14 @@ import { api } from "@/lib/axios";
 const categoryURL = "/categories";
 
 /**
- * Função para salvar uma categoria
+ * Função para salvar uma categoria (criar ou atualizar)
  * @param category - Dados da categoria que será salva
  * @returns - Retorna uma Promise com a resposta da API
  **/
 const save = async (category: ICategory): Promise<IResponse> => {
   let response = {} as IResponse;
   try {
+    
     const data = await api.post(categoryURL, category);
     response = {
       status: 200,

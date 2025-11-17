@@ -5,8 +5,8 @@ export function Layout() {
   return (
     <>
       <TopMenu />
-      <main style={{ paddingTop: "40px" }}>
-        <Outlet />
+      <main>
+        <Outlet /> {/* Renderiza as rotas filhas aqui */ }
       </main>
     </>
   );
