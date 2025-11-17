@@ -14,13 +14,13 @@ export function AppRoutes() {
     <Routes>
       <Route path="/" element={<Layout />}>
         {/* public routes */}
+        <Route path="/" element={<HomePage />} /> 
+        <Route path="/home" element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
 
         {/* protected routes */}
         <Route element={<RequireAuth />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/home" element={<HomePage />} />
           <Route path="/categories" element={<CategoryListPage />} />
           <Route  path="/categories/new"  element={<CategoryFormPage  />}  />
 		      <Route  path="/categories/:id"  element={<CategoryFormPage  />}  />

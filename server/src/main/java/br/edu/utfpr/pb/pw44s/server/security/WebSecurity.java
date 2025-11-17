@@ -68,6 +68,7 @@ public class WebSecurity {
                 // Rotas públicas de consulta
                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
 
                 // Adiciona as novas rotas do carrinho e checkout como autenticadas
                 .requestMatchers(HttpMethod.GET, "/cart").authenticated()

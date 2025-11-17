@@ -9,7 +9,9 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication; // Voltamos a usar
+import org.springframework.security.core.context.SecurityContextHolder; // Voltamos a usar
+// import org.springframework.security.core.annotation.AuthenticationPrincipal; // Não mais usado
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -39,34 +41,38 @@ public class PaymentMethodController extends CrudController<PaymentMethod, Payme
         return this.modelMapper;
     }
 
+    @Override // Re-adicionado
     @GetMapping
-    public ResponseEntity<List<PaymentMethodDTO>> findAll(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<PaymentMethodDTO>> findAll() {
+        User user = getAuthenticatedUser();
         List<PaymentMethod> paymentMethods = paymentMethodService.findByUserId(user.getId());
         return ResponseEntity.ok(paymentMethods.stream()
                 .map(pm -> modelMapper.map(pm, PaymentMethodDTO.class))
                 .collect(Collectors.toList()));
     }
 
+    @Override // Re-adicionado
     @PostMapping
-    public ResponseEntity<PaymentMethodDTO> create(@RequestBody @Valid PaymentMethodDTO dto,
-                                                   @AuthenticationPrincipal User user) {
+    public ResponseEntity<PaymentMethodDTO> create(@RequestBody @Valid PaymentMethodDTO dto) {
+        User user = getAuthenticatedUser();
         PaymentMethod entity = modelMapper.map(dto, PaymentMethod.class);
         entity.setUser(user);
         PaymentMethod savedEntity = paymentMethodService.save(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(savedEntity, PaymentMethodDTO.class));
     }
 
+    @Override // Re-adicionado
     @GetMapping("{id}")
-    public ResponseEntity<PaymentMethodDTO> findOne(@PathVariable Long id,
-                                                    @AuthenticationPrincipal User user) {
+    public ResponseEntity<PaymentMethodDTO> findOne(@PathVariable Long id) {
+        User user = getAuthenticatedUser();
         PaymentMethod entity = findPaymentMethodAndCheckOwner(id, user);
         return ResponseEntity.ok(modelMapper.map(entity, PaymentMethodDTO.class));
     }
 
+    @Override // Re-adicionado
     @PutMapping("{id}")
-    public ResponseEntity<PaymentMethodDTO> update(@PathVariable Long id,
-                                                   @RequestBody @Valid PaymentMethodDTO dto,
-                                                   @AuthenticationPrincipal User user) {
+    public ResponseEntity<PaymentMethodDTO> update(@PathVariable Long id, @RequestBody @Valid PaymentMethodDTO dto) {
+        User user = getAuthenticatedUser();
         findPaymentMethodAndCheckOwner(id, user);
 
         PaymentMethod entityToUpdate = modelMapper.map(dto, PaymentMethod.class);
@@ -77,12 +83,19 @@ public class PaymentMethodController extends CrudController<PaymentMethod, Payme
         return ResponseEntity.ok(modelMapper.map(updatedEntity, PaymentMethodDTO.class));
     }
 
+    @Override // Re-adicionado
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id,
-                                       @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        User user = getAuthenticatedUser();
         findPaymentMethodAndCheckOwner(id, user);
         paymentMethodService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Método de apoio RE-ADICIONADO
+    private User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
     }
 
     private PaymentMethod findPaymentMethodAndCheckOwner(Long paymentMethodId, User loggedUser) {
