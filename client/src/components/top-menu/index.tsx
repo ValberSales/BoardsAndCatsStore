@@ -1,135 +1,171 @@
-import React, { useEffect, useState } from "react";
-import { Menubar } from "primereact/menubar";
-import type { MenuItem } from "primereact/menuitem";
-import { Avatar } from "primereact/avatar";
-import { Button } from "primereact/button";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
+import { API_BASE_URL } from "@/lib/axios";
 import { useAuth } from "@/context/hooks/use-auth";
-import { InputSwitch } from "primereact/inputswitch";
+
+// Componentes do PrimeReact
+import { Button } from "primereact/button";
+// import { InputSwitch } from "primereact/inputswitch"; // REMOVIDO
+import { OverlayPanel } from "primereact/overlaypanel";
+import { InputText } from "primereact/inputtext";
+import { Menu } from "primereact/menu";
+import { Avatar } from "primereact/avatar";
+
+import { LoginForm } from "@/components/login-form";
+
+import "./TopMenu.css";
 
 const TopMenu: React.FC = () => {
   const navigate = useNavigate();
   const { authenticated, authenticatedUser, handleLogout } = useAuth();
-
+  
+  const searchPanel = useRef<OverlayPanel>(null);
+  const loginPanel = useRef<OverlayPanel>(null);
+  const userMenu = useRef<Menu>(null);
 
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     return localStorage.getItem("theme") === "dark";
   });
 
-
   useEffect(() => {
     const themeLink = document.getElementById("theme-link") as HTMLLinkElement;
-    
     if (themeLink) {
-
-      const currentThemeHref = themeLink.href;
-      let newThemeHref: string;
-
-      if (darkMode) {
-        newThemeHref = currentThemeHref.replace("light", "dark");
-      } else {
-        newThemeHref = currentThemeHref.replace("dark", "light");
-      }
-      
-      themeLink.href = newThemeHref;
-      localStorage.setItem("theme", darkMode ? "dark" : "light");
+      const themeUrl = darkMode 
+        ? "https://unpkg.com/primereact/resources/themes/lara-dark-purple/theme.css"
+        : "https://unpkg.com/primereact/resources/themes/lara-light-purple/theme.css";
+      themeLink.href = themeUrl;
     }
-  }, [darkMode]); 
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
+  const userMenuItems = [
+    {
+        label: 'Minha Conta',
+        items: [
+            { label: 'Meu Perfil', icon: 'pi pi-user', command: () => {} },
+            { label: 'Meus Pedidos', icon: 'pi pi-box', command: () => {} },
+        ]
+    },
+    {
+        label: 'Ações',
+        items: [
+            { label: 'Sair', icon: 'pi pi-sign-out', command: () => { handleLogout(); navigate('/'); } }
+        ]
+    }
+  ];
 
-  const handleLogoutClick = () => {
-    handleLogout();
-    navigate("/login");
-  };
-
-  const items: MenuItem[] = authenticated
-    ? [ { label: "Home", icon: "pi pi-home", command: () => navigate("/") } ]
-    : [ { label: "Home", icon: "pi pi-home", command: () => navigate("/") } ];
-
-  const start = (
-    <div
-      className="flex align-items-center gap-2 cursor-pointer"
-      onClick={() => navigate("/")}
-    >
-      <img
-        src="/images/logo-placeholder.png" 
-        alt="Logo"
-        height={32}
-        style={{ objectFit: "contain" }}
-      />
-      <span className="font-bold text-lg hidden sm:block">Boards and Cats</span>
-    </div>
-  );
-
-  const end = (
-    <div className="flex align-items-center gap-3">
-      {/* Bloco do InputSwitch */}
-      <div className="flex items-center gap-2">
-        <i
-          className={`pi pi-sun ${
-            darkMode ? "text-gray-400" : "text-yellow-500"
-          }`}
-          style={{ marginTop: "5px" }}
-        />
-        <InputSwitch
-          checked={darkMode}
-          onChange={(e) => setDarkMode(e.value ?? false)}
-        />
-        <i
-          className={`pi pi-moon ${
-            darkMode ? "text-blue-300" : "text-gray-400"
-          }`}
-          style={{ marginTop: "5px" }}
+  return (
+    <nav className="top-menu-container px-4 py-2 flex align-items-center justify-content-between">
+   
+      <div className="flex align-items-center cursor-pointer" onClick={() => navigate("/")}>
+        <img 
+            src={`${API_BASE_URL}/images/logo.webp`} 
+            alt="Boards and Cats" 
+            className="logo-img mr-2 logo-img" 
         />
       </div>
 
-      {authenticated ? (
-        <>
-          <span className="font-semibold hidden sm:block">{authenticatedUser?.displayName}</span>
-          <Avatar
-            image="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Caleb"
-            shape="circle"
-          />
-          <Button
-            icon="pi pi-sign-out"
-            className="p-button-text p-button-danger"
-            onClick={handleLogoutClick}
-            tooltip="Sair"
-            tooltipOptions={{ position: 'bottom' }}
-          />
-        </>
-      ) : (
-        <>
-          <Button
-            label="Login"
-            icon="pi pi-sign-in"
-            className="p-button-text"
-            onClick={() => navigate("/login")}
-          />
-          <Button
-            label="Registrar"
-            onClick={() => navigate("/register")}
-          />
-        </>
-      )}
-    </div>
-  );
+      <div className="hidden md:flex align-items-center gap-1">
+        <NavLink to="/" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
+            <img src={`${API_BASE_URL}/images/happy.png`} className="nav-icon-img" alt="Início" />
+            <span>Início</span>
+        </NavLink>
+        <NavLink to="/categories/1" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
+            <img src={`${API_BASE_URL}/images/table-games.png`} className="nav-icon-img" alt="Tabuleiro" />
+            <span>Jogos de Tabuleiro</span>
+        </NavLink>
+        <NavLink to="/categories/2" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
+            <img src={`${API_BASE_URL}/images/poker-game.png`} className="nav-icon-img" alt="Card Games" />
+            <span>Card Games</span>
+        </NavLink>
+        <NavLink to="/categories/3" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
+            <img src={`${API_BASE_URL}/images/dices.png`} className="nav-icon-img" alt="Acessórios" />
+            <span>Acessórios</span>
+        </NavLink>
+        <NavLink to="/promotions" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
+            <img src={`${API_BASE_URL}/images/promo-code.png`} className="nav-icon-img" alt="Promoções" />
+            <span>Promoções</span>
+        </NavLink>
+      </div>
 
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        width: "100%",
-        zIndex: 1000,
-        backgroundColor: "var(--surface-ground)", 
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-      }}
-    >
-      <Menubar model={items} start={start} end={end} />
-    </div>
+      <div className="flex align-items-center gap-2 md:gap-3">
+
+        <Button 
+            icon={`pi ${darkMode ? 'pi-sun' : 'pi-moon'}`} 
+            rounded 
+            text 
+            severity="secondary" 
+            aria-label="Alternar Tema"
+            onClick={() => setDarkMode(!darkMode)}
+            tooltip={darkMode ? "Modo Claro" : "Modo Escuro"}
+            tooltipOptions={{ position: 'bottom' }}
+        />
+
+        {/* Busca */}
+        <Button 
+            icon="pi pi-search" 
+            rounded text severity="secondary" aria-label="Buscar" 
+            onClick={(e) => searchPanel.current?.toggle(e)}
+        />
+        <OverlayPanel ref={searchPanel} className="w-20rem">
+            <div className="p-inputgroup">
+                <InputText placeholder="Buscar produtos..." />
+                <Button icon="pi pi-search" />
+            </div>
+        </OverlayPanel>
+
+        {/* Carrinho */}
+        <Button 
+            icon="pi pi-shopping-cart" 
+            rounded text severity="secondary" aria-label="Carrinho"
+            onClick={() => navigate("/cart")}
+        />
+
+        {authenticated ? (
+            <>
+                <Menu model={userMenuItems} popup ref={userMenu} id="popup_menu_user" />
+                <div 
+                    className="cursor-pointer flex align-items-center gap-2 hover:surface-100 p-1 border-round transition-duration-200"
+                    onClick={(event) => userMenu.current?.toggle(event)}
+                    aria-controls="popup_menu_user"
+                    aria-haspopup
+                >
+                    <Avatar 
+                        icon="pi pi-user"
+                        shape="circle" 
+                        className="surface-200 text-700"
+                    />
+                    <span className="font-semibold text-sm hidden lg:block text-900">
+                        {authenticatedUser?.displayName?.split(' ')[0]}
+                    </span>
+                    <i className="pi pi-angle-down text-sm text-600 hidden lg:block"></i>
+                </div>
+            </>
+        ) : (
+            <>
+                <Button 
+                    icon="pi pi-user" 
+                    rounded 
+                    text 
+                    severity="secondary" 
+                    aria-label="Login"
+                    onClick={(e) => loginPanel.current?.toggle(e)}
+                />
+
+                <OverlayPanel ref={loginPanel} className="w-20rem">
+                    <div className="flex flex-column gap-3">
+                        <h3 className="text-center m-0">Bem-vindo</h3>
+                        <LoginForm 
+                            onSuccess={() => loginPanel.current?.hide()} 
+                            showRegisterLink={true}
+                        />
+                    </div>
+                </OverlayPanel>
+            </>
+        )}
+
+      </div>
+    </nav>
   );
 };
 

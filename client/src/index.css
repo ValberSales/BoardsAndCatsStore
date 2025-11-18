@@ -12,3 +12,12 @@ body {
   background-color: var(--surface-ground);
   color: var(--text-color);
 }
+
+.p-button:focus {
+    box-shadow: none !important;
+}
+
+.p-inputtext:focus {
+    box-shadow: none !important;
+    border-color: var(--primary-color) !important;
+}

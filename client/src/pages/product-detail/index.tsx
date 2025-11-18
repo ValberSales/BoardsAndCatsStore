@@ -45,124 +45,89 @@ export const ProductDetailPage = () => {
         ];
         setImages(allImages.map(imgUrl => `${API_BASE_URL}${imgUrl}`));
 
-
+        // Monta a tabela de detalhes
         const details = [];
-        if (fetchedProduct.editor) {
-          details.push({ label: 'Editor', value: fetchedProduct.editor });
-        }
-        if (fetchedProduct.mechanics) {
-          details.push({ label: 'Mecânicas', value: fetchedProduct.mechanics });
-        }
-        if (fetchedProduct.players) {
-          details.push({ label: 'Jogadores', value: fetchedProduct.players });
-        }
-   
-        if (fetchedProduct.duracao) {
-          details.push({ label: 'Duração', value: fetchedProduct.duracao });
-        }
-        if (fetchedProduct.idadeRecomendada) {
-          details.push({ label: 'Idade Recomendada', value: fetchedProduct.idadeRecomendada });
-        }
+        if (fetchedProduct.editor) details.push({ label: 'Editor', value: fetchedProduct.editor });
+        if (fetchedProduct.mechanics) details.push({ label: 'Mecânicas', value: fetchedProduct.mechanics });
+        if (fetchedProduct.players) details.push({ label: 'Quantidade de Jogadores', value: fetchedProduct.players });
+        if (fetchedProduct.duracao) details.push({ label: 'Duração', value: fetchedProduct.duracao });
+        if (fetchedProduct.idadeRecomendada) details.push({ label: 'Idade Recomendada', value: fetchedProduct.idadeRecomendada });
         setProductDetails(details);
-     
 
-     
+        // ##### CORREÇÃO AQUI #####
         setBreadcrumbItems([
-          { label: fetchedProduct.category.name, command: () => navigate(`/category/${fetchedProduct.category.id}`) },
-          { label: fetchedProduct.name }
+          { 
+            label: fetchedProduct.category.name, 
+            // Corrigido para plural: /categories/
+            command: () => navigate(`/categories/${fetchedProduct.category.id}`) 
+          },
+          { 
+            label: fetchedProduct.name,
+            // O último item geralmente não tem comando (é a página atual)
+            className: 'font-bold' 
+          }
         ]);
+        // ##### FIM DA CORREÇÃO #####
         
       } else {
-        toast.current?.show({
-          severity: "error",
-          summary: "Erro",
-          detail: "Produto não encontrado.",
-          life: 3000,
-        });
+        toast.current?.show({ severity: "error", summary: "Erro", detail: "Produto não encontrado.", life: 3000 });
       }
     } catch (error) {
-      toast.current?.show({
-        severity: "error",
-        summary: "Erro",
-        detail: "Falha ao carregar o produto.",
-        life: 3000,
-      });
+      toast.current?.show({ severity: "error", summary: "Erro", detail: "Falha ao carregar o produto.", life: 3000 });
     } finally {
       setLoading(false);
     }
   };
 
   const formatCurrency = (value: number) => {
-    return value.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
+    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   };
 
-  
   const itemTemplate = (item: string) => {
     return <img src={item} alt={product?.name} style={{ width: '100%', display: 'block' }} />;
   }
-  
- 
   const thumbnailTemplate = (item: string) => {
     return <img src={item} alt="Thumbnail" style={{ width: '80px', display: 'block' }} className="p-2 border-1 surface-border border-round" />;
   }
 
-  
   if (loading) {
-    return (
-        <div 
-            className="flex justify-content-center align-items-center" 
-            style={{ minHeight: 'calc(100vh - 70px)', paddingTop: '70px' }}
-        >
-            <ProgressSpinner />
-        </div>
-    );
+    return <div className="flex justify-content-center align-items-center" style={{ minHeight: 'calc(100vh - 70px)', paddingTop: '70px' }}><ProgressSpinner /></div>;
   }
 
- 
   if (!product) {
-    return (
-        <div style={{ paddingTop: '70px' }}>
-            <p className="text-center p-4 text-2xl">Produto não encontrado.</p>
-        </div>
-    );
+    return <div style={{ paddingTop: '70px' }}><p className="text-center p-4 text-2xl">Produto não encontrado.</p></div>;
   }
 
- 
   return (
     <div style={{ paddingTop: '70px' }}>
       <Toast ref={toast} />
       
-   
       <div className="container mx-auto px-4 my-5" style={{ maxWidth: '1200px' }}>
         
- 
+        {/* Breadcrumb */}
         <BreadCrumb 
           model={breadcrumbItems} 
           home={{ label: 'Início', command: () => navigate('/') }} 
-          className="mb-4"
+          className="mb-4 border-none pl-0" // border-none remove a borda padrão do componente
         />
 
-    
         <div className="grid">
-       
+            
+          {/* Galeria */}
           <div className="col-12 md:col-6 flex flex-column align-items-center">
             <Galleria 
               value={images} 
               item={itemTemplate} 
               thumbnail={thumbnailTemplate}
-              thumbnailsPosition="left" 
+              thumbnailsPosition="bottom"
               circular 
               showItemNavigators
               showThumbnails
-              style={{ maxWidth: '400px' }} 
-
+              style={{ maxWidth: '640px' }} 
             />
           </div>
 
-    
+          {/* Detalhes */}
           <div className="col-12 md:col-6 md:pl-5">
             {product.promo && <Tag severity="danger" value="PROMO" className="mb-2"></Tag>}
             
@@ -195,16 +160,12 @@ export const ProductDetailPage = () => {
           </div>
         </div>
 
+        {/* Tabela */}
         <div className="mt-5">
           <h2 className="text-3xl font-bold">Detalhes do Produto</h2>
           <div className="card"> 
-       
             {productDetails.length > 0 ? (
-              <DataTable 
-                  value={productDetails} 
-                  className="p-datatable-sm" 
-                  showHeaders={false} 
-              >
+              <DataTable value={productDetails} className="p-datatable-sm" showHeaders={false}>
                   <Column field="label" style={{ width: '30%', fontWeight: 'bold' }} />
                   <Column field="value" />
               </DataTable>

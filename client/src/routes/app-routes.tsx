@@ -4,9 +4,12 @@ import { HomePage } from "@/pages/home";
 import { LoginPage } from "@/pages/login";
 import { RegisterPage } from "@/pages/register";
 import { ProductDetailPage } from "@/pages/product-detail";
-// 1. Importar as novas páginas
 import { CategoryPage } from "@/pages/category"; 
 import { PromotionsPage } from "@/pages/promotions";
+
+import { AboutPage } from "@/pages/institutional/about";
+import { LocationPage } from "@/pages/institutional/location";
+import { ContactPage } from "@/pages/institutional/contact";
 
 export function AppRoutes() {
   return (
@@ -20,6 +23,11 @@ export function AppRoutes() {
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/categories/:id" element={<CategoryPage />} />
         <Route path="/promotions" element={<PromotionsPage />} />
+
+        {/* 2. Rotas Institucionais */}
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/location" element={<LocationPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         
       </Route>
     </Routes>

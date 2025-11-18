@@ -11,12 +11,9 @@ interface ProductGridProps {
 
 export const ProductGrid: React.FC<ProductGridProps> = ({ products, title, emptyMessage }) => {
 
-    // Template para cada item do Grid (reutiliza seu ProductCard)
     const itemTemplate = (product: IProduct) => {
         return (
-            // Grid responsivo do PrimeFlex
             <div className="col-12 sm:col-6 md:col-4 xl:col-3 p-2">
-                {/* Altura fixa para alinhar no grid */}
                 <div className="h-full"> 
                     <ProductCard product={product} />
                 </div>
@@ -25,8 +22,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products, title, empty
     };
 
     return (
-        <div className="surface-ground px-4 py-5 md:px-6 lg:px-8">
-            <div className="font-bold text-3xl mb-4 border-bottom-1 border-300 pb-2 text-900">
+        <div className="px-4 py-5 md:px-6 lg:px-8">
+            <div className="font-bold text-3xl mb-5">
                 {title}
             </div>
             
@@ -35,12 +32,17 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products, title, empty
                 itemTemplate={itemTemplate}
                 layout="grid"
                 paginator
-                rows={12} // Quantos itens por página
+                rows={12} 
                 emptyMessage={emptyMessage || "Nenhum produto encontrado."}
-                // Estilização do Paginador
-                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} produtos"
-                rowsPerPageOptions={[12, 24, 48]}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                
+                className="bg-transparent border-none"
+                paginatorClassName="bg-transparent border-none"
+
+                pt={{
+                    content: { className: 'bg-transparent border-none p-0' },
+                    header: { className: 'bg-transparent border-none' }
+                }}
             />
         </div>
     );

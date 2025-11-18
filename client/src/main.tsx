@@ -13,11 +13,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.tsx';
 
 const themeId = "theme-link";
-let themeHref = "https://unpkg.com/primereact/resources/themes/lara-light-purple/theme.css";
+let themeHref = "https://unpkg.com/primereact/resources/themes/lara-light-teal/theme.css";
 
 const savedTheme = localStorage.getItem("theme");
 if (savedTheme === "dark") {
-  themeHref = "https://unpkg.com/primereact/resources/themes/lara-dark-purple/theme.css";
+  themeHref = "https://unpkg.com/primereact/resources/themes/lara-dark-teal/theme.css";
 }
 
 let link = document.getElementById(themeId) as HTMLLinkElement;
