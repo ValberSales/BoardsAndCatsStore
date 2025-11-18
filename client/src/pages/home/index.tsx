@@ -72,8 +72,7 @@ export const HomePage = () => {
             <CategoryShelf 
                 title="🔥 Ofertas Especiais" 
                 products={promoProducts} 
-                // Não passamos viewAllLink, então o botão não aparecerá
-                // (Ou passamos se criarmos uma rota /promotions no futuro)
+                viewAllLink="/promotions"
             />
 
             {/* Prateleira 2: Jogos de Tabuleiro */}

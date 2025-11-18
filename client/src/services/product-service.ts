@@ -1,10 +1,9 @@
-import type { IProduct, IResponse } from "@/commons/types";
+import type { IResponse } from "@/commons/types";
 import { api } from "@/lib/axios";
 
 const productURL = "/products";
 
 const findAll = async (): Promise<IResponse> => {
- 
   let response = {} as IResponse;
   try {
     const data = await api.get(productURL);
@@ -25,11 +24,6 @@ const findAll = async (): Promise<IResponse> => {
   return response;
 };
 
-/**
- * Função para buscar um produto pelo id
- * @param id - Recebe o id do produto que será buscado
- * @returns - Retorna uma Promise com a resposta da API
- */
 const findById = async (id: number): Promise<IResponse> => {
   let response = {} as IResponse;
   try {
@@ -38,7 +32,7 @@ const findById = async (id: number): Promise<IResponse> => {
       status: 200,
       success: true,
       message: "Produto carregado com sucesso!",
-      data: data.data, // Deve ser um IProduct
+      data: data.data,
     };
   } catch (err: any) {
     response = {
@@ -51,12 +45,33 @@ const findById = async (id: number): Promise<IResponse> => {
   return response;
 };
 
+// ##### ADIÇÃO: Buscar por Categoria #####
+const findByCategoryId = async (categoryId: number): Promise<IResponse> => {
+    let response = {} as IResponse;
+    try {
+      // Endpoint que já existe no seu backend
+      const data = await api.get(`${productURL}/category/${categoryId}`);
+      response = {
+        status: 200,
+        success: true,
+        message: "Produtos da categoria carregados!",
+        data: data.data,
+      };
+    } catch (err: any) {
+      response = {
+        status: err.response?.status || 500,
+        success: false,
+        message: "Falha ao carregar produtos da categoria",
+        data: err.response?.data,
+      };
+    }
+    return response;
+  };
 
 const ProductService = {
   findAll,
-  findById, 
+  findById,
+  findByCategoryId,
 };
-
-
 
 export default ProductService;
