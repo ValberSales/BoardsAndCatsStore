@@ -5,17 +5,10 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    /* Usa as cores do tema do PrimeReact */
     background-color: var(--surface-overlay);
     border-bottom: 1px solid var(--surface-border);
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: background-color 0.2s, border-color 0.2s;
-}
-
-.logo-img {
-    height: 60px;
-    width: auto;
-    border-radius: 8px;
 }
 
 /* Links do Menu Central */
@@ -25,54 +18,40 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
+    
+    /* Cor padrão (cinza/secundária) para ÍCONE e TEXTO */
     color: var(--text-color-secondary);
+    
     padding: 0.5rem 1rem;
     border-radius: 8px;
     transition: all 0.2s;
     font-weight: 500;
     font-size: 0.9rem;
+    cursor: pointer;
 }
 
+/* Efeito Hover */
 .nav-link-item:hover {
     background-color: var(--surface-hover);
-    color: var(--text-color);
+    color: var(--secondary-color);
+    font-weight: 500;
 }
 
+/* Efeito Ativo*/
 .nav-link-item.active {
+    background-color: var(--surface-hover);
     color: var(--primary-color);
-    font-weight: 700;
+    font-weight: 500;
 }
 
-/* Ícones do menu central */
-.nav-icon-img {
-    height: 24px;
-    width: auto;
+/* Ajuste de tamanho para o SVG */
+.nav-icon-svg {
     margin-bottom: 4px;
-    filter: grayscale(100%); /* Ícones cinza por padrão */
-    opacity: 0.7;
-    transition: all 0.2s;
-}
-
-.nav-link-item:hover .nav-icon-img,
-.nav-link-item.active .nav-icon-img {
-    filter: none; /* Colorido no hover/active */
-    opacity: 1;
 }
 
 /* Logo */
 .logo-img {
     height: 40px;
     width: auto;
-}
-
-/* Ícones de Ação (Direita) */
-.action-icon-btn {
-    color: var(--text-color);
-    padding: 0.5rem;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-}
-.action-icon-btn:hover {
-    background-color: var(--surface-hover);
-    color: var(--primary-color);
+    border-radius: 8px;
 }

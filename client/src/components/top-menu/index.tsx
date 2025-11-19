@@ -10,7 +10,15 @@ import { InputText } from "primereact/inputtext";
 import { Menu } from "primereact/menu";
 import { Avatar } from "primereact/avatar";
 
+// Nossos Componentes Customizados
 import { LoginForm } from "@/components/login-form";
+
+// Ícones SVG
+import { HappyIcon } from "@/components/icons/HappyIcon";
+import { BoardGameIcon } from "@/components/icons/BoardGameIcon";
+import { CardGameIcon } from "@/components/icons/CardGameIcon";
+import { DicesIcon } from "@/components/icons/DicesIcon";
+import { PromoIcon } from "@/components/icons/PromoIcon";
 
 import "./TopMenu.css";
 
@@ -26,15 +34,13 @@ const TopMenu: React.FC = () => {
     return localStorage.getItem("theme") === "dark";
   });
 
+  // Lógica de Tema Dinâmico
   useEffect(() => {
     const themeLink = document.getElementById("theme-link") as HTMLLinkElement;
-    
     if (themeLink) {
       const currentUrl = themeLink.getAttribute('href');
-      
       if (currentUrl) {
           let newUrl = currentUrl;
-
           if (darkMode && currentUrl.includes('light')) {
               newUrl = currentUrl.replace('light', 'dark');
           } else if (!darkMode && currentUrl.includes('dark')) {
@@ -44,7 +50,6 @@ const TopMenu: React.FC = () => {
               themeLink.href = newUrl;
           }
       }
-
       localStorage.setItem("theme", darkMode ? "dark" : "light");
     }
   }, [darkMode]);
@@ -77,40 +82,44 @@ const TopMenu: React.FC = () => {
         />
       </div>
 
-      {/* CENTRO: MENU DE NAVEGAÇÃO */}
+      {/* CENTRO: MENU DE NAVEGAÇÃO COM SVGs */}
       <div className="hidden md:flex align-items-center gap-1">
+        
         <NavLink to="/" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
-            <img src={`${API_BASE_URL}/images/happy.png`} className="nav-icon-img" alt="Início" />
+            {/* Usando o componente SVG com tamanho ajustado */}
+            <HappyIcon size={28} className="nav-icon-svg" />
             <span>Início</span>
         </NavLink>
+
         <NavLink to="/categories/1" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
-            <img src={`${API_BASE_URL}/images/table-games.png`} className="nav-icon-img" alt="Tabuleiro" />
+            <BoardGameIcon size={28} className="nav-icon-svg" />
             <span>Jogos de Tabuleiro</span>
         </NavLink>
+
         <NavLink to="/categories/2" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
-            <img src={`${API_BASE_URL}/images/poker-game.png`} className="nav-icon-img" alt="Card Games" />
+            <CardGameIcon size={28} className="nav-icon-svg" />
             <span>Card Games</span>
         </NavLink>
+
         <NavLink to="/categories/3" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
-            <img src={`${API_BASE_URL}/images/dices.png`} className="nav-icon-img" alt="Acessórios" />
+            <DicesIcon size={28} className="nav-icon-svg" />
             <span>Acessórios</span>
         </NavLink>
+
         <NavLink to="/promotions" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
-            <img src={`${API_BASE_URL}/images/promo-code.png`} className="nav-icon-img" alt="Promoções" />
+            <PromoIcon size={28} className="nav-icon-svg" />
             <span>Promoções</span>
         </NavLink>
+
       </div>
 
       {/* DIREITA: AÇÕES */}
       <div className="flex align-items-center gap-2 md:gap-3">
 
-        {/* Botão de Tema (Lua/Sol) */}
+        {/* Botão Tema */}
         <Button 
             icon={`pi ${darkMode ? 'pi-sun' : 'pi-moon'}`} 
-            rounded 
-            text 
-            severity="secondary" 
-            aria-label="Alternar Tema"
+            rounded text severity="secondary" aria-label="Alternar Tema"
             onClick={() => setDarkMode(!darkMode)}
             tooltip={darkMode ? "Modo Claro" : "Modo Escuro"}
             tooltipOptions={{ position: 'bottom' }}
@@ -161,10 +170,7 @@ const TopMenu: React.FC = () => {
             <>
                 <Button 
                     icon="pi pi-user" 
-                    rounded 
-                    text 
-                    severity="secondary" 
-                    aria-label="Login"
+                    rounded text severity="secondary" aria-label="Login"
                     onClick={(e) => loginPanel.current?.toggle(e)}
                 />
 
@@ -179,7 +185,6 @@ const TopMenu: React.FC = () => {
                 </OverlayPanel>
             </>
         )}
-
       </div>
     </nav>
   );
