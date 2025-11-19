@@ -13,23 +13,23 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.tsx';
 
 const themeId = "theme-link";
-let themeHref = "https://unpkg.com/primereact/resources/themes/lara-light-teal/theme.css";
+const themeBase = "cyan"; 
+let themeHref = `https://unpkg.com/primereact/resources/themes/lara-light-${themeBase}/theme.css`;
 
 const savedTheme = localStorage.getItem("theme");
 if (savedTheme === "dark") {
-  themeHref = "https://unpkg.com/primereact/resources/themes/lara-dark-teal/theme.css";
+  themeHref = `https://unpkg.com/primereact/resources/themes/lara-dark-${themeBase}/theme.css`;
 }
 
 let link = document.getElementById(themeId) as HTMLLinkElement;
-if (link) {
-  link.href = themeHref;
-} else {
-  link = document.createElement("link");
-  link.id = themeId;
-  link.rel = "stylesheet";
-  link.href = themeHref;
-  document.head.appendChild(link);
+if (!link) {
+    link = document.createElement("link");
+    link.id = themeId;
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
 }
+link.href = themeHref;
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

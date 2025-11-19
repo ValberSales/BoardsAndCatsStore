@@ -5,7 +5,6 @@ import { useAuth } from "@/context/hooks/use-auth";
 
 // Componentes do PrimeReact
 import { Button } from "primereact/button";
-// import { InputSwitch } from "primereact/inputswitch"; // REMOVIDO
 import { OverlayPanel } from "primereact/overlaypanel";
 import { InputText } from "primereact/inputtext";
 import { Menu } from "primereact/menu";
@@ -29,13 +28,25 @@ const TopMenu: React.FC = () => {
 
   useEffect(() => {
     const themeLink = document.getElementById("theme-link") as HTMLLinkElement;
+    
     if (themeLink) {
-      const themeUrl = darkMode 
-        ? "https://unpkg.com/primereact/resources/themes/lara-dark-purple/theme.css"
-        : "https://unpkg.com/primereact/resources/themes/lara-light-purple/theme.css";
-      themeLink.href = themeUrl;
+      const currentUrl = themeLink.getAttribute('href');
+      
+      if (currentUrl) {
+          let newUrl = currentUrl;
+
+          if (darkMode && currentUrl.includes('light')) {
+              newUrl = currentUrl.replace('light', 'dark');
+          } else if (!darkMode && currentUrl.includes('dark')) {
+              newUrl = currentUrl.replace('dark', 'light');
+          }
+          if (newUrl !== currentUrl) {
+              themeLink.href = newUrl;
+          }
+      }
+
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
     }
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   const userMenuItems = [
@@ -56,15 +67,17 @@ const TopMenu: React.FC = () => {
 
   return (
     <nav className="top-menu-container px-4 py-2 flex align-items-center justify-content-between">
-   
+      
+      {/* ESQUERDA: LOGO */}
       <div className="flex align-items-center cursor-pointer" onClick={() => navigate("/")}>
         <img 
             src={`${API_BASE_URL}/images/logo.webp`} 
             alt="Boards and Cats" 
-            className="logo-img mr-2 logo-img" 
+            className="logo-img mr-2" 
         />
       </div>
 
+      {/* CENTRO: MENU DE NAVEGAÇÃO */}
       <div className="hidden md:flex align-items-center gap-1">
         <NavLink to="/" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
             <img src={`${API_BASE_URL}/images/happy.png`} className="nav-icon-img" alt="Início" />
@@ -88,8 +101,10 @@ const TopMenu: React.FC = () => {
         </NavLink>
       </div>
 
+      {/* DIREITA: AÇÕES */}
       <div className="flex align-items-center gap-2 md:gap-3">
 
+        {/* Botão de Tema (Lua/Sol) */}
         <Button 
             icon={`pi ${darkMode ? 'pi-sun' : 'pi-moon'}`} 
             rounded 
@@ -121,6 +136,7 @@ const TopMenu: React.FC = () => {
             onClick={() => navigate("/cart")}
         />
 
+        {/* Usuário / Login Dropdown */}
         {authenticated ? (
             <>
                 <Menu model={userMenuItems} popup ref={userMenu} id="popup_menu_user" />
