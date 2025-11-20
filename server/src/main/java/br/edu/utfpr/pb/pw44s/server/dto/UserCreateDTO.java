@@ -24,4 +24,8 @@ public class UserCreateDTO {
     @NotNull
     @Size(min = 4, max = 255)
     private String phone;
+
+    @NotNull
+    @Size(min = 11, max = 14)
+    private String cpf;
 }

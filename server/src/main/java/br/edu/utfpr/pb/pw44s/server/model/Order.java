@@ -29,12 +29,13 @@ public class Order {
     @NotNull
     private BigDecimal total;
 
+    private BigDecimal discount = BigDecimal.ZERO;
+
     @Column(name = "tracking_code")
     private String trackingCode;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true) // nullable = true
     private User user;
 
     @Embedded
@@ -42,6 +43,15 @@ public class Order {
 
     @Embedded
     private OrderPaymentEmbeddable paymentMethod;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "name", column = @Column(name = "client_name")),
+            @AttributeOverride(name = "cpf", column = @Column(name = "client_cpf")),
+            @AttributeOverride(name = "phone", column = @Column(name = "client_phone")),
+            @AttributeOverride(name = "email", column = @Column(name = "client_email"))
+    })
+    private OrderUserEmbeddable clientDetails;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItems> items = new ArrayList<>();

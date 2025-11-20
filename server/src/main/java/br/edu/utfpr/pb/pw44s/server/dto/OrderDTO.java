@@ -2,6 +2,7 @@ package br.edu.utfpr.pb.pw44s.server.dto;
 
 import br.edu.utfpr.pb.pw44s.server.model.OrderAddressEmbeddable;
 import br.edu.utfpr.pb.pw44s.server.model.OrderPaymentEmbeddable;
+import br.edu.utfpr.pb.pw44s.server.model.OrderUserEmbeddable; // Import
 import br.edu.utfpr.pb.pw44s.server.model.OrderStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,10 @@ public class OrderDTO {
     private OrderStatus status;
     private OrderPaymentEmbeddable payment;
     private BigDecimal total;
+    private BigDecimal discount; // Novo campo
     private String trackingCode;
     private UserDTO user;
     private OrderAddressEmbeddable address;
+    private OrderUserEmbeddable clientDetails; // Novo campo
     private List<OrderItemsDTO> items;
 }

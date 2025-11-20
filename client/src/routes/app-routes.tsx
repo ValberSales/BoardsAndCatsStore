@@ -6,10 +6,13 @@ import { RegisterPage } from "@/pages/register";
 import { ProductDetailPage } from "@/pages/product-detail";
 import { CategoryPage } from "@/pages/category"; 
 import { PromotionsPage } from "@/pages/promotions";
-
 import { AboutPage } from "@/pages/institutional/about";
 import { LocationPage } from "@/pages/institutional/location";
 import { ContactPage } from "@/pages/institutional/contact";
+import { RequireAuth } from "@/components/require-auth";
+import { ProfilePage } from "@/pages/profile";
+import { OrdersPage } from "@/pages/orders";
+import { PaymentMethodsPage } from "@/pages/payment-methods";
 
 export function AppRoutes() {
   return (
@@ -23,12 +26,16 @@ export function AppRoutes() {
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/categories/:id" element={<CategoryPage />} />
         <Route path="/promotions" element={<PromotionsPage />} />
-
-        {/* 2. Rotas Institucionais */}
         <Route path="/about" element={<AboutPage />} />
         <Route path="/location" element={<LocationPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        
+
+        {/* Rotas Protegidas */}
+        <Route element={<RequireAuth />}>
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/payment-methods" element={<PaymentMethodsPage />} />
+        </Route>
       </Route>
     </Routes>
   );

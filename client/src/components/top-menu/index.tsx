@@ -58,8 +58,9 @@ const TopMenu: React.FC = () => {
     {
         label: 'Minha Conta',
         items: [
-            { label: 'Meu Perfil', icon: 'pi pi-user', command: () => {} },
-            { label: 'Meus Pedidos', icon: 'pi pi-box', command: () => {} },
+            // ##### CORREÇÃO AQUI: Adicionado o navigate('/profile') #####
+            { label: 'Meu Perfil', icon: 'pi pi-user', command: () => navigate('/profile') },
+            { label: 'Meus Pedidos', icon: 'pi pi-box', command: () => navigate('/orders') }, // (Futuro)
         ]
     },
     {
@@ -86,7 +87,6 @@ const TopMenu: React.FC = () => {
       <div className="hidden md:flex align-items-center gap-1">
         
         <NavLink to="/" className={({ isActive }) => `nav-link-item ${isActive ? 'active' : ''}`}>
-            {/* Usando o componente SVG com tamanho ajustado */}
             <HappyIcon size={28} className="nav-icon-svg" />
             <span>Início</span>
         </NavLink>

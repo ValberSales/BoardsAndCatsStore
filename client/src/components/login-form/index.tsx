@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
@@ -12,14 +12,15 @@ import { useAuth } from "@/context/hooks/use-auth";
 import type { IUserLogin, AuthenticationResponse } from "@/commons/types";
 
 interface LoginFormProps {
-    onSuccess?: () => void; // Callback para fechar modal ou redirecionar
-    showRegisterLink?: boolean; // Opção para mostrar ou não o link de "Cadastre-se"
+    onSuccess?: () => void; // Ação a ser executada após login (ex: navegar ou fechar modal)
+    showRegisterLink?: boolean;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLink = true }) => {
     const navigate = useNavigate();
     const { handleLogin } = useAuth();
     const toast = useRef<Toast>(null);
+    
     const { control, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<IUserLogin>({
         defaultValues: { username: "", password: "" }
     });
@@ -30,8 +31,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
             
             if (response.status === 200 && response.data) {
                 const authData = response.data as AuthenticationResponse;
+                
+                // 1. Atualiza o Contexto Global
                 handleLogin(authData);
                 
+                // 2. Feedback visual
                 toast.current?.show({ 
                     severity: 'success', 
                     summary: 'Bem-vindo!', 
@@ -41,15 +45,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
                 
                 reset();
                 
-                // Executa a ação de sucesso (ex: fechar menu ou navegar)
-                if (onSuccess) {
-                    onSuccess();
-                }
+                // 3. Executa a ação de sucesso (Ex: Redirecionar para Home)
+                // Damos um pequeno delay para o usuário ver o Toast
+                setTimeout(() => {
+                    if (onSuccess) {
+                        onSuccess();
+                    }
+                }, 500);
+
             } else {
                 toast.current?.show({ 
                     severity: 'error', 
                     summary: 'Erro', 
-                    detail: 'Usuário ou senha inválidos', 
+                    detail: 'Usuário ou senha inválidos.', 
                     life: 3000 
                 });
             }
@@ -57,7 +65,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
             toast.current?.show({ 
                 severity: 'error', 
                 summary: 'Erro', 
-                detail: 'Falha ao conectar ao servidor', 
+                detail: 'Falha ao conectar ao servidor.', 
                 life: 3000 
             });
         }
@@ -83,7 +91,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
                         />
                         <label htmlFor="username">Usuário</label>
                     </span>
-                    {errors.username && <small className="p-error">{errors.username.message}</small>}
+                    {errors.username && <small className="p-error block mt-1">{errors.username.message}</small>}
                 </div>
                 
                 <div>
@@ -105,22 +113,18 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
                         />
                         <label htmlFor="password">Senha</label>
                     </span>
-                    {errors.password && <small className="p-error">{errors.password.message}</small>}
+                    {errors.password && <small className="p-error block mt-1">{errors.password.message}</small>}
                 </div>
 
-                <Button label="Entrar" type="submit" loading={isSubmitting} className="w-full" />
+                <Button label="Entrar" type="submit" loading={isSubmitting} className="w-full mt-2" />
                 
                 {showRegisterLink && (
                     <div className="text-center text-sm mt-2">
                         <span>Não tem conta? </span>
                         <span 
-                            className="text-primary cursor-pointer font-bold"
+                            className="text-primary cursor-pointer font-bold hover:underline"
                             onClick={() => {
-                                // CORREÇÃO AQUI:
-                                // Chama o onSuccess() (que fecha o painel) ANTES de navegar
-                                if (onSuccess) {
-                                    onSuccess();
-                                }
+                                if (onSuccess) onSuccess(); // Fecha modal se necessário antes de navegar
                                 navigate("/register");
                             }}
                         >

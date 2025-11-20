@@ -48,25 +48,16 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
         return this.orderRepository;
     }
 
-    /**
-     * NOVO MÉTODO DE CHECKOUT
-     * 1. Pega o carrinho validado do CartService.
-     * 2. Valida endereço e pagamento.
-     * 3. Converte o Carrinho (Cart) em Pedido (Order).
-     * 4. Valida e decrementa o estoque.
-     * 5. Salva o novo Pedido.
-     * 6. Exclui o Carrinho.
-     */
     @Override
     @Transactional
     public Order checkoutFromCart(CheckoutDTO checkoutDTO, User user) {
-        // 1. Pega o carrinho validado (com preços e estoques já checados)
+        // 1. Pega o carrinho
         CartResponseDTO cartDTO = cartService.getAndValidateCart(user);
         if (cartDTO == null || cartDTO.getItems().isEmpty()) {
             throw new RuntimeException("Carrinho está vazio.");
         }
 
-        // 2. Valida Endereço e Pagamento
+        // 2. Valida Endereço e Pagamento (Lógica existente...)
         Address address = addressRepository.findById(checkoutDTO.getAddressId()).orElseThrow(() -> new RuntimeException("Endereço não encontrado!"));
         PaymentMethod paymentMethod = paymentMethodRepository.findById(checkoutDTO.getPaymentMethodId()).orElseThrow(() -> new RuntimeException("Método de Pagamento não encontrado!"));
         if (!address.getUser().getId().equals(user.getId()) || !paymentMethod.getUser().getId().equals(user.getId())) {
@@ -79,7 +70,15 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
         order.setDate(LocalDate.now());
         order.setStatus(OrderStatus.PENDING);
 
-        // Copia o endereço para o "embedded"
+        // APLICANDO O SNAPSHOT DO CLIENTE (Integridade Histórica)
+        OrderUserEmbeddable clientDetails = new OrderUserEmbeddable();
+        clientDetails.setName(user.getDisplayName());
+        clientDetails.setCpf(user.getCpf());
+        clientDetails.setPhone(user.getPhone());
+        clientDetails.setEmail(user.getUsername());
+        order.setClientDetails(clientDetails);
+
+        // Copia endereço e pagamento (Lógica existente...)
         OrderAddressEmbeddable embeddableAddress = new OrderAddressEmbeddable();
         embeddableAddress.setStreet(address.getStreet());
         embeddableAddress.setCity(address.getCity());
@@ -87,42 +86,42 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
         embeddableAddress.setZip(address.getZip());
         order.setShippingAddress(embeddableAddress);
 
-        // Copia o pagamento para o "embedded"
         OrderPaymentEmbeddable embeddablePayment = new OrderPaymentEmbeddable();
         embeddablePayment.setDescription(String.format("%s - %s", paymentMethod.getType(), paymentMethod.getDescription()));
         order.setPaymentMethod(embeddablePayment);
 
-        // 4. Converte os Itens e Valida Estoque (Validação final "contratual")
-        BigDecimal total = BigDecimal.ZERO;
+        // 4. Converte os Itens e Calcula Totais
+        BigDecimal subtotalTotal = BigDecimal.ZERO;
         for (var cartItemDTO : cartDTO.getItems()) {
-            // Busca o produto real DENTRO da transação para garantir
+            // ... (Lógica de estoque e criação de OrderItems existente...)
             Product product = productRepository.findById(cartItemDTO.getProduct().getId())
                     .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + cartItemDTO.getProduct().getName()));
 
-            // Checagem final de estoque
             if (product.getStock() < cartItemDTO.getQuantity()) {
                 throw new RuntimeException("Estoque insuficiente para o produto: " + product.getName());
             }
-
-            // Decrementa o estoque
             product.setStock(product.getStock() - cartItemDTO.getQuantity());
-            productRepository.save(product); // Salva o estoque atualizado
+            productRepository.save(product);
 
-            // Cria o OrderItem
             OrderItems orderItem = new OrderItems();
             orderItem.setOrder(order);
             orderItem.setProduct(product);
             orderItem.setQuantity(cartItemDTO.getQuantity());
-            orderItem.setUnitPrice(cartItemDTO.getPriceAtSave()); // Usa o preço validado!
+            orderItem.setUnitPrice(cartItemDTO.getPriceAtSave());
             orderItem.setSubtotal(cartItemDTO.getPriceAtSave().multiply(new BigDecimal(cartItemDTO.getQuantity())));
 
             order.getItems().add(orderItem);
-            total = total.add(orderItem.getSubtotal());
+            subtotalTotal = subtotalTotal.add(orderItem.getSubtotal());
         }
 
-        order.setTotal(total);
+        // Lógica de Desconto (Futuro: Pode vir de um cupom no CheckoutDTO)
+        BigDecimal discount = BigDecimal.ZERO; // Por enquanto zero
+        // if (checkoutDTO.getCoupon() != null) { discount = ... }
 
-        // 5. Salva o novo Pedido
+        order.setDiscount(discount);
+        order.setTotal(subtotalTotal.subtract(discount));
+
+        // 5. Salva
         Order savedOrder = orderRepository.save(order);
 
         // 6. Exclui o carrinho

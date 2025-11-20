@@ -7,11 +7,10 @@ export const LoginPage = () => {
 
   return (
     <div className="flex justify-content-center align-items-center" style={{ minHeight: 'calc(100vh - 70px)', paddingTop: '70px' }}>
-      <Card title="Login" className="w-full max-w-20rem shadow-2">
+      <Card title="Login" className="w-full max-w-20rem shadow-4">
         {/* Reutilizando o componente de login */}
         <LoginForm 
             onSuccess={() => {
-                // Ao logar na página dedicada, redirecionamos para a home
                 navigate("/");
             }}
             showRegisterLink={true}

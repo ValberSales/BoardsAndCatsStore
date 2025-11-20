@@ -14,6 +14,7 @@ public class UserDTO {
     private String username;
     private String displayName;
     private String phone;
+    private String cpf;
     private Set<AuthorityResponseDTO> authorities;
 
     public UserDTO(User user) {
@@ -21,6 +22,7 @@ public class UserDTO {
         this.username = user.getUsername();
         this.displayName = user.getDisplayName();
         this.phone = user.getPhone();
+        this.cpf = user.getCpf(); // Mapeia o CPF
         this.authorities = user.getAuthorities().stream()
                 .map(authority -> new AuthorityResponseDTO(authority.getAuthority()))
                 .collect(Collectors.toSet());
