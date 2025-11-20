@@ -58,7 +58,7 @@ export const CategoryPage = () => {
   }
 
   return (
-    <div style={{ paddingTop: '70px' }}>
+    <div>
       <Toast ref={toast} />
       <ProductGrid 
         title={category?.name || "Categoria"} 

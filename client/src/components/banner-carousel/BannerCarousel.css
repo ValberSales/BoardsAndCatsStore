@@ -1,0 +1,25 @@
+
+.banner-carousel .p-carousel-item {
+    padding: 0 0.5rem;
+}
+
+.banner-wrapper {
+    
+    margin: 0 auto;
+    position: relative;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.banner-image {
+    width: 100%;
+    display: block;
+    height: auto; 
+    object-fit: cover; 
+    border-radius: 16px;
+}
+
+@media (min-width: 1000px) {
+    .banner-wrapper {
+        max-width: 1000px;
+    }
+}

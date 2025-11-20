@@ -3,6 +3,7 @@ import type { IProduct } from "@/commons/types";
 import ProductService from "@/services/product-service";
 import { Toast } from "primereact/toast";
 import { CategoryShelf } from "@/components/category-shelf";
+import { BannerCarousel } from "@/components/banner-carousel"; // <--- Importe aqui
 
 export const HomePage = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -35,7 +36,6 @@ export const HomePage = () => {
   const promoProducts = products.filter(p => p.promo === true);
 
   return (
-    
     <div> 
       <Toast ref={toast} />
 
@@ -46,13 +46,9 @@ export const HomePage = () => {
       )}
       
       {!loading && (
-        <div className="container mx-auto px-4">
-            <div className="surface-ground border-round p-5 mb-5 flex align-items-center justify-content-center mt-4"> {/* Adicionei mt-4 para espaçamento visual */}
-                <div className="text-center">
-                    <h1 className="text-900 text-5xl font-bold mb-3">Bem-vindo à Boards & Cats</h1>
-                    <p className="text-600 text-xl">Os melhores jogos para humanos e gatos.</p>
-                </div>
-            </div>
+        <div className="container mx-auto px-4 py-4">
+            
+            <BannerCarousel />
 
             <CategoryShelf title="🔥 Ofertas Especiais" products={promoProducts} viewAllLink="/promotions"/>
             <CategoryShelf title="Jogos de Tabuleiro" products={boardGames} viewAllLink="/categories/1"/>

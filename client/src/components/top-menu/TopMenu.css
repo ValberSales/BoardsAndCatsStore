@@ -1,14 +1,12 @@
 /* Container da Navbar */
 .top-menu-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+    top: 0; left: 0; right: 0; z-index: 1000;
     background-color: var(--surface-overlay);
     border-bottom: 1px solid var(--surface-border);
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: background-color 0.2s, border-color 0.2s;
+    height: 70px;
 }
 
 /* Links do Menu Central */
@@ -18,10 +16,7 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    
-    /* Cor padrão (cinza/secundária) para ÍCONE e TEXTO */
     color: var(--text-color-secondary);
-    
     padding: 0.5rem 1rem;
     border-radius: 8px;
     transition: all 0.2s;
@@ -30,28 +25,52 @@
     cursor: pointer;
 }
 
-/* Efeito Hover */
-.nav-link-item:hover {
-    background-color: var(--surface-hover);
-    color: var(--secondary-color);
-    font-weight: 500;
+.nav-link-item:hover { background-color: var(--surface-hover); color: var(--secondary-color); }
+.nav-link-item.active { background-color: var(--surface-hover); color: var(--primary-color); font-weight: 600; }
+.nav-icon-svg { margin-bottom: 4px; }
+.logo-img { height: 50px; width: auto; border-radius: 8px; }
+
+/* Sidebar Styling */
+.p-sidebar .nav-link-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    width: 100%;
+}
+.p-sidebar .nav-icon-svg { margin-bottom: 0; width: 24px; height: 24px; }
+
+
+/* ==========================================================================
+   SISTEMA DE RESPONSIVIDADE PERSONALIZADO
+   ========================================================================== */
+
+/* Classes padrão ocultas, mostradas apenas nas media queries corretas */
+.d-mobile, .d-tablet, .d-desktop, .d-tablet-desktop {
+    display: none !important;
 }
 
-/* Efeito Ativo*/
-.nav-link-item.active {
-    background-color: var(--surface-hover);
-    color: var(--primary-color);
-    font-weight: 500;
+
+@media (max-width: 871px) {
+    .d-mobile { display: flex !important; }
+    
+    /* Centralização absoluta do logo no mobile */
+    .logo-mobile-center {
+        position: absolute;
+        left: 50%; top: 50%;
+        transform: translate(-50%, -50%);
+    }
 }
 
-/* Ajuste de tamanho para o SVG */
-.nav-icon-svg {
-    margin-bottom: 4px;
+
+@media (min-width: 872px) and (max-width: 1100px) {
+    .d-tablet { display: flex !important; }
+    .d-tablet-desktop { display: flex !important; } 
 }
 
-/* Logo */
-.logo-img {
-    height: 70px;
-    width: auto;
-    border-radius: 8px;
+
+@media (min-width: 1101px) {
+    .d-desktop { display: flex !important; }
+    .d-tablet-desktop { display: flex !important; }
 }

@@ -99,7 +99,7 @@ export const ProductDetailPage = () => {
   }
 
   return (
-    <div style={{ paddingTop: '70px' }}>
+    <div>
       <Toast ref={toast} />
       
       <div className="container mx-auto px-4 my-5" style={{ maxWidth: '1200px' }}>

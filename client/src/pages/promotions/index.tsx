@@ -47,7 +47,7 @@ export const PromotionsPage = () => {
   }
 
   return (
-    <div style={{ paddingTop: '70px' }}>
+    <div>
       <Toast ref={toast} />
       <ProductGrid 
         title="🔥 Ofertas Especiais" 

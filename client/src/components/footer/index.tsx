@@ -1,6 +1,5 @@
-import { Link, useLocation } from "react-router-dom"; // 1. Adicione useLocation
+import { Link, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "@/lib/axios";
-import { classNames } from "primereact/utils"; // Opcional: ajuda a combinar classes condicionalmente
 import "./Footer.css"; 
 
 export const Footer = () => {

@@ -7,7 +7,7 @@ export function Layout() {
     <div className="flex flex-column min-h-screen">
       <TopMenu />
 
-      <main className="flex-grow-1 flex flex-column" style={{ paddingTop: '70px' }}>
+      <main className="flex-grow-1 flex flex-column">
         <Outlet />
       </main>
       
