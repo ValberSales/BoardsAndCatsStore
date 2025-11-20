@@ -9,6 +9,7 @@ interface AuthContextType {
   handleLogin: (authenticationResponse: AuthenticationResponse) => void;
   handleLogout: () => void;
   updateUser: (user: AuthenticatedUser) => void;
+  updateAccessToken: (token: string) => void; // <--- NOVA FUNÇÃO
   isLoading: boolean;
 }
 
@@ -62,9 +63,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAuthenticatedUser(user);
   };
 
+  // --- NOVA FUNÇÃO ---
+  const updateAccessToken = (token: string) => {
+    localStorage.setItem("token", JSON.stringify(token));
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    // Não precisamos mexer no 'user' aqui, apenas renovar a credencial
+  };
+
   return (
     <AuthContext.Provider
-      value={{ authenticated, authenticatedUser, handleLogin, handleLogout, updateUser, isLoading }}
+      value={{ 
+        authenticated, 
+        authenticatedUser, 
+        handleLogin, 
+        handleLogout, 
+        updateUser, 
+        updateAccessToken, // <--- Exportando
+        isLoading 
+      }}
     >
       {children}
     </AuthContext.Provider>

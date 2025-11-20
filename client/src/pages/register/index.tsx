@@ -1,175 +1,30 @@
-import { useForm, Controller } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
-import { Password } from "primereact/password";
-import { Button } from "primereact/button";
-import { Card } from "primereact/card";
-import { Link, useNavigate } from "react-router-dom";
-import { classNames } from "primereact/utils";
-import { useRef, useState } from "react";
-import type { IUserRegister } from "@/commons/types";
-import AuthService from "@/services/auth-service";
-import { Toast } from "primereact/toast";
+import { RegisterForm } from "@/components/register-form";
+import { API_BASE_URL } from "@/lib/axios";
 
 export const RegisterPage = () => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<IUserRegister>({
-  
-    defaultValues: { username: "", password: "", displayName: "", phone: "" },
-  });
-  
-  const { signup } = AuthService;
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const toast = useRef<Toast>(null);
-
-  const onSubmit = async (data: IUserRegister) => {
-    setLoading(true);
-    try {
-     
-      const response = await signup(data);
-      
-      if (response.status === 200 || response.status === 201) { 
-        toast.current?.show({
-          severity: "success",
-          summary: "Sucesso",
-          detail: "Usuário cadastrado com sucesso.",
-          life: 3000,
-        });
-        setTimeout(() => {
-          navigate("/login");
-        }, 1000);
-      } else {
-        toast.current?.show({
-          severity: "error",
-          summary: "Erro",
-          detail: response.message || "Falha ao cadastrar usuário.",
-          life: 3000,
-        });
-      }
-    } catch (err) {
-      toast.current?.show({
-        severity: "error",
-        summary: "Erro",
-        detail: "Falha ao cadastrar usuário.",
-        life: 3000,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-  
   return (
-    <div className="flex justify-content-center align-items-center" style={{ minHeight: 'calc(100vh - 70px)', paddingTop: '70px' }}>
-      <Toast ref={toast} />
-      <Card title="Registrar Conta" className="w-full max-w-20rem shadow-2">
-        <form onSubmit={handleSubmit(onSubmit)} className="p-fluid flex flex-column gap-3">
-          <div>
-            <label htmlFor="displayName" className="block mb-2">Nome de Exibição</label>
-            <Controller
-              name="displayName"
-              control={control}
-              rules={{ required: "Campo obrigatório" }}
-              render={({ field }) => (
-                <InputText
-                  id="displayName"
-                  {...field}
-                  className={classNames({ "p-invalid": errors.displayName })}
-                  placeholder="Ex: João Silva"
-                />
-              )}
-            />
-            {errors.displayName && (
-              <small className="p-error">{errors.displayName.message}</small>
-            )}
-          </div>
+    // 'flex-grow-1': Faz este container ocupar todo o espaço disponível no <main> do Layout
+    // 'align-items-stretch': Garante que a imagem e o form tenham a mesma altura
+    <div className="flex flex-column md:flex-row w-full flex-grow-1 surface-ground overflow-hidden align-items-stretch">
+      
+      {/* LADO ESQUERDO - FORMULÁRIO */}
+      <div className="w-full md:w-6 flex align-items-center justify-content-center surface-section relative z-2 shadow-8 p-4">
+        <div className="w-full" style={{ maxWidth: '40rem' }}>
+            <RegisterForm />
+        </div>
+      </div>
 
-          <div>
-            <label htmlFor="username" className="block mb-2">Usuário</label>
-            <Controller
-              name="username"
-              control={control}
-              rules={{ required: "Campo obrigatório" }}
-              render={({ field }) => (
-                <InputText
-                  id="username"
-                  {...field}
-                  className={classNames({ "p-invalid": errors.username })}
-                  placeholder="Ex: joao.silva"
-                />
-              )}
-            />
-            {errors.username && (
-              <small className="p-error">{errors.username.message}</small>
-            )}
-          </div>
-
-        
-          <div>
-            <label htmlFor="phone" className="block mb-2">Telefone</label>
-            <Controller
-              name="phone"
-              control={control}
-              rules={{ required: "Campo obrigatório" }}
-              render={({ field }) => (
-                <InputText
-                  id="phone"
-                  {...field}
-                  className={classNames({ "p-invalid": errors.phone })}
-                  placeholder="Ex: 46999998888"
-                  keyfilter="int" 
-                />
-              )}
-            />
-            {errors.phone && (
-              <small className="p-error">{errors.phone.message}</small>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block mb-2">Senha</label>
-            <Controller
-              name="password"
-              control={control}
-              rules={{
-                required: "Campo obrigatório",
-                minLength: { value: 6, message: "Mínimo 6 caracteres" },
-              }}
-              render={({ field }) => (
-                <Password
-                  id="password"
-                  {...field}
-                  toggleMask
-                  feedback={false}
-                  className={classNames({ "p-invalid": errors.password })}
-                  inputClassName="w-full"
-                />
-              )}
-            />
-            {errors.password && (
-              <small className="p-error">{errors.password.message}</small>
-            )}
-          </div>
-
-          <Button
-            type="submit"
-            label="Registrar"
-            loading={loading || isSubmitting}
-            disabled={loading || isSubmitting}
-            className="w-full mt-3"
-          />
-          <div className="text-center mt-3">
-            <small>
-              Já tem uma conta?{" "}
-              <Link to="/login" className="text-primary">
-                Fazer login
-              </Link>
-            </small>
-          </div>
-        </form>
-      </Card>
+      {/* LADO DIREITO - IMAGEM */}
+      {/* Sem margem branca: flex-grow-1 garante que preencha o resto da largura/altura */}
+      <div 
+        className="hidden md:block md:w-6 flex-grow-1 bg-no-repeat bg-cover bg-center relative"
+        style={{ 
+            backgroundImage: `url('${API_BASE_URL}/images/cadastro.webp')`,
+            // Removemos minHeight fixa para deixar o flexbox controlar a altura exata
+        }}
+      >
+        <div className="absolute top-0 left-0 w-full h-full bg-black-alpha-10"></div>
+      </div>
     </div>
   );
 };

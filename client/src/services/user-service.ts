@@ -1,15 +1,24 @@
 import { api } from "@/lib/axios";
 import type { IResponse, IUserProfileUpdate, IUserPasswordUpdate } from "@/commons/types";
 
+// Função auxiliar para extrair o token limpo dos headers
+const extractToken = (headers: any): string | undefined => {
+    const authHeader = headers['authorization'] || headers['Authorization'];
+    if (authHeader && typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+        return authHeader.substring(7);
+    }
+    return undefined;
+};
+
 const getMe = async (): Promise<IResponse> => {
     let response = {} as IResponse;
     try {
-        const data = await api.get("/users/me");
+        const axiosResponse = await api.get("/users/me");
         response = {
             status: 200,
             success: true,
             message: "Perfil carregado",
-            data: data.data,
+            data: axiosResponse.data,
         };
     } catch (err: any) {
         response = {
@@ -25,12 +34,15 @@ const getMe = async (): Promise<IResponse> => {
 const updateMe = async (user: IUserProfileUpdate): Promise<IResponse> => {
     let response = {} as IResponse;
     try {
-        const data = await api.put("/users/me", user);
+        const axiosResponse = await api.put("/users/me", user);
+        
+        const newToken = extractToken(axiosResponse.headers);
+
         response = {
             status: 200,
             success: true,
             message: "Perfil atualizado com sucesso",
-            data: data.data,
+            data: { ...axiosResponse.data, token: newToken },
         };
     } catch (err: any) {
         response = {
@@ -46,17 +58,47 @@ const updateMe = async (user: IUserProfileUpdate): Promise<IResponse> => {
 const changePassword = async (data: IUserPasswordUpdate): Promise<IResponse> => {
     let response = {} as IResponse;
     try {
-        await api.patch("/users/me/password", data);
+        const axiosResponse = await api.patch("/users/me/password", data);
+        const newToken = extractToken(axiosResponse.headers);
+
         response = {
             status: 200,
             success: true,
             message: "Senha alterada com sucesso",
+            data: { token: newToken }
+        };
+    } catch (err: any) {
+        const serverMessage = err.response?.data?.message || err.response?.data?.error;
+        const status = err.response?.status;
+
+        const finalMessage = (status === 400 && serverMessage) 
+            ? serverMessage 
+            : "Ocorreu um erro inesperado ao alterar a senha.";
+
+        response = {
+            status: status || 500,
+            success: false,
+            message: finalMessage,
+            data: err.response?.data,
+        };
+    }
+    return response;
+};
+
+const deleteMe = async (): Promise<IResponse> => {
+    let response = {} as IResponse;
+    try {
+        await api.delete("/users/me");
+        response = {
+            status: 204,
+            success: true,
+            message: "Conta excluída com sucesso",
         };
     } catch (err: any) {
         response = {
             status: err.response?.status || 500,
             success: false,
-            message: "Erro ao alterar senha",
+            message: "Erro ao excluir conta",
             data: err.response?.data,
         };
     }
@@ -67,6 +109,7 @@ const UserService = {
     getMe,
     updateMe,
     changePassword,
+    deleteMe,
 };
 
 export default UserService;

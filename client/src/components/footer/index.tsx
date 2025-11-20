@@ -1,6 +1,6 @@
+import { Link } from "react-router-dom"; 
 import { API_BASE_URL } from "@/lib/axios";
 import "./Footer.css"; 
-import { Link } from "react-router-dom"; // 1. Importar Link
 
 export const Footer = () => {
     return (
@@ -9,54 +9,61 @@ export const Footer = () => {
                 <div className="container mx-auto px-4">
                     <div className="grid">
                         
-                        {/* Coluna 1: Institucional (Atualizada) */}
+                        {/* Coluna 1: Institucional */}
                         <div className="col-12 md:col-4">
                             <h4 className="font-bold text-xl mb-3">Institucional</h4>
                             <ul className="list-none p-0 m-0">
                                 <li className="mb-2">
-                                    <Link to="/about">Quem somos</Link>
+                                    <Link to="/about" className="hover:underline">Quem somos</Link>
                                 </li>
                                 <li className="mb-2">
-                                    <Link to="/location">Onde estamos</Link>
+                                    <Link to="/location" className="hover:underline">Onde estamos</Link>
                                 </li>
                                 <li className="mb-2">
-                                    <Link to="/contact">Fale conosco</Link>
+                                    <Link to="/contact" className="hover:underline">Fale conosco</Link>
                                 </li>
                             </ul>
                         </div>
 
-                        {/* Coluna 2: Minha Conta */}
-                        {/* ... (Mantenha como está ou atualize se tivermos as rotas de usuário) */}
+                        {/* Coluna 2: Minha Conta (LINKS CORRIGIDOS) */}
                         <div className="col-12 md:col-4">
                             <h4 className="font-bold text-xl mb-3">Minha conta</h4>
                             <ul className="list-none p-0 m-0">
                                 <li className="mb-2">
-                                    <a href="#">Meu cadastro</a>
+                                    {/* Rota: /profile (Página de Perfil que criamos) */}
+                                    <Link to="/profile" className="hover:underline">Meu cadastro</Link>
                                 </li>
                                 <li className="mb-2">
-                                    <a href="#">Meus pedidos</a>
+                                    {/* Rota: /orders (Se o usuário não estiver logado, o RequireAuth redireciona para login) */}
+                                    <Link to="/orders" className="hover:underline">Meus pedidos</Link>
                                 </li>
                                 <li className="mb-2">
-                                    <a href="#">Minhas formas de pagamento</a>
+                                    {/* Rota: /payment-methods */}
+                                    <Link to="/payment-methods" className="hover:underline">Minhas formas de pagamento</Link>
                                 </li>
                             </ul>
                         </div>
 
-                        {/* ... (resto do arquivo igual) ... */}
+                        {/* Coluna 3: Redes Sociais e Pagamento */}
                         <div className="col-12 md:col-4">
-                           {/* ... (código redes sociais mantido) ... */}
                             <h4 className="font-bold text-xl mb-3">Redes sociais</h4>
                             <div className="flex gap-3 mb-4">
-                                <a href="https://www.instagram.com" target="_blank" title="Instagram"><i className="pi pi-instagram" style={{ fontSize: '1.5rem' }}></i></a>
-                                <a href="https://twitter.com" target="_blank" title="X"><i className="pi pi-twitter" style={{ fontSize: '1.5rem' }}></i></a>
-                                <a href="https://wa.me" target="_blank" title="WhatsApp"><i className="pi pi-whatsapp" style={{ fontSize: '1.5rem' }}></i></a>
+                                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="hover:text-primary transition-colors">
+                                    <i className="pi pi-instagram" style={{ fontSize: '1.5rem' }}></i>
+                                </a>
+                                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="X" className="hover:text-primary transition-colors">
+                                    <i className="pi pi-twitter" style={{ fontSize: '1.5rem' }}></i>
+                                </a>
+                                <a href="https://wa.me" target="_blank" rel="noopener noreferrer" title="WhatsApp" className="hover:text-primary transition-colors">
+                                    <i className="pi pi-whatsapp" style={{ fontSize: '1.5rem' }}></i>
+                                </a>
                             </div>
                             <div>
                                 <img 
-                                    className="bg-white" 
+                                    className="bg-white p-1 border-round-md" 
                                     src={`${API_BASE_URL}/images/cards.jpg`} 
                                     alt="Formas de Pagamento"
-                                    style={{ maxWidth: '60%', height: 'auto', borderRadius: '8px' }}
+                                    style={{ maxWidth: '60%', height: 'auto' }}
                                 />     
                             </div>
                         </div>

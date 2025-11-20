@@ -89,7 +89,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
                                 />
                             )}
                         />
-                        <label htmlFor="username">Usuário</label>
+                        <label htmlFor="username">E-Mail</label>
                     </span>
                     {errors.username && <small className="p-error block mt-1">{errors.username.message}</small>}
                 </div>

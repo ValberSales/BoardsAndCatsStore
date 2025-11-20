@@ -6,11 +6,13 @@ import br.edu.utfpr.pb.pw44s.server.repository.OrderRepository;
 import br.edu.utfpr.pb.pw44s.server.repository.UserRepository;
 import br.edu.utfpr.pb.pw44s.server.service.IUserService;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUserService {
@@ -53,7 +55,8 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
     @Override
     public void changePassword(User user, String currentPassword, String newPassword) {
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new RuntimeException("A senha atual está incorreta.");
+            // Lança erro 400 (Bad Request) com mensagem específica se a senha atual não bater
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A senha atual está incorreta.");
         }
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
@@ -65,16 +68,12 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             // 1. Desvincular Pedidos (Histórico)
-            // Como não usamos Cascade no Order, eles não seriam deletados,
-            // mas precisamos setar user_id = null para evitar erro de FK.
             for (Order order : user.getOrders()) {
                 order.setUser(null);
                 orderRepository.save(order);
             }
 
-            // 2. Deletar Usuário
-            // Graças ao CascadeType.ALL em Cart, Address e PaymentMethod,
-            // o Hibernate deletará esses dados automaticamente.
+            // 2. Deletar Usuário (Cascade remove o resto)
             userRepository.delete(user);
         }
     }
