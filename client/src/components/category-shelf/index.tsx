@@ -1,5 +1,4 @@
-import React from 'react';
-import { Carousel } from 'primereact/carousel';
+import React, { useMemo } from 'react';
 import type { IProduct } from '@/commons/types';
 import { ProductCard } from '@/components/product-card';
 import { Button } from 'primereact/button';
@@ -8,13 +7,13 @@ import { useNavigate } from 'react-router-dom';
 interface CategoryShelfProps {
     title: string;
     products: IProduct[];
-    viewAllLink?: string; // Nova prop opcional: URL para onde o botão leva
+    viewAllLink?: string;
 }
 
 export const CategoryShelf: React.FC<CategoryShelfProps> = ({ title, products, viewAllLink }) => {
     const navigate = useNavigate();
 
-    const getDisplayProducts = () => {
+    const displayProducts = useMemo(() => {
         if (products.length <= 10) return products;
         
         const shuffled = [...products];
@@ -23,23 +22,15 @@ export const CategoryShelf: React.FC<CategoryShelfProps> = ({ title, products, v
             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
         return shuffled.slice(0, 10);
-    };
+    }, [products]);
 
-    const responsiveOptions = [
-        { breakpoint: '1400px', numVisible: 4, numScroll: 1 },
-        { breakpoint: '1200px', numVisible: 3, numScroll: 1 },
-        { breakpoint: '992px', numVisible: 2, numScroll: 1 },
-        { breakpoint: '768px', numVisible: 1, numScroll: 1 }
-    ];
-
-    if (products.length === 0) return null;
+    if (displayProducts.length === 0) return null;
 
     return (
         <div className="my-5">
             <div className="flex justify-content-between align-items-center mb-3 px-2">
-                <h2 className="text-3xl font-bold m-0">{title}</h2>
+                <h2 className="text-3xl font-bold m-0 text-900">{title}</h2>
                 
-                {/* O botão só renderiza se houver um link definido */}
                 {viewAllLink && (
                     <Button 
                         label="Ver todos" 
@@ -51,17 +42,19 @@ export const CategoryShelf: React.FC<CategoryShelfProps> = ({ title, products, v
                 )}
             </div>
             
-            <Carousel
-                value={getDisplayProducts()}
-                itemTemplate={(product: IProduct) => (
-                    <div className="p-2 h-full">
+                       <div 
+                className="flex overflow-x-auto pb-4 px-2 gap-3" 
+                style={{ 
+                    scrollBehavior: 'smooth', 
+                    scrollbarWidth: 'thin'
+                }}
+            >
+                {displayProducts.map((product) => (
+                    <div key={product.id} className="flex-shrink-0" style={{ width: '280px' }}>
                         <ProductCard product={product} />
                     </div>
-                )}
-                numVisible={4}
-                numScroll={1}
-                responsiveOptions={responsiveOptions}
-            />
+                ))}
+            </div>
         </div>
     );
 };

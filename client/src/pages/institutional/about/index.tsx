@@ -1,5 +1,6 @@
 import { Card } from 'primereact/card';
 import { API_BASE_URL } from "@/lib/axios";
+import "./About.css";
 
 export const AboutPage = () => {
     return (
@@ -27,10 +28,10 @@ export const AboutPage = () => {
                     
                     <div className="col-12 md:col-6 flex justify-content-center p-4">
                         <img 
-                            src={`${API_BASE_URL}/images/logo.webp`} 
+                            src={`${API_BASE_URL}/images/Logonova.png`} 
                             alt="Boards and Cats Logo" 
-                            className="border-round shadow-2 w-full md:w-10"
-                            style={{ maxHeight: '400px', objectFit: 'contain', backgroundColor: '#fff' }}
+                            className="shadow-2 logo-full w-full md"
+                            style={{ maxHeight: '600px', objectFit: 'contain', backgroundColor: '#fff' }}
                         />
                     </div>
                 </div>

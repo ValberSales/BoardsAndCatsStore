@@ -18,7 +18,7 @@ export const ProfilePage = () => {
 
     const handleDeleteAccount = () => {
         confirmDialog({
-            message: 'Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.',
+            message: 'Tem certeza que deseja excluir sua conta?',
             header: 'Confirmação de Exclusão',
             icon: 'pi pi-exclamation-triangle',
             acceptClassName: 'p-button-danger',
@@ -32,7 +32,7 @@ export const ProfilePage = () => {
                         handleLogout();
                         navigate('/');
                     } else {
-                        toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Não foi possível excluir a conta.' });
+                        toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao excluir conta.' });
                     }
                 } catch (e) {
                     toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao processar exclusão.' });
@@ -42,43 +42,23 @@ export const ProfilePage = () => {
     };
 
     return (
-        <div style={{ paddingTop: '70px' }} className="surface-ground min-h-screen pb-6">
+
+        <div className="surface-ground h-full pb-6"> 
             <Toast ref={toast} />
             <ConfirmDialog />
-            
             <ChangePasswordDialog visible={showPasswordDialog} onHide={() => setShowPasswordDialog(false)} />
 
             <div className="container mx-auto px-4 py-5" style={{ maxWidth: '900px' }}>
                 <h1 className="text-3xl font-bold mb-4 text-900">Meu Cadastro</h1>
-                
                 <div className="grid">
-                    {/* Coluna Esquerda: Formulário de Perfil */}
                     <div className="col-12 md:col-8">
                         <ProfileForm />
                     </div>
-
-                    {/* Coluna Direita: Segurança */}
                     <div className="col-12 md:col-4">
                         <Card title="Segurança" className="shadow-2 h-full">
                             <p className="text-sm text-gray-600 mb-4">Gerencie sua senha e acesso.</p>
-                            
-                            <Button 
-                                label="Alterar Senha" 
-                                icon="pi pi-lock" 
-                                severity="secondary" 
-                                outlined 
-                                className="w-full mb-3" 
-                                onClick={() => setShowPasswordDialog(true)}
-                            />
-                            
-                            <Button 
-                                label="Excluir Conta" 
-                                icon="pi pi-trash" 
-                                severity="danger" 
-                                text 
-                                className="w-full hover:bg-red-50" 
-                                onClick={handleDeleteAccount}
-                            />
+                            <Button label="Alterar Senha" icon="pi pi-lock" severity="secondary" outlined className="w-full mb-3" onClick={() => setShowPasswordDialog(true)} />
+                            <Button label="Excluir Conta" icon="pi pi-trash" severity="danger" text className="w-full hover:bg-red-50" onClick={handleDeleteAccount} />
                         </Card>
                     </div>
                 </div>

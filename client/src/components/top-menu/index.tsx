@@ -77,7 +77,7 @@ const TopMenu: React.FC = () => {
       {/* ESQUERDA: LOGO */}
       <div className="flex align-items-center cursor-pointer" onClick={() => navigate("/")}>
         <img 
-            src={`${API_BASE_URL}/images/logo.webp`} 
+            src={`${API_BASE_URL}/images/logow.webp`} 
             alt="Boards and Cats" 
             className="logo-img mr-2" 
         />

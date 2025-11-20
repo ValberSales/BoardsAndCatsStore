@@ -1,11 +1,19 @@
-import { Link } from "react-router-dom"; 
+import { Link, useLocation } from "react-router-dom"; // 1. Adicione useLocation
 import { API_BASE_URL } from "@/lib/axios";
+import { classNames } from "primereact/utils"; // Opcional: ajuda a combinar classes condicionalmente
 import "./Footer.css"; 
 
 export const Footer = () => {
+    const location = useLocation();
+
+    const noMarginRoutes = ['/register', '/login'];
+    
+    const shouldHaveMargin = !noMarginRoutes.includes(location.pathname);
+
     return (
         <footer>
-            <div className="footer-main pt-6 pb-4 mt-6">
+    
+            <div className={`footer-main pt-6 pb-4 ${shouldHaveMargin ? 'mt-6' : ''}`}>
                 <div className="container mx-auto px-4">
                     <div className="grid">
                         
@@ -25,36 +33,33 @@ export const Footer = () => {
                             </ul>
                         </div>
 
-                        {/* Coluna 2: Minha Conta (LINKS CORRIGIDOS) */}
+                        {/* Coluna 2: Minha Conta */}
                         <div className="col-12 md:col-4">
                             <h4 className="font-bold text-xl mb-3">Minha conta</h4>
                             <ul className="list-none p-0 m-0">
                                 <li className="mb-2">
-                                    {/* Rota: /profile (Página de Perfil que criamos) */}
                                     <Link to="/profile" className="hover:underline">Meu cadastro</Link>
                                 </li>
                                 <li className="mb-2">
-                                    {/* Rota: /orders (Se o usuário não estiver logado, o RequireAuth redireciona para login) */}
                                     <Link to="/orders" className="hover:underline">Meus pedidos</Link>
                                 </li>
                                 <li className="mb-2">
-                                    {/* Rota: /payment-methods */}
                                     <Link to="/payment-methods" className="hover:underline">Minhas formas de pagamento</Link>
                                 </li>
                             </ul>
                         </div>
 
-                        {/* Coluna 3: Redes Sociais e Pagamento */}
+                        {/* Coluna 3: Redes Sociais */}
                         <div className="col-12 md:col-4">
                             <h4 className="font-bold text-xl mb-3">Redes sociais</h4>
                             <div className="flex gap-3 mb-4">
-                                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="hover:text-primary transition-colors">
+                                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                                     <i className="pi pi-instagram" style={{ fontSize: '1.5rem' }}></i>
                                 </a>
-                                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="X" className="hover:text-primary transition-colors">
+                                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                                     <i className="pi pi-twitter" style={{ fontSize: '1.5rem' }}></i>
                                 </a>
-                                <a href="https://wa.me" target="_blank" rel="noopener noreferrer" title="WhatsApp" className="hover:text-primary transition-colors">
+                                <a href="https://wa.me" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                                     <i className="pi pi-whatsapp" style={{ fontSize: '1.5rem' }}></i>
                                 </a>
                             </div>
