@@ -1,181 +1,144 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import type { IProduct } from "@/commons/types";
-import ProductService from "@/services/product-service";
-import { API_BASE_URL } from "@/lib/axios";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { Galleria } from 'primereact/galleria';
-import { InputText } from "primereact/inputtext";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { BreadCrumb } from 'primereact/breadcrumb';
-import type { MenuItem } from "primereact/menuitem";
-import { Tag } from "primereact/tag"; 
+import { Tag } from "primereact/tag";
+import { Divider } from "primereact/divider";
+
+import ProductService from "@/services/product-service";
+import type { IProduct } from "@/commons/types";
+import { ProductGallery } from "@/components/product-gallery";
+
+import "./ProductDetail.css";
 
 export const ProductDetailPage = () => {
-  const { id } = useParams<{ id: string }>(); 
-  const navigate = useNavigate();
-  const [product, setProduct] = useState<IProduct | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [images, setImages] = useState<string[]>([]);
-  const toast = useRef<Toast>(null);
-  
-  const [productDetails, setProductDetails] = useState<any[]>([]);
-  const [breadcrumbItems, setBreadcrumbItems] = useState<MenuItem[]>([]);
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const toast = useRef<Toast>(null);
+    const [product, setProduct] = useState<IProduct | null>(null);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (id) {
-      loadProduct(parseInt(id));
+    useEffect(() => {
+        if (id) {
+            loadProduct(Number(id));
+        }
+    }, [id]);
+
+    const loadProduct = async (productId: number) => {
+        setLoading(true);
+        try {
+            const response = await ProductService.findById(productId);
+            if (response.status === 200 && response.data) {
+                setProduct(response.data);
+            } else {
+                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Produto não encontrado' });
+                setTimeout(() => navigate("/"), 2000);
+            }
+        } catch (error) {
+            toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Falha de conexão' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAddToCart = () => {
+        toast.current?.show({ severity: 'success', summary: 'Adicionado', detail: 'Produto no carrinho!' });
+    };
+
+    if (loading) {
+        return <div className="flex justify-content-center align-items-center h-screen"><ProgressSpinner /></div>;
     }
-  }, [id]);
 
-  const loadProduct = async (productId: number) => {
-    setLoading(true);
-    try {
-      const response = await ProductService.findById(productId);
-      if (response.status === 200 && response.data) {
-        const fetchedProduct = response.data as IProduct;
-        setProduct(fetchedProduct);
-        
-        const allImages = [
-          fetchedProduct.imageUrl, 
-          ...(fetchedProduct.otherImages || []) 
-        ];
-        setImages(allImages.map(imgUrl => `${API_BASE_URL}${imgUrl}`));
+    if (!product) return null;
 
-        // Monta a tabela de detalhes
-        const details = [];
-        if (fetchedProduct.editor) details.push({ label: 'Editor', value: fetchedProduct.editor });
-        if (fetchedProduct.mechanics) details.push({ label: 'Mecânicas', value: fetchedProduct.mechanics });
-        if (fetchedProduct.players) details.push({ label: 'Quantidade de Jogadores', value: fetchedProduct.players });
-        if (fetchedProduct.duracao) details.push({ label: 'Duração', value: fetchedProduct.duracao });
-        if (fetchedProduct.idadeRecomendada) details.push({ label: 'Idade Recomendada', value: fetchedProduct.idadeRecomendada });
-        setProductDetails(details);
+    const formattedPrice = product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        // ##### CORREÇÃO AQUI #####
-        setBreadcrumbItems([
-          { 
-            label: fetchedProduct.category.name, 
-            // Corrigido para plural: /categories/
-            command: () => navigate(`/categories/${fetchedProduct.category.id}`) 
-          },
-          { 
-            label: fetchedProduct.name,
-            // O último item geralmente não tem comando (é a página atual)
-            className: 'font-bold' 
-          }
-        ]);
-        // ##### FIM DA CORREÇÃO #####
-        
-      } else {
-        toast.current?.show({ severity: "error", summary: "Erro", detail: "Produto não encontrado.", life: 3000 });
-      }
-    } catch (error) {
-      toast.current?.show({ severity: "error", summary: "Erro", detail: "Falha ao carregar o produto.", life: 3000 });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  };
-
-  const itemTemplate = (item: string) => {
-    return <img src={item} alt={product?.name} style={{ width: '100%', display: 'block' }} />;
-  }
-  const thumbnailTemplate = (item: string) => {
-    return <img src={item} alt="Thumbnail" style={{ width: '80px', display: 'block' }} className="p-2 border-1 surface-border border-round" />;
-  }
-
-  if (loading) {
-    return <div className="flex justify-content-center align-items-center" style={{ minHeight: 'calc(100vh - 70px)', paddingTop: '70px' }}><ProgressSpinner /></div>;
-  }
-
-  if (!product) {
-    return <div style={{ paddingTop: '70px' }}><p className="text-center p-4 text-2xl">Produto não encontrado.</p></div>;
-  }
-
-  return (
-    <div>
-      <Toast ref={toast} />
-      
-      <div className="container mx-auto px-4 my-5" style={{ maxWidth: '1200px' }}>
-        
-        {/* Breadcrumb */}
-        <BreadCrumb 
-          model={breadcrumbItems} 
-          home={{ label: 'Início', command: () => navigate('/') }} 
-          className="mb-4 border-none pl-0" // border-none remove a borda padrão do componente
-        />
-
-        <div className="grid">
+    return (
+        <div className="container">
+            <Toast ref={toast} />
             
-          {/* Galeria */}
-          <div className="col-12 md:col-6 flex flex-column align-items-center">
-            <Galleria 
-              value={images} 
-              item={itemTemplate} 
-              thumbnail={thumbnailTemplate}
-              thumbnailsPosition="bottom"
-              circular 
-              showItemNavigators
-              showThumbnails
-              style={{ maxWidth: '640px' }} 
-            />
-          </div>
+            <div className="product-detail-container">
+                
+                {/* ESQUERDA: GALERIA (Visível apenas no Desktop) */}
+                <div className="detail-left-col desktop-only">
+                    <div className="gallery-wrapper-desktop h-full">
+                        <ProductGallery product={product} />
+                    </div>
+                </div>
 
-          {/* Detalhes */}
-          <div className="col-12 md:col-6 md:pl-5">
-            {product.promo && <Tag severity="danger" value="PROMO" className="mb-2"></Tag>}
-            
-            <h1 className="text-4xl font-bold">{product.name}</h1>
-            
-            <h5 className="text-xl my-3">
-              <strong>Preço: </strong>
-              <span>{formatCurrency(product.price)}</span>
-            </h5>
-            
-            <p className="text-lg line-height-3">
-              <strong>Descrição: </strong>
-              <span>{product.description}</span>
-            </p>
-            
-            <Button 
-              label="Adicionar ao Carrinho" 
-              icon="pi pi-shopping-cart"
-              className="w-full p-button-lg my-4"
-              onClick={() => console.log("Adicionar ao carrinho:", product.id)}
-            />
-            
-            <div className="mt-4">
-              <h4 className="text-xl font-semibold">Calcular Frete</h4>
-              <div className="p-inputgroup w-full"> 
-                <InputText placeholder="Digite seu CEP" />
-                <Button label="Calcular" />
-              </div>
+                {/* DIREITA: DETALHES (Sempre visível) */}
+                <div className="detail-right-col">
+                    <div className="product-info-card">
+                        
+                        {/* Cabeçalho: Categoria (Sem Rating) */}
+                        <div className="flex justify-content-between align-items-center mb-3">
+                            <span className="text-500 font-medium uppercase text-sm tracking-wider">
+                                {product.category?.name || 'Geral'}
+                            </span>
+                            {/* Rating foi removido daqui */}
+                        </div>
+
+                        <h1 className="font-bold text-3xl mb-2 mt-0 text-900">{product.name}</h1>
+                        
+                        <div className="flex align-items-center gap-3 mb-4">
+                            <span className="text-4xl font-bold text-primary">{formattedPrice}</span>
+                            {product.promo && <Tag value="OFERTA" severity="danger" rounded></Tag>}
+                        </div>
+
+                        {/* Ações */}
+                        <div className="flex flex-column gap-3 mb-5">
+                            <Button 
+                                label="Adicionar ao Carrinho" 
+                                icon="pi pi-shopping-cart" 
+                                size="large"
+                                className="w-full font-bold"
+                                onClick={handleAddToCart}
+                            />
+                            <Button 
+                                label="Adicionar à Lista de Desejos" 
+                                icon="pi pi-heart" 
+                                severity="secondary" 
+                                outlined 
+                                className="w-full" 
+                            />
+                        </div>
+
+                        <Divider />
+
+                        {/* --- GALERIA MOBILE (Inserida Aqui) --- */}
+                        <div className="mobile-only mb-5" style={{ height: '400px' }}>
+                            <ProductGallery product={product} />
+                        </div>
+
+                        {/* Ficha Técnica */}
+                        <div className="flex flex-column gap-3">
+                            <h3 className="font-medium text-lg m-0 text-900">Detalhes do Item</h3>
+                            <ul className="list-none p-0 m-0">
+                                {[
+                                    { label: 'Editora', value: product.editor },
+                                    { label: 'Jogadores', value: product.players },
+                                    { label: 'Idade', value: product.idadeRecomendada },
+                                    { label: 'Duração', value: product.duracao }
+                                ].map((item, i) => (
+                                    <li key={i} className="flex justify-content-between py-2 border-bottom-1 surface-border">
+                                        <span className="text-600">{item.label}:</span>
+                                        <span className="text-900 font-medium">{item.value || '-'}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="mt-4">
+                            <h3 className="font-medium text-lg mb-2 text-900">Descrição</h3>
+                            <p className="text-700 line-height-3 m-0" style={{ whiteSpace: 'pre-line' }}>
+                                {product.description}
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-
-        {/* Tabela */}
-        <div className="mt-5">
-          <h2 className="text-3xl font-bold">Detalhes do Produto</h2>
-          <div className="card"> 
-            {productDetails.length > 0 ? (
-              <DataTable value={productDetails} className="p-datatable-sm" showHeaders={false}>
-                  <Column field="label" style={{ width: '30%', fontWeight: 'bold' }} />
-                  <Column field="value" />
-              </DataTable>
-            ) : (
-              <p>Nenhum detalhe adicional para este produto.</p>
-            )}
-          </div>
-        </div>
-
-      </div>
-    </div>
-  );
+    );
 };

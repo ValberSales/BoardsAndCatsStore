@@ -1,0 +1,94 @@
+/* Container Principal */
+.product-detail-container {
+    display: flex;
+    gap: 2rem;
+    position: relative;
+}
+
+/* Colunas */
+.detail-left-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-right-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.container{
+    margin-left: 5vw;
+    margin-right: 5vw;
+    margin-top: 5vh;
+    margin-bottom: 1vh;
+}
+
+/* Card de Informações */
+.product-info-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.02), 0 0 2px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    height: 100%;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- RESPONSIVIDADE (Breakpoint: 871px) --- */
+
+/* MOBILE (< 871px) */
+@media (max-width: 871px) {
+    .product-detail-container {
+        flex-direction: column; /* Empilha */
+    }
+
+    .detail-right-col {
+        width: 100%; /* Ocupa tudo */
+    }
+
+    /* Esconde a coluna da esquerda inteira no mobile */
+    .desktop-only {
+        display: none !important;
+    }
+
+    /* Mostra a galeria interna no mobile */
+    .mobile-only {
+        display: block !important;
+    }
+}
+
+/* DESKTOP (>= 872px) */
+@media (min-width: 872px) {
+    .product-detail-container {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .detail-left-col {
+        width: 80%;
+        position: relative;
+    }
+
+    .detail-right-col {
+        width: 80%;
+        position: relative;
+    }
+
+    /* Truque do Layout Absoluto para altura sincronizada */
+    .gallery-wrapper-desktop {
+        position: absolute;
+        top: 0; bottom: 0; left: 0; right: 0;
+    }
+
+    /* Esconde a galeria interna no desktop */
+    .mobile-only {
+        display: none !important;
+    }
+
+    /* Mostra a coluna da esquerda no desktop */
+    .desktop-only {
+        display: flex !important;
+    }
+}
