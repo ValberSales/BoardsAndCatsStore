@@ -18,7 +18,6 @@ interface PaymentMethodFormProps {
 export const PaymentMethodForm = ({ visible, onHide, onSave, paymentToEdit, loading }: PaymentMethodFormProps) => {
     const { control, handleSubmit, reset, formState: { errors } } = useForm<IPaymentMethod>();
 
-    // Opções para o Dropdown (pode expandir conforme sua regra de negócio)
     const typeOptions = [
         { label: 'Cartão de Crédito', value: 'CREDIT_CARD' },
         { label: 'Cartão de Débito', value: 'DEBIT_CARD' }
