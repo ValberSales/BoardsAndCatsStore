@@ -43,7 +43,7 @@ export const Footer = () => {
                                     <Link to="/orders" className="hover:underline">Meus pedidos</Link>
                                 </li>
                                 <li className="mb-2">
-                                    <Link to="/payment-methods" className="hover:underline">Minhas formas de pagamento</Link>
+                                    <Link to="/wishlist" className="hover:underline">Minha lista de desejos</Link>
                                 </li>
                             </ul>
                         </div>

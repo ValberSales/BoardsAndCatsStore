@@ -12,7 +12,6 @@ import { ContactPage } from "@/pages/institutional/contact";
 import { RequireAuth } from "@/components/require-auth";
 import { ProfilePage } from "@/pages/profile";
 import { OrdersPage } from "@/pages/orders";
-import { PaymentMethodsPage } from "@/pages/payment-methods";
 
 export function AppRoutes() {
   return (
@@ -34,7 +33,6 @@ export function AppRoutes() {
         <Route element={<RequireAuth />}>
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/orders" element={<OrdersPage />} />
-            <Route path="/payment-methods" element={<PaymentMethodsPage />} />
         </Route>
       </Route>
     </Routes>

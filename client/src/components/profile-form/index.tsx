@@ -90,7 +90,7 @@ export const ProfileForm = () => {
     }
 
     return (
-        <Card title="Dados Pessoais" className="shadow-2 h-full">
+        <Card title="Dados Pessoais" className="shadow-2">
             <Toast ref={toast} />
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-column gap-4 p-fluid">
                 

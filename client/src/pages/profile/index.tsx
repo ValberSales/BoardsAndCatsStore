@@ -1,65 +1,66 @@
-import { useState, useRef } from "react";
-import { Button } from "primereact/button";
-import { Card } from "primereact/card";
-import { Toast } from "primereact/toast";
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { useNavigate } from "react-router-dom";
+import { ConfirmDialog } from 'primereact/confirmdialog';
+import { Toast } from "primereact/toast"; 
 
-import UserService from "@/services/user-service";
-import { useAuth } from "@/context/hooks/use-auth";
-import { ChangePasswordDialog } from "@/components/change-password-dialog";
 import { ProfileForm } from "@/components/profile-form";
+import { AddressList } from "@/components/address-list";
+import { PaymentMethodList } from "@/components/payment-method-list";
+import { AccountSecurity } from "@/components/account-security"; 
+import { ProfileNavigation } from "@/components/profile-navigation";
+
+import "./Profile.css";
 
 export const ProfilePage = () => {
-    const { handleLogout } = useAuth();
-    const toast = useRef<Toast>(null);
-    const navigate = useNavigate();
-    const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-
-    const handleDeleteAccount = () => {
-        confirmDialog({
-            message: 'Tem certeza que deseja excluir sua conta?',
-            header: 'Confirmação de Exclusão',
-            icon: 'pi pi-exclamation-triangle',
-            acceptClassName: 'p-button-danger',
-            acceptLabel: 'Sim, excluir',
-            rejectLabel: 'Cancelar',
-            accept: async () => {
-                try {
-                    const response = await UserService.deleteMe();
-                    if (response.success) {
-                        toast.current?.show({ severity: 'success', summary: 'Conta Excluída', detail: 'Sua conta foi removida.' });
-                        handleLogout();
-                        navigate('/');
-                    } else {
-                        toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao excluir conta.' });
-                    }
-                } catch (e) {
-                    toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao processar exclusão.' });
-                }
-            }
-        });
-    };
-
     return (
-
-        <div className="surface-ground h-full pb-6"> 
-            <Toast ref={toast} />
+        // pb-8 adiciona um padding generoso no fundo para o conteúdo não colar no footer
+        <div className="profile-container surface-ground pb-8"> 
             <ConfirmDialog />
-            <ChangePasswordDialog visible={showPasswordDialog} onHide={() => setShowPasswordDialog(false)} />
+            <Toast /> 
 
-            <div className="container mx-auto px-4 py-5" style={{ maxWidth: '900px' }}>
-                <h1 className="text-3xl font-bold mb-4 text-900">Meu Cadastro</h1>
-                <div className="grid">
-                    <div className="col-12 md:col-8">
-                        <ProfileForm />
+            {/* CONTAINER FLEX: Cria o layout [MENU] --- [CONTEÚDO] */}
+            <div className="profile-layout-flex">
+                
+                {/* TRILHO DO MENU: Fica na esquerda e tem a altura do conteúdo */}
+                <div className="profile-nav-rail">
+                    <ProfileNavigation />
+                </div>
+
+                {/* WRAPPER DO CONTEÚDO PRINCIPAL */}
+                <div className="profile-content-wrapper">
+                    
+                    <div className="flex flex-column gap-2 mb-5">
+                        <h1 className="text-4xl font-bold text-900 m-0">Minha Conta</h1>
+                        <span className="text-lg text-gray-600">Gerencie todas as suas informações pessoais.</span>
                     </div>
-                    <div className="col-12 md:col-4">
-                        <Card title="Segurança" className="shadow-2 h-full">
-                            <p className="text-sm text-gray-600 mb-4">Gerencie sua senha e acesso.</p>
-                            <Button label="Alterar Senha" icon="pi pi-lock" severity="secondary" outlined className="w-full mb-3" onClick={() => setShowPasswordDialog(true)} />
-                            <Button label="Excluir Conta" icon="pi pi-trash" severity="danger" text className="w-full hover:bg-red-50" onClick={handleDeleteAccount} />
-                        </Card>
+
+                    <div className="grid profile-grid">
+                        
+                        {/* COLUNA CENTRAL */}
+                        <div className="col-12 lg:col-8 center-column">
+                            <div className="flex flex-column gap-4">
+                                <section id="personal-data" className="profile-section">
+                                    <ProfileForm />
+                                </section>
+
+                                <section id="addresses" className="profile-section">
+                                    <AddressList />
+                                </section>
+
+                                <section id="payments" className="profile-section">
+                                    <PaymentMethodList />
+                                </section>
+                            </div>
+                        </div>
+
+                        {/* COLUNA DIREITA (Segurança) */}
+                        <div className="col-12 lg:col-4 right-column">
+                            <div className="security-column-wrapper">
+                                {/* Sticky também vai parar quando a coluna acabar */}
+                                <div id="security" className="security-card-sticky">
+                                    <AccountSecurity />
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

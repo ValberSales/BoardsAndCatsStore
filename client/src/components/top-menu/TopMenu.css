@@ -52,7 +52,7 @@
 }
 
 
-@media (max-width: 871px) {
+@media (max-width: 885px) {
     .d-mobile { display: flex !important; }
     
     /* Centralização absoluta do logo no mobile */
@@ -64,7 +64,7 @@
 }
 
 
-@media (min-width: 872px) and (max-width: 1100px) {
+@media (min-width: 886px) and (max-width: 1100px) {
     .d-tablet { display: flex !important; }
     .d-tablet-desktop { display: flex !important; } 
 }
