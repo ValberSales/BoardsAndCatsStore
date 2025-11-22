@@ -69,7 +69,7 @@ export const CartItemList = ({ items, onUpdateQuantity, onRemove }: CartItemList
                             {/* Cabeçalho: Título e Info */}
                             <div className="cart-item-header">
                                 <span className="cart-item-title">{item.product.name}</span>
-                                <span className="cart-item-category">{item.product.category?.name}</span>
+                                <span className="cart-item-category"><i className="pi pi-tag"></i> {item.product.category?.name} </span>
                                 
                                 {(isLowStock || isOutOfStock) && (
                                     <div className="mt-1">

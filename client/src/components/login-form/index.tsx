@@ -11,8 +11,11 @@ import AuthService from "@/services/auth-service";
 import { useAuth } from "@/context/hooks/use-auth";
 import type { IUserLogin, AuthenticationResponse } from "@/commons/types";
 
+// Importação do CSS extraído
+import "./LoginForm.css";
+
 interface LoginFormProps {
-    onSuccess?: () => void; // Ação a ser executada após login (ex: navegar ou fechar modal)
+    onSuccess?: () => void;
     showRegisterLink?: boolean;
 }
 
@@ -31,11 +34,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
             
             if (response.status === 200 && response.data) {
                 const authData = response.data as AuthenticationResponse;
-                
-                // 1. Atualiza o Contexto Global
                 handleLogin(authData);
                 
-                // 2. Feedback visual
                 toast.current?.show({ 
                     severity: 'success', 
                     summary: 'Bem-vindo!', 
@@ -44,38 +44,23 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
                 });
                 
                 reset();
-                
-                // 3. Executa a ação de sucesso (Ex: Redirecionar para Home)
-                // Damos um pequeno delay para o usuário ver o Toast
                 setTimeout(() => {
-                    if (onSuccess) {
-                        onSuccess();
-                    }
+                    if (onSuccess) onSuccess();
                 }, 500);
-
             } else {
-                toast.current?.show({ 
-                    severity: 'error', 
-                    summary: 'Erro', 
-                    detail: 'Usuário ou senha inválidos.', 
-                    life: 3000 
-                });
+                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Usuário ou senha inválidos.', life: 3000 });
             }
         } catch (error) {
-            toast.current?.show({ 
-                severity: 'error', 
-                summary: 'Erro', 
-                detail: 'Falha ao conectar ao servidor.', 
-                life: 3000 
-            });
+            toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Falha ao conectar ao servidor.', life: 3000 });
         }
     };
 
     return (
         <>
             <Toast ref={toast} />
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-column gap-3 w-full">
-                <div>
+            {/* Classe CSS 'login-form' substitui flex flex-column gap-3 w-full */}
+            <form onSubmit={handleSubmit(onSubmit)} className="login-form">
+                <div className="field-wrapper">
                     <span className="p-float-label mt-2">
                         <Controller
                             name="username"
@@ -85,7 +70,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
                                 <InputText 
                                     id="username" 
                                     {...field} 
-                                    className={classNames({ "p-invalid": errors.username }, "w-full")} 
+                                    
+                                    className={classNames({ "p-invalid": errors.username }, "full-width-input")} 
                                 />
                             )}
                         />
@@ -94,7 +80,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
                     {errors.username && <small className="p-error block mt-1">{errors.username.message}</small>}
                 </div>
                 
-                <div>
+                <div className="field-wrapper">
                     <span className="p-float-label mt-2">
                         <Controller
                             name="password"
@@ -106,8 +92,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
                                     {...field} 
                                     feedback={false} 
                                     toggleMask 
-                                    className={classNames({ "p-invalid": errors.password })} 
-                                    inputClassName="w-full" 
+                                    // A classe 'full-width-password' no CSS agora resolve tanto o wrapper quanto o input
+                                    className={classNames({ "p-invalid": errors.password }, "full-width-password")} 
                                 />
                             )}
                         />
@@ -124,7 +110,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, showRegisterLin
                         <span 
                             className="text-primary cursor-pointer font-bold hover:underline"
                             onClick={() => {
-                                if (onSuccess) onSuccess(); // Fecha modal se necessário antes de navegar
+                                if (onSuccess) onSuccess();
                                 navigate("/register");
                             }}
                         >

@@ -15,6 +15,7 @@ import { OrdersPage } from "@/pages/orders";
 import { CartPage } from "@/pages/cart";
 import { CheckoutPage } from "@/pages/checkout";
 
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -38,6 +39,7 @@ export function AppRoutes() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+
         </Route>
       </Route>
     </Routes>

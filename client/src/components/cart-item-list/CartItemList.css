@@ -66,8 +66,18 @@
 .cart-item-category {
     font-size: 0.875rem;
     color: var(--text-color-secondary);
-    display: block;
+    /* Mudança aqui: Usar Flexbox para alinhar ícone e texto */
+    display: flex; 
+    align-items: center;
+    gap: 0.4rem; /* Espaço entre o ícone e o texto */
     margin-bottom: 0.5rem;
+}
+
+/* Controle específico para o ícone dentro da categoria */
+.cart-item-category i {
+    font-size: 0.875rem; /* Garante que o ícone tenha o mesmo tamanho da fonte */
+    /* Opcional: reduzir um pouco a opacidade para não chamar tanta atenção */
+    opacity: 0.8; 
 }
 
 /* Rodapé do Item (Preço e Ações) */

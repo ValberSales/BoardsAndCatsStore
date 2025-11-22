@@ -111,7 +111,7 @@
     height: 64px;
     object-fit: contain;
     border-radius: 12px;
-    background-color: var(--surface-card);
+    background-color: white;
     border: 1px solid var(--surface-border);
     padding: 4px;
 }

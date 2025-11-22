@@ -1,0 +1,42 @@
+/* client/src/components/login-form/LoginForm.css */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.field-wrapper {
+    width: 100%;
+}
+
+/* --- CORREÇÃO DEFINITIVA DO PASSWORD --- */
+
+/* 1. O container principal (a caixa de fora) */
+.full-width-password {
+    width: 100% !important;
+}
+
+/* 2. A div intermediária que segura o ícone (AQUI ESTAVA O PROBLEMA) */
+.full-width-password .p-icon-field {
+    width: 100%;
+}
+
+/* 3. O input onde o usuário digita */
+.full-width-password .p-inputtext {
+    width: 100% !important;
+}
+
+/* --------------------------------------- */
+
+/* Garante que o input de E-mail ocupe tudo */
+.full-width-input {
+    width: 100%;
+}
+
+/* Ajuste do float-label para garantir que o container flutuante também estique */
+.p-float-label {
+    display: block; /* O padrão costuma ser inline-block */
+    width: 100%;
+}

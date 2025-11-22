@@ -41,6 +41,41 @@
 }
 .p-sidebar .nav-icon-svg { margin-bottom: 0; width: 24px; height: 24px; }
 
+/* ESTILO UNIFICADO PARA LINKS DO USUÁRIO (Tablet/Mobile)
+   Força os botões "link" do PrimeReact a parecerem com itens de navegação padrão (Cinza)
+*/
+.p-sidebar .p-button.p-button-link,
+.p-overlaypanel .p-button.p-button-link {
+    color: var(--text-color-secondary) !important;
+    font-weight: 500;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.75rem 1rem !important;
+    transition: background-color 0.2s;
+    border-radius: 8px;
+}
+
+/* Hover Effect igual ao Desktop */
+.p-sidebar .p-button.p-button-link:hover,
+.p-overlaypanel .p-button.p-button-link:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color) !important;
+}
+
+/* Garante que os ícones acompanhem a cor do texto */
+.p-sidebar .p-button.p-button-link .p-button-icon,
+.p-overlaypanel .p-button.p-button-link .p-button-icon {
+    color: var(--text-color-secondary) !important;
+}
+
+.p-sidebar .p-button.p-button-link:hover .p-button-icon,
+.p-overlaypanel .p-button.p-button-link:hover .p-button-icon {
+    color: var(--text-color) !important;
+}
+
 
 /* ==========================================================================
    SISTEMA DE RESPONSIVIDADE PERSONALIZADO

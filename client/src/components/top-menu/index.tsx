@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { API_BASE_URL } from "@/lib/axios";
 import { useAuth } from "@/context/hooks/use-auth";
-import { CartContext } from "@/context/CartContext"; // <--- Importar Contexto
+import { CartContext } from "@/context/CartContext"; 
 
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
@@ -11,7 +11,7 @@ import { Menu } from "primereact/menu";
 import { Avatar } from "primereact/avatar";
 import { Sidebar } from "primereact/sidebar";
 import { Divider } from "primereact/divider";
-import { Badge } from "primereact/badge"; // <--- Importar Badge
+import { Badge } from "primereact/badge"; 
 
 import { LoginForm } from "@/components/login-form";
 import { HappyIcon } from "@/components/icons/HappyIcon";
@@ -25,7 +25,7 @@ import "./TopMenu.css";
 const TopMenu: React.FC = () => {
   const navigate = useNavigate();
   const { authenticated, authenticatedUser, handleLogout } = useAuth();
-  const { items } = useContext(CartContext); // <--- Consumir itens do carrinho
+  const { items } = useContext(CartContext); 
   
   const searchPanel = useRef<OverlayPanel>(null);
   const loginPanel = useRef<OverlayPanel>(null);
@@ -62,6 +62,7 @@ const TopMenu: React.FC = () => {
         items: [
             { label: 'Meu Perfil', icon: 'pi pi-user', command: () => navigate('/profile') },
             { label: 'Meus Pedidos', icon: 'pi pi-box', command: () => navigate('/orders') },
+            { label: 'Lista de Desejos', icon: 'pi pi-heart', command: () => navigate('/wishlist') },
         ]
     },
     {
@@ -82,6 +83,8 @@ const TopMenu: React.FC = () => {
                   </div>
                   <Button label="Meu Perfil" icon="pi pi-user" link className="text-left pl-2 py-2" onClick={() => { navigate('/profile'); tabletControlPanel.current?.hide(); }} />
                   <Button label="Meus Pedidos" icon="pi pi-box" link className="text-left pl-2 py-2" onClick={() => { navigate('/orders'); tabletControlPanel.current?.hide(); }} />
+                  <Button label="Lista de Desejos" icon="pi pi-heart" link className="text-left pl-2 py-2" onClick={() => { navigate('/wishlist'); tabletControlPanel.current?.hide(); }} />
+                  
                   <Button label="Sair" icon="pi pi-sign-out" severity="danger" text className="text-left pl-2 py-2" onClick={() => { handleLogout(); tabletControlPanel.current?.hide(); navigate('/'); }} />
               </div>
           ) : (
@@ -94,7 +97,6 @@ const TopMenu: React.FC = () => {
           <div className="flex justify-content-center gap-4 pb-1">
               <Button icon={`pi ${darkMode ? 'pi-sun' : 'pi-moon'}`} rounded text severity="secondary" aria-label="Alternar Tema" size="large" onClick={() => setDarkMode(!darkMode)} tooltip={darkMode ? "Modo Claro" : "Modo Escuro"} tooltipOptions={{ position: 'bottom' }} />
               
-              {/* Carrinho no Tablet */}
               <div className="relative">
                   <Button icon="pi pi-shopping-cart" rounded text severity="secondary" aria-label="Carrinho" size="large" onClick={() => { navigate("/cart"); tabletControlPanel.current?.hide(); }} />
                   {items.length > 0 && (
@@ -133,7 +135,7 @@ const TopMenu: React.FC = () => {
   return (
     <nav className="top-menu-container px-4 py-2 flex align-items-center justify-content-between relative">
       
-      {/* --- 1. SIDEBAR (MOBILE ONLY - < 871px) --- */}
+      {/* --- 1. SIDEBAR (MOBILE ONLY - < 885px) --- */}
       <Sidebar 
         visible={visibleSidebar} 
         onHide={() => setVisibleSidebar(false)} 
@@ -164,7 +166,6 @@ const TopMenu: React.FC = () => {
                   <Divider />
 
                   <div className="flex flex-column gap-3">
-                      {/* Carrinho na Sidebar Mobile */}
                       <Button 
                           label={`Carrinho ${items.length > 0 ? `(${items.length})` : ''}`}
                           icon="pi pi-shopping-cart" 
@@ -172,7 +173,6 @@ const TopMenu: React.FC = () => {
                           onClick={() => { navigate("/cart"); setVisibleSidebar(false); }} 
                           className="w-full"
                       >
-                          {/* Badge opcional dentro do botão */}
                           {items.length > 0 && <Badge value={items.length} severity="danger" className="ml-2"></Badge>}
                       </Button>
                       
@@ -199,6 +199,8 @@ const TopMenu: React.FC = () => {
                           </div>
                           <Button label="Meu Perfil" icon="pi pi-user" link onClick={() => { navigate('/profile'); setVisibleSidebar(false); }} className="text-left pl-0" />
                           <Button label="Meus Pedidos" icon="pi pi-box" link onClick={() => { navigate('/orders'); setVisibleSidebar(false); }} className="text-left pl-0" />
+                          <Button label="Lista de Desejos" icon="pi pi-heart" link onClick={() => { navigate('/wishlist'); setVisibleSidebar(false); }} className="text-left pl-0" />
+
                           <Button label="Sair" icon="pi pi-sign-out" severity="danger" text onClick={() => { handleLogout(); setVisibleSidebar(false); navigate('/'); }} className="text-left pl-0" />
                       </div>
                   </div>
