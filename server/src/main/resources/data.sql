@@ -106,3 +106,6 @@ INSERT INTO tb_cart (user_id) VALUES (4);
 INSERT INTO tb_cart_item (cart_id, product_id, quantity, price_at_save) VALUES
                                                                             (1, 2, 1, 249.90), -- 1x Catan
                                                                             (1, 19, 1, 89.90); -- 1x Codenames
+
+-- Ajusta a sequência para começar depois do último ID inserido (ex: se o último foi 4, começa do 10)
+ALTER TABLE tb_user ALTER COLUMN id RESTART WITH 10;

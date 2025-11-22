@@ -1,0 +1,141 @@
+/* Container Principal */
+.payment-list-card {
+    border-radius: 16px !important;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Container do Botão "Novo Método" */
+.new-payment-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+/* Item da Lista */
+.payment-list-item {
+    padding: 1.5rem; /* Padding generoso para dar ar */
+    border-bottom: 1px solid var(--surface-border);
+    transition: background-color 0.2s;
+    /* Importante: Sem margin-bottom para que a borda fique centralizada entre os itens */
+}
+
+.col-12:last-child .payment-list-item {
+    border-bottom: none;
+}
+
+.payment-list-item:hover {
+    background-color: var(--surface-hover);
+}
+
+/* Ícone do Tipo */
+.payment-icon-box {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+/* Estilos Específicos de Ícone por Tipo */
+.payment-icon-box.success {
+    background-color: var(--green-50);
+}
+.payment-icon-box.success i {
+    color: var(--green-500);
+}
+
+.payment-icon-box.info {
+    background-color: var(--blue-50);
+}
+.payment-icon-box.info i {
+    color: var(--blue-500);
+}
+
+.payment-icon-box.warning {
+    background-color: var(--orange-50);
+}
+.payment-icon-box.warning i {
+    color: var(--orange-500);
+}
+
+.payment-icon-box.secondary {
+    background-color: var(--surface-100);
+}
+.payment-icon-box.secondary i {
+    color: var(--text-color-secondary);
+}
+
+/* Detalhes do Pagamento */
+.payment-details {
+    flex: 1;
+    text-align: center;
+}
+
+.payment-description {
+    font-weight: 700;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.payment-type-label {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+    text-transform: capitalize;
+}
+
+/* Ações */
+.payment-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Responsividade */
+@media (min-width: 576px) {
+    .payment-details {
+        text-align: left;
+    }
+    
+    .payment-list-item-content {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+/* Botões de Ação Circulares (Copiado do AddressList para consistência) */
+.btn-circle-action {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+}
+
+.btn-circle-action.edit {
+    background-color: var(--surface-100) !important;
+    color: var(--text-color-secondary) !important;
+}
+
+.btn-circle-action.edit:hover {
+    background-color: var(--surface-200) !important;
+    color: var(--text-color) !important;
+    transform: scale(1.05);
+}
+
+.btn-circle-action.delete {
+    background-color: var(--red-50) !important;
+    color: var(--red-500) !important;
+}
+
+.btn-circle-action.delete:hover {
+    background-color: var(--red-100) !important;
+    color: var(--red-700) !important;
+    transform: scale(1.05);
+}

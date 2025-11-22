@@ -7,6 +7,9 @@ import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
 import type { IPaymentMethod } from "@/commons/types";
 
+// Importa o CSS externo
+import "./PaymentMethodForm.css";
+
 interface PaymentMethodFormProps {
     visible: boolean;
     onHide: () => void;
@@ -38,24 +41,36 @@ export const PaymentMethodForm = ({ visible, onHide, onSave, paymentToEdit, load
     };
 
     const dialogFooter = (
-        <div>
-            <Button label="Cancelar" icon="pi pi-times" outlined onClick={onHide} className="p-button-text" />
-            <Button label="Salvar" icon="pi pi-check" onClick={handleSubmit(submitForm)} loading={loading} autoFocus />
+        <div className="payment-dialog-footer">
+            <Button 
+                label="Cancelar" 
+                icon="pi pi-times" 
+                outlined 
+                onClick={onHide} 
+                className="p-button-text btn-cancel" 
+            />
+            <Button 
+                label="Salvar" 
+                icon="pi pi-check" 
+                onClick={handleSubmit(submitForm)} 
+                loading={loading} 
+                autoFocus 
+                className="btn-save"
+            />
         </div>
     );
 
     return (
         <Dialog 
             visible={visible} 
-            style={{ width: '450px' }} 
+            className="payment-dialog p-fluid" 
             header={paymentToEdit ? "Editar Forma de Pagamento" : "Nova Forma de Pagamento"} 
             modal 
-            className="p-fluid" 
             footer={dialogFooter} 
             onHide={onHide}
         >
-            <div className="field">
-                <label htmlFor="type">Tipo de Pagamento</label>
+            <div className="field mb-3">
+                <label htmlFor="type" className="payment-label">Tipo de Pagamento</label>
                 <Controller
                     name="type"
                     control={control}
@@ -68,15 +83,15 @@ export const PaymentMethodForm = ({ visible, onHide, onSave, paymentToEdit, load
                             options={typeOptions} 
                             optionLabel="label" 
                             placeholder="Selecione o tipo"
-                            className={classNames({ 'p-invalid': errors.type })}
+                            className={classNames("payment-input", { 'p-invalid': errors.type })}
                         />
                     )}
                 />
-                {errors.type && <small className="p-error">{errors.type.message}</small>}
+                {errors.type && <small className="error-msg">{errors.type.message}</small>}
             </div>
 
             <div className="field">
-                <label htmlFor="description">Descrição / Apelido</label>
+                <label htmlFor="description" className="payment-label">Descrição / Apelido</label>
                 <Controller
                     name="description"
                     control={control}
@@ -89,12 +104,12 @@ export const PaymentMethodForm = ({ visible, onHide, onSave, paymentToEdit, load
                             id="description" 
                             {...field} 
                             placeholder="Ex: Meu Nubank, Chave PIX Principal"
-                            className={classNames({ 'p-invalid': errors.description })} 
+                            className={classNames("payment-input", { 'p-invalid': errors.description })} 
                             autoFocus
                         />
                     )}
                 />
-                {errors.description && <small className="p-error">{errors.description.message}</small>}
+                {errors.description && <small className="error-msg">{errors.description.message}</small>}
             </div>
         </Dialog>
     );

@@ -1,0 +1,118 @@
+/* Container Principal */
+.orders-container {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+/* Card da Tabela (Desktop) */
+.orders-card {
+    border-radius: 16px !important;
+    overflow: hidden;
+    border: 1px solid var(--surface-border);
+    background-color: var(--surface-card);
+}
+
+/* Tabela Limpa */
+.p-datatable .p-datatable-header {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    background-color: var(--surface-card);
+    border-bottom: 1px solid var(--surface-border);
+    padding: 1.5rem;
+}
+
+/* Linhas da Tabela */
+.p-datatable .p-datatable-tbody > tr {
+    background-color: var(--surface-card);
+    color: var(--text-color);
+    transition: background-color 0.2s;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    border-color: var(--surface-border);
+    padding: 1rem;
+}
+
+/* Hover da Lista (Tabela) */
+.p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--text-color);
+}
+
+/* Botão de Ação */
+.btn-view-order {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    color: var(--text-color-secondary) !important;
+}
+
+.btn-view-order:hover {
+    background-color: var(--surface-hover) !important;
+    color: var(--primary-color) !important;
+}
+
+/* Estado Vazio */
+.empty-orders-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-color-secondary);
+    background-color: var(--surface-card);
+}
+
+/* --- ESTILOS MOBILE (Lista de Cards) --- */
+.orders-mobile-list {
+    display: none; /* Oculto por padrão */
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.order-mobile-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.order-mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.order-mobile-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.order-mobile-label {
+    color: var(--text-color-secondary);
+}
+
+.order-mobile-value {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* Responsividade: Troca Tabela por Lista */
+@media (max-width: 768px) {
+    .orders-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Esconde a tabela em telas menores */
+    .orders-table-desktop {
+        display: none;
+    }
+
+    /* Mostra a lista de cards */
+    .orders-mobile-list {
+        display: flex;
+    }
+}

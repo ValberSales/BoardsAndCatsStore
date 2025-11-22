@@ -1,0 +1,68 @@
+/* Estilos para o Diálogo */
+.payment-dialog {
+    width: 450px;
+    border-radius: 16px !important; /* Borda de 16px no container */
+    box-shadow: 0 8px 28px rgba(0,0,0,0.15) !important;
+    border: 1px solid var(--surface-border);
+}
+
+/* Forçar arredondamento no Header (Topo) */
+.payment-dialog .p-dialog-header {
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+}
+
+/* Forçar arredondamento no Footer (Base) */
+.payment-dialog .p-dialog-footer {
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+    padding: 1.5rem !important;
+}
+
+/* Estilo para os Inputs e Dropdowns */
+.payment-input {
+    border-radius: 8px !important;
+    border: 1px solid var(--surface-border) !important;
+}
+
+.payment-input:focus, 
+.payment-input.p-inputtext:enabled:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 1px var(--primary-color) !important;
+}
+
+/* Estilo para Labels */
+.payment-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: var(--text-color);
+}
+
+/* Rodapé do Diálogo */
+.payment-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 0;
+}
+
+.btn-cancel {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+.btn-save {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+}
+
+/* Mensagens de Erro */
+.error-msg {
+    color: var(--red-500);
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+}

@@ -1,0 +1,28 @@
+.checkout-container {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+/* Ajuste fino no componente Steps do PrimeReact */
+.checkout-steps .p-steps .p-steps-item .p-menuitem-link {
+    background: transparent;
+}
+
+.checkout-steps .p-steps .p-steps-item.p-highlight .p-steps-number {
+    background: var(--primary-color);
+    color: var(--primary-color-text);
+}
+
+/* Card de Conteúdo Principal */
+.checkout-content-card {
+    background: var(--surface-card);
+    min-height: 400px;
+    border: 1px solid var(--surface-border);
+}
+
+/* Responsividade */
+@media screen and (max-width: 991px) {
+    .checkout-steps {
+        display: none; /* Opcional: Esconder steps em mobile se ocupar muito espaço */
+    }
+}

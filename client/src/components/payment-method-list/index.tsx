@@ -2,13 +2,15 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { DataView } from 'primereact/dataview';
-import { Tag } from 'primereact/tag';
 import { Toast } from "primereact/toast";
 import { confirmDialog } from 'primereact/confirmdialog';
 
 import PaymentMethodService from "@/services/payment-method-service";
-import { PaymentMethodForm } from "@/components/payment-method-form"; // Importe o form criado
+import { PaymentMethodForm } from "@/components/payment-method-form"; 
 import type { IPaymentMethod } from "@/commons/types";
+
+// Importa o CSS externo
+import "./PaymentMethodList.css";
 
 export const PaymentMethodList = () => {
     const toast = useRef<Toast>(null);
@@ -76,7 +78,7 @@ export const PaymentMethodList = () => {
         }
     };
 
-    // Função auxiliar para renderizar ícones bonitinhos baseados no tipo
+    // Função auxiliar para renderizar ícones baseados no tipo
     const getTypeInfo = (type: string) => {
         switch (type) {
             case 'CREDIT_CARD': return { icon: 'pi pi-credit-card', severity: 'info', label: 'Crédito' };
@@ -90,25 +92,46 @@ export const PaymentMethodList = () => {
         const { icon, severity, label } = getTypeInfo(payment.type);
 
         return (
-            <div className="col-12">
-                <div className="flex flex-column sm:flex-row align-items-center p-3 gap-3 border-bottom-1 surface-border hover:surface-50 transition-duration-200">
-                    
-                    {/* Ícone do Tipo */}
-                    <div className={`flex align-items-center justify-content-center bg-${severity === 'success' ? 'green' : 'blue'}-50 border-round`} style={{width: '3rem', height: '3rem'}}>
-                        <i className={`${icon} text-xl text-${severity === 'success' ? 'green' : 'blue'}-500`}></i>
-                    </div>
+            // CORREÇÃO: Separamos a estrutura. 
+            // col-12 cuida do layout na grid. 
+            // payment-list-item cuida do estilo visual (bordas/padding)
+            <div className="col-12 p-0"> 
+                <div className="payment-list-item">
+                    <div className="flex flex-column sm:flex-row align-items-center gap-4 payment-list-item-content">
+                        
+                        {/* Ícone do Tipo */}
+                        <div className={`payment-icon-box ${severity}`}>
+                            <i className={`${icon} text-xl`}></i>
+                        </div>
 
-                    {/* Dados */}
-                    <div className="flex-1 text-center sm:text-left">
-                        <div className="font-bold text-900">{payment.description}</div>
-                        <span className="text-sm text-gray-500 capitalize">{label}</span>
-                    </div>
+                        {/* Dados */}
+                        <div className="payment-details">
+                            <span className="payment-description">{payment.description}</span>
+                            <span className="payment-type-label">{label}</span>
+                        </div>
 
-                    {/* Ações */}
-                    <div className="flex gap-2">
-                        <Tag value={label} severity={severity as any} rounded className="hidden sm:flex"></Tag>
-                        <Button icon="pi pi-pencil" rounded text severity="secondary" tooltip="Editar" onClick={() => openEdit(payment)} />
-                        <Button icon="pi pi-trash" rounded text severity="danger" tooltip="Remover" onClick={() => confirmDelete(payment)} />
+                        {/* Ações */}
+                        <div className="payment-actions">
+                            
+                            <Button 
+                                icon="pi pi-pencil" 
+                                rounded 
+                                text 
+                                className="btn-circle-action edit" // <--- Classe Adicionada
+                                tooltip="Editar" 
+                                tooltipOptions={{ position: 'bottom' }}
+                                onClick={() => openEdit(payment)} 
+                            />
+                            <Button 
+                                icon="pi pi-trash" 
+                                rounded 
+                                text 
+                                className="btn-circle-action delete" // <--- Classe Adicionada
+                                tooltip="Remover" 
+                                tooltipOptions={{ position: 'bottom' }}
+                                onClick={() => confirmDelete(payment)} 
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -116,18 +139,24 @@ export const PaymentMethodList = () => {
     };
 
     return (
-        <Card title="Formas de Pagamento" className="shadow-2 h-full border-round-xl">
+        <Card title="Formas de Pagamento" className="shadow-2 payment-list-card">
             <Toast ref={toast} />
             
-            
-            <div className="flex justify-content-end mb-3">
-                <Button label="Nova Forma de Pagamento" icon="pi pi-plus" size="small" severity="success" outlined onClick={openNew} />
+            <div className="new-payment-container">
+                <Button 
+                    label="Nova Forma de Pagamento" 
+                    icon="pi pi-plus" 
+                    size="small" 
+                    severity="success" 
+                    outlined 
+                    onClick={openNew} 
+                />
             </div>
 
             {paymentMethods.length === 0 ? (
-                <div className="text-center p-4 text-gray-500">Nenhuma forma de pagamento salva.</div>
+                <div className="text-center p-4 text-gray-500 font-italic">Nenhuma forma de pagamento salva.</div>
             ) : (
-                <DataView value={paymentMethods} itemTemplate={itemTemplate} />
+                <DataView value={paymentMethods} itemTemplate={itemTemplate} className="border-none" />
             )}
 
             <PaymentMethodForm 

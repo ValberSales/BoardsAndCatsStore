@@ -50,7 +50,7 @@ export const CategoryShelf: React.FC<CategoryShelfProps> = ({ title, products, v
                 }}
             >
                 {displayProducts.map((product) => (
-                    <div key={product.id} className="flex-shrink-0" style={{ width: '280px' }}>
+                    <div key={product.id} className="flex-shrink-0 py-2" style={{ width: '280px' }}>
                         <ProductCard product={product} />
                     </div>
                 ))}

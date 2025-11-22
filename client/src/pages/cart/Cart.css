@@ -1,0 +1,101 @@
+/* Container Global da Página */
+.cart-page-container {
+    max-width: 1200px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Cabeçalho */
+.cart-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.cart-title {
+    font-size: 2rem; 
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.cart-badge {
+    background-color: var(--primary-color);
+    color: var(--primary-color-text);
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Empty State */
+.cart-empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh; 
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--surface-ground);
+}
+
+.cart-empty-icon-box {
+    padding: 3rem;
+    border-radius: 50%;
+    background-color: var(--surface-card);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+    animation: fadeinup 0.5s ease-out;
+}
+
+.cart-empty-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.cart-empty-subtitle {
+    color: var(--text-color-secondary);
+    margin-bottom: 2rem;
+    max-width: 300px;
+    line-height: 1.5;
+}
+
+.btn-explore {
+    font-weight: 700 !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+@keyframes fadeinup {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- RESPONSIVIDADE AJUSTADA --- */
+/* Breakpoint reduzido de 991px para 768px (Tablets ficam lado a lado, Mobile empilha) */
+@media (max-width: 768px) { 
+    
+    .cart-header {
+        justify-content: center; 
+        margin-top: 1rem;
+    }
+
+    .cart-list-section {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .cart-title {
+        font-size: 2.5rem;
+    }
+}

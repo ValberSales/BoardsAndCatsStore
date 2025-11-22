@@ -12,6 +12,8 @@ import { ContactPage } from "@/pages/institutional/contact";
 import { RequireAuth } from "@/components/require-auth";
 import { ProfilePage } from "@/pages/profile";
 import { OrdersPage } from "@/pages/orders";
+import { CartPage } from "@/pages/cart";
+import { CheckoutPage } from "@/pages/checkout";
 
 export function AppRoutes() {
   return (
@@ -25,6 +27,8 @@ export function AppRoutes() {
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/categories/:id" element={<CategoryPage />} />
         <Route path="/promotions" element={<PromotionsPage />} />
+        <Route path="/cart" element={<CartPage />} />
+
         <Route path="/about" element={<AboutPage />} />
         <Route path="/location" element={<LocationPage />} />
         <Route path="/contact" element={<ContactPage />} />
@@ -33,6 +37,7 @@ export function AppRoutes() {
         <Route element={<RequireAuth />}>
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
         </Route>
       </Route>
     </Routes>

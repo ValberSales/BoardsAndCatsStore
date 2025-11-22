@@ -8,9 +8,10 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';               
 import 'primeflex/primeflex.css';                 
 
-
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.tsx';
+import { CartProvider } from './context/CartContext.tsx';
+import { ToastProvider } from './context/ToastContext.tsx'; // <--- Importar
 
 const themeId = "theme-link";
 const themeBase = "cyan"; 
@@ -30,15 +31,19 @@ if (!link) {
 }
 link.href = themeHref;
 
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <PrimeReactProvider>
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </BrowserRouter>
+      {/* ToastProvider deve ficar alto na árvore para estar disponível em tudo */}
+      <ToastProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </ToastProvider>
     </PrimeReactProvider>
   </React.StrictMode>,
 )

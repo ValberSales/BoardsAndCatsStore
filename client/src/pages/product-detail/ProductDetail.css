@@ -27,7 +27,7 @@
 .product-info-card {
     background-color: var(--surface-card);
     border: 1px solid var(--surface-border);
-    border-radius: 12px;
+    border-radius: 16px;
     box-shadow: 0 3px 5px rgba(0,0,0,0.02), 0 0 2px rgba(0,0,0,0.05);
     padding: 1.5rem;
     height: 100%;

@@ -23,7 +23,7 @@
     /* Estilização Visual (Consistente com ProductCard) */
     background-color: #ffffff; /* Fundo branco fixo */
     border: 1px solid var(--surface-border); /* Borda suave do tema */
-    border-radius: 12px; /* border-round-xl */
+    border-radius: 16px; /* border-round-xl */
     box-shadow: 0 3px 5px rgba(0,0,0,0.02), 0 0 2px rgba(0,0,0,0.05); /* shadow-2 */
 }
 
@@ -58,7 +58,7 @@
     overflow: hidden;
     
     background-color: #ffffff;
-    border-radius: 8px; /* border-round-lg */
+    border-radius: 16px; /* border-round-lg */
     transition: all 0.2s ease;
     
     /* Borda padrão */

@@ -1,0 +1,133 @@
+/* Container Principal */
+.address-list-card {
+    border-radius: 16px !important;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Container do Botão "Novo Endereço" */
+.new-address-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+/* Item da Lista */
+.address-list-item {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--surface-border);
+    transition: background-color 0.2s;
+}
+
+.col-12:last-child .address-list-item {
+    border-bottom: none;
+}
+
+.address-list-item:hover {
+    background-color: var(--surface-hover);
+}
+
+/* Informações do Endereço */
+.address-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.address-street {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1.2;
+}
+
+.address-city-state {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-color-secondary);
+}
+
+.address-complement {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+    background-color: var(--surface-100);
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+}
+
+/* Ações */
+.address-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Estado Vazio */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-color-secondary);
+}
+
+/* Responsividade Desktop */
+@media (min-width: 768px) {
+    .address-list-item-content {
+        flex-direction: row;
+        align-items: center; /* Centraliza verticalmente o conteúdo da linha */
+        justify-content: space-between;
+    }
+
+    .address-info-container {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .address-actions {
+        width: auto;
+        margin-top: 0;
+        flex-direction: row; /* Botões lado a lado */
+        align-items: center;
+    }
+}
+
+/* Botões de Ação Circulares */
+.btn-circle-action {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+}
+
+/* Estilo Editar (Cinza) */
+.btn-circle-action.edit {
+    background-color: var(--surface-100) !important;
+    color: var(--text-color-secondary) !important;
+}
+
+.btn-circle-action.edit:hover {
+    background-color: var(--surface-200) !important;
+    color: var(--text-color) !important;
+    transform: scale(1.05);
+}
+
+/* Estilo Excluir (Vermelho) */
+.btn-circle-action.delete {
+    background-color: var(--red-50) !important;
+    color: var(--red-500) !important;
+}
+
+.btn-circle-action.delete:hover {
+    background-color: var(--red-100) !important;
+    color: var(--red-700) !important;
+    transform: scale(1.05);
+}

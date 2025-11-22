@@ -125,7 +125,6 @@ export interface IOrder {
     items: IOrderItem[];
 }
 
-// Tipos para Carrinho (Híbrido)
 export interface ICartItemPayload {
   productId: number;
   quantity: number;
@@ -140,6 +139,11 @@ export interface ICartItemResponse {
   quantity: number;
   priceAtSave: number;
   validationMessage?: string;
+}
+
+export interface ICartItem {
+  product: IProduct;
+  quantity: number;
 }
 
 export interface ICartResponse {

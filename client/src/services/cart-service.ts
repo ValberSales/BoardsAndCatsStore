@@ -6,7 +6,6 @@ const BASE_URL = "/cart";
 const getCart = async (): Promise<IResponse> => {
     try {
         const response = await api.get(BASE_URL);
-        // O data agora é explicitamente um ICartResponse
         return { status: 200, success: true, data: response.data as ICartResponse };
     } catch (err: any) {
         return { status: err.response?.status || 500, success: false, message: "Erro ao buscar carrinho" };
@@ -15,9 +14,11 @@ const getCart = async (): Promise<IResponse> => {
 
 const syncCart = async (payload: ICartSyncPayload): Promise<IResponse> => {
     try {
-        const response = await api.post(BASE_URL, payload);
+        // CORREÇÃO: O backend espera PUT para atualização completa do carrinho
+        const response = await api.put(BASE_URL, payload);
         return { status: 200, success: true, message: "Carrinho sincronizado", data: response.data as ICartResponse };
     } catch (err: any) {
+        console.error("Erro no syncCart:", err);
         return { status: err.response?.status || 500, success: false, message: "Erro ao sincronizar" };
     }
 };

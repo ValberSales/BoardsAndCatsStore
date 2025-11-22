@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
@@ -12,6 +12,7 @@ import WishlistService from "@/services/wishlist-service";
 import type { IProduct } from "@/commons/types";
 import { ProductGallery } from "@/components/product-gallery";
 import { useAuth } from "@/context/hooks/use-auth";
+import { CartContext } from "@/context/CartContext"; // <--- 1. Importar Contexto
 
 import "./ProductDetail.css";
 
@@ -20,6 +21,7 @@ export const ProductDetailPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { authenticated } = useAuth();
+    const { addToCart } = useContext(CartContext); // <--- 2. Consumir Contexto
     const toast = useRef<Toast>(null);
     
     const [product, setProduct] = useState<IProduct | null>(null);
@@ -65,7 +67,10 @@ export const ProductDetailPage = () => {
     };
 
     const handleAddToCart = () => {
-        toast.current?.show({ severity: 'success', summary: 'Adicionado', detail: 'Produto no carrinho!' });
+        if (product) {
+            addToCart(product); // <--- 3. Chamar a função real
+            toast.current?.show({ severity: 'success', summary: 'Adicionado', detail: 'Produto no carrinho!', life: 2000 });
+        }
     };
 
     const handleWishlistToggle = async () => {
@@ -105,6 +110,7 @@ export const ProductDetailPage = () => {
     if (!product) return null;
 
     const formattedPrice = product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const isOutOfStock = product.stock === 0;
 
     return (
         <div className="container container-pdetail">
@@ -134,16 +140,18 @@ export const ProductDetailPage = () => {
                         <div className="flex align-items-center gap-3 mb-4">
                             <span className="text-4xl font-bold text-primary">{formattedPrice}</span>
                             {product.promo && <Tag value="OFERTA" severity="danger" rounded></Tag>}
+                            {isOutOfStock && <Tag value="ESGOTADO" severity="warning" icon="pi pi-exclamation-triangle" rounded></Tag>}
                         </div>
 
                         {/* Ações */}
                         <div className="flex flex-column gap-3 mb-5">
                             <Button 
-                                label="Adicionar ao Carrinho" 
+                                label={isOutOfStock ? "Indisponível" : "Adicionar ao Carrinho"}
                                 icon="pi pi-shopping-cart" 
                                 size="large"
                                 className="w-full font-bold"
                                 onClick={handleAddToCart}
+                                disabled={isOutOfStock} // Bloqueia se sem estoque
                             />
                             
                             {/* Botão Wishlist Lógico */}

@@ -1,0 +1,55 @@
+.payment-card {
+    border: 1px solid var(--surface-border);
+    background-color: var(--surface-card);
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.payment-card:hover {
+    border-color: var(--primary-color);
+    background-color: var(--surface-hover);
+}
+
+.payment-card.selected {
+    border-color: var(--primary-color);
+    background-color: var(--surface-hover);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.payment-icon-wrapper {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface-ground);
+    border-radius: 50%;
+}
+
+.payment-card.selected .payment-icon-wrapper {
+    background-color: var(--surface-hover);
+    color: var(--primary-color);
+}
+
+.new-payment-btn {
+    border: 2px dashed var(--surface-border);
+    border-radius: 12px;
+    color: var(--text-color-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 80px;
+}
+
+.new-payment-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--surface-hover);
+}

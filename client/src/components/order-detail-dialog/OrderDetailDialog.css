@@ -1,0 +1,143 @@
+/* Estilo Base do Dialog */
+.order-detail-dialog {
+    width: 900px;
+    max-width: 95vw;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+    border: 1px solid var(--surface-border);
+    background-color: var(--surface-card);
+}
+
+/* Header Arredondado */
+.order-detail-dialog .p-dialog-header {
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    padding: 1.5rem !important;
+    background-color: var(--surface-card);
+    border-bottom: 1px solid var(--surface-border);
+    color: var(--text-color);
+}
+
+/* Conteúdo com Espaçamento */
+.order-detail-dialog .p-dialog-content {
+    padding: 1.5rem !important;
+    background-color: var(--surface-ground);
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+}
+
+/* Cards Internos */
+.detail-card {
+    border-radius: 16px !important;
+    height: 100%;
+    background-color: var(--surface-card);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.03) !important;
+    border: 1px solid var(--surface-border);
+    color: var(--text-color);
+}
+
+/* Títulos de Seção */
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0 0 1rem 0;
+    display: block;
+}
+
+/* --- TIMELINE AJUSTADA --- */
+.custom-timeline .p-timeline-event-opposite {
+    display: none; /* Remove o espaço vazio do lado esquerdo */
+}
+
+.custom-timeline .p-timeline-event-content {
+    padding-bottom: 2rem; /* Espaçamento vertical generoso entre items */
+    padding-left: 1.5rem; /* Espaçamento horizontal generoso do marcador */
+}
+
+.custom-marker {
+    display: flex;
+    width: 2.5rem; /* Marcador um pouco maior */
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    border-radius: 50%;
+    z-index: 1;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* Sombra mais destacada */
+}
+
+/* Rastreio */
+.tracking-box {
+    background-color: var(--surface-50);
+    border: 1px dashed var(--primary-color);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tracking-code {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: 1px;
+}
+
+/* Informações de Endereço */
+.address-info {
+    color: var(--text-color-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Item da Lista de Produtos */
+.order-item-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.order-item-row:last-child {
+    border-bottom: none;
+}
+
+.order-item-img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 12px;
+    background-color: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    padding: 4px;
+}
+
+/* Resumo Financeiro */
+.financial-summary {
+    background-color: var(--surface-ground);
+    padding: 1.25rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+    border: 1px solid var(--surface-border);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--text-color-secondary);
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}

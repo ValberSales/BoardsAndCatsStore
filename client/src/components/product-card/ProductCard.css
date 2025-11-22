@@ -24,6 +24,7 @@
   border: 1px solid var(--surface-border);
   background-color: var(--surface-card);
   color: var(--text-color);
+  border-radius: 16px;
 }
 
 /* --- 1. ÁREA DA IMAGEM (CABEÇALHO) --- */
@@ -46,7 +47,7 @@
   padding: 0.5rem;
   background-color: white;
   margin: 0.5rem;
-  border-radius: 6px;
+  border-radius: 16px;
 
 }
 
@@ -57,7 +58,7 @@
   max-height: 100%;
   object-fit: contain;
   overflow: hidden;
-  border-radius: 6px; 
+  border-radius: 16px; 
 }
 
 /* --- 2. ÁREA DE TEXTO (CORPO) --- */

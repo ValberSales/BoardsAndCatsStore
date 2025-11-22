@@ -12,6 +12,9 @@ import UserService from "@/services/user-service";
 import type { AuthenticatedUser, IUserProfileUpdate } from "@/commons/types";
 import { useAuth } from "@/context/hooks/use-auth";
 
+// Importa o CSS externo
+import "./ProfileForm.css";
+
 export const ProfileForm = () => {
     const { updateUser, updateAccessToken } = useAuth();
     const toast = useRef<Toast>(null);
@@ -90,27 +93,26 @@ export const ProfileForm = () => {
     }
 
     return (
-        <Card title="Dados Pessoais" className="shadow-2">
+        <Card title="Dados Pessoais" className="shadow-2 profile-card">
             <Toast ref={toast} />
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-column gap-4 p-fluid">
                 
                 {/* CPF */}
-                <div className="flex flex-column gap-2">
-                    <label htmlFor="cpf" className="font-bold text-sm">CPF</label>
+                <div className="flex flex-column">
+                    <label htmlFor="cpf" className="profile-label">CPF</label>
                     <InputText 
                         id="cpf" 
                         value={cpf} 
                         disabled 
-                        className="opacity-70" 
-                        style={{ backgroundColor: '#f3f4f6' }} 
+                        className="input-disabled-custom" 
                     />
-                    <small className="text-gray-500">O CPF não pode ser alterado.</small>
+                    <small className="text-gray-500 mt-1">O CPF não pode ser alterado.</small>
                 </div>
 
                 {/* Nome de Exibição */}
-                <div className="flex flex-column gap-2">
-                    <label htmlFor="displayName" className="font-bold text-sm">Nome de Exibição</label>
-                    <div className="p-inputgroup">
+                <div className="flex flex-column">
+                    <label htmlFor="displayName" className="profile-label">Nome de Exibição</label>
+                    <div className="p-inputgroup edit-input-group">
                         <Controller
                             name="displayName"
                             control={control}
@@ -128,19 +130,18 @@ export const ProfileForm = () => {
                         <Button 
                             type="button"
                             icon="pi pi-pencil" 
-                            className="p-button-secondary"
                             disabled={editableFields.displayName}
                             onClick={() => handleEnableEdit('displayName')}
                             tooltip={!editableFields.displayName ? "Editar" : "Editando..."}
                         />
                     </div>
-                    {errors.displayName && <small className="p-error">{errors.displayName.message}</small>}
+                    {errors.displayName && <small className="error-msg">{errors.displayName.message}</small>}
                 </div>
 
                 {/* Email */}
-                <div className="flex flex-column gap-2">
-                    <label htmlFor="username" className="font-bold text-sm">Email (Login)</label>
-                    <div className="p-inputgroup">
+                <div className="flex flex-column">
+                    <label htmlFor="username" className="profile-label">Email (Login)</label>
+                    <div className="p-inputgroup edit-input-group">
                         <Controller
                             name="username"
                             control={control}
@@ -164,19 +165,18 @@ export const ProfileForm = () => {
                         <Button 
                             type="button" 
                             icon="pi pi-pencil" 
-                            className="p-button-secondary"
                             disabled={editableFields.username} 
                             onClick={() => handleEnableEdit('username')}
                             tooltip="Editar Email"
                         />
                     </div>
-                    {errors.username && <small className="p-error">{errors.username.message}</small>}
+                    {errors.username && <small className="error-msg">{errors.username.message}</small>}
                 </div>
 
                 {/* Telefone */}
-                <div className="flex flex-column gap-2">
-                    <label htmlFor="phone" className="font-bold text-sm">Telefone</label>
-                    <div className="p-inputgroup">
+                <div className="flex flex-column">
+                    <label htmlFor="phone" className="profile-label">Telefone</label>
+                    <div className="p-inputgroup edit-input-group">
                         <Controller
                             name="phone"
                             control={control}
@@ -196,13 +196,12 @@ export const ProfileForm = () => {
                         <Button 
                             type="button" 
                             icon="pi pi-pencil" 
-                            className="p-button-secondary"
                             disabled={editableFields.phone} 
                             onClick={() => handleEnableEdit('phone')}
                             tooltip="Editar Telefone"
                         />
                     </div>
-                    {errors.phone && <small className="p-error">{errors.phone.message}</small>}
+                    {errors.phone && <small className="error-msg">{errors.phone.message}</small>}
                 </div>
 
                 <div className="flex justify-content-end mt-2">
@@ -211,6 +210,7 @@ export const ProfileForm = () => {
                         icon="pi pi-check" 
                         loading={isSubmitting} 
                         disabled={!Object.values(editableFields).some(v => v)} 
+                        className="btn-save-profile"
                     />
                 </div>
             </form>

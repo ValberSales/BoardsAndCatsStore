@@ -1,0 +1,57 @@
+.checkout-summary-card {
+    background-color: var(--surface-card);
+    position: sticky;
+    top: 100px; /* Faz o card flutuar ao rolar */
+    border: 1px solid var(--surface-border);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--text-color-secondary);
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--surface-border);
+}
+
+.summary-total-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.summary-total-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.info-group {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--surface-border);
+}
+
+.info-group-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-group-content {
+    font-size: 0.9rem;
+    color: var(--text-color-secondary);
+    line-height: 1.4;
+}

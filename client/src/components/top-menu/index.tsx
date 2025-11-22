@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { API_BASE_URL } from "@/lib/axios";
 import { useAuth } from "@/context/hooks/use-auth";
+import { CartContext } from "@/context/CartContext"; // <--- Importar Contexto
 
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
@@ -10,6 +11,7 @@ import { Menu } from "primereact/menu";
 import { Avatar } from "primereact/avatar";
 import { Sidebar } from "primereact/sidebar";
 import { Divider } from "primereact/divider";
+import { Badge } from "primereact/badge"; // <--- Importar Badge
 
 import { LoginForm } from "@/components/login-form";
 import { HappyIcon } from "@/components/icons/HappyIcon";
@@ -23,6 +25,7 @@ import "./TopMenu.css";
 const TopMenu: React.FC = () => {
   const navigate = useNavigate();
   const { authenticated, authenticatedUser, handleLogout } = useAuth();
+  const { items } = useContext(CartContext); // <--- Consumir itens do carrinho
   
   const searchPanel = useRef<OverlayPanel>(null);
   const loginPanel = useRef<OverlayPanel>(null);
@@ -69,7 +72,6 @@ const TopMenu: React.FC = () => {
     }
   ];
 
-  // Renderização do Conteúdo do Tablet (Overlay)
   const renderTabletPopupContent = () => (
       <div className="flex flex-column gap-2">
           {authenticated ? (
@@ -91,7 +93,14 @@ const TopMenu: React.FC = () => {
           <Divider className="my-2" />
           <div className="flex justify-content-center gap-4 pb-1">
               <Button icon={`pi ${darkMode ? 'pi-sun' : 'pi-moon'}`} rounded text severity="secondary" aria-label="Alternar Tema" size="large" onClick={() => setDarkMode(!darkMode)} tooltip={darkMode ? "Modo Claro" : "Modo Escuro"} tooltipOptions={{ position: 'bottom' }} />
-              <Button icon="pi pi-shopping-cart" rounded text severity="secondary" aria-label="Carrinho" size="large" onClick={() => { navigate("/cart"); tabletControlPanel.current?.hide(); }} />
+              
+              {/* Carrinho no Tablet */}
+              <div className="relative">
+                  <Button icon="pi pi-shopping-cart" rounded text severity="secondary" aria-label="Carrinho" size="large" onClick={() => { navigate("/cart"); tabletControlPanel.current?.hide(); }} />
+                  {items.length > 0 && (
+                      <Badge value={items.length} severity="danger" className="absolute" style={{ top: '0', right: '0', minWidth: '1.2rem', height: '1.2rem', lineHeight: '1.2rem', fontSize: '0.75rem' }}></Badge>
+                  )}
+              </div>
           </div>
       </div>
   );
@@ -132,8 +141,6 @@ const TopMenu: React.FC = () => {
         showCloseIcon={false} 
       >
           <div className="flex flex-column h-full">
-              
-              {/* Cabeçalho: Dark Mode e Fechar */}
               <div className="flex align-items-center justify-content-between mb-2">
                   <Button 
                       icon={`pi ${darkMode ? 'pi-sun' : 'pi-moon'}`} 
@@ -147,7 +154,6 @@ const TopMenu: React.FC = () => {
                   />
               </div>
 
-              {/* CORPO PRINCIPAL: Logo, Links, Carrinho, Login (Se não autenticado) */}
               <div className="flex flex-column gap-2">
                   <div className="text-center mb-3">
                     <img src={`${API_BASE_URL}/images/logow.webp`} alt="Logo" style={{ height: '60px' }} />
@@ -158,14 +164,18 @@ const TopMenu: React.FC = () => {
                   <Divider />
 
                   <div className="flex flex-column gap-3">
-                      {/* Carrinho: Fica aqui no corpo principal */}
+                      {/* Carrinho na Sidebar Mobile */}
                       <Button 
-                          label="Carrinho"
+                          label={`Carrinho ${items.length > 0 ? `(${items.length})` : ''}`}
                           icon="pi pi-shopping-cart" 
-                          outlined onClick={() => { navigate("/cart"); setVisibleSidebar(false); }} className="w-full"
-                      />
+                          outlined 
+                          onClick={() => { navigate("/cart"); setVisibleSidebar(false); }} 
+                          className="w-full"
+                      >
+                          {/* Badge opcional dentro do botão */}
+                          {items.length > 0 && <Badge value={items.length} severity="danger" className="ml-2"></Badge>}
+                      </Button>
                       
-                      {/* Botão de Login (Se NÃO logado): Fica aqui no corpo principal */}
                       {!authenticated && (
                           <div className="p-3 text-center surface-100 border-round">
                                <p className="m-0 mb-2 font-bold">Acesse sua conta</p>
@@ -179,7 +189,6 @@ const TopMenu: React.FC = () => {
                   </div>
               </div>
 
-              {/* RODAPÉ: Apenas Menu de Usuário Logado */}
               {authenticated && (
                   <div className="mt-auto pt-3">
                       <Divider />
@@ -248,7 +257,28 @@ const TopMenu: React.FC = () => {
                 icon={`pi ${darkMode ? 'pi-sun' : 'pi-moon'}`} rounded text severity="secondary" 
                 onClick={() => setDarkMode(!darkMode)} tooltip={darkMode ? "Modo Claro" : "Modo Escuro"} tooltipOptions={{ position: 'bottom' }}
             />
-            <Button icon="pi pi-shopping-cart" rounded text severity="secondary" onClick={() => navigate("/cart")} />
+            
+            {/* Carrinho com Badge (Desktop) */}
+            <div className="relative mr-2" style={{ cursor: 'pointer' }} onClick={() => navigate("/cart")}>
+                <Button icon="pi pi-shopping-cart" rounded text severity="secondary" aria-label="Carrinho" />
+                {items.length > 0 && (
+                    <Badge 
+                        value={items.length} 
+                        severity="danger" 
+                        className="absolute" 
+                        style={{ 
+                            top: '2px', 
+                            right: '2px', 
+                            minWidth: '1.2rem', 
+                            height: '1.2rem', 
+                            lineHeight: '1.2rem',
+                            fontSize: '0.75rem',
+                            padding: 0 
+                        }}
+                    ></Badge>
+                )}
+            </div>
+
             {authenticated ? (
                 <>
                     <Menu model={userMenuItems} popup ref={userMenu} id="popup_menu_user" />

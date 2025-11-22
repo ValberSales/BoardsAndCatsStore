@@ -4,10 +4,14 @@ import { Card } from "primereact/card";
 import { Toast } from "primereact/toast";
 import { confirmDialog } from 'primereact/confirmdialog';
 import { useNavigate } from "react-router-dom";
+import { Divider } from "primereact/divider";
 
 import UserService from "@/services/user-service";
 import { useAuth } from "@/context/hooks/use-auth";
 import { ChangePasswordDialog } from "@/components/change-password-dialog";
+
+// Importa o CSS externo
+import "./AccountSecurity.css";
 
 export const AccountSecurity = () => {
     const { handleLogout } = useAuth();
@@ -43,7 +47,7 @@ export const AccountSecurity = () => {
     };
 
     return (
-        <Card title="Segurança" className="shadow-2 h-full border-round-l">
+        <Card title="Segurança" className="shadow-2 security-card">
             <Toast ref={toast} />
             <ChangePasswordDialog visible={showPasswordDialog} onHide={() => setShowPasswordDialog(false)} />
 
@@ -59,16 +63,17 @@ export const AccountSecurity = () => {
                     onClick={() => setShowPasswordDialog(true)} 
                 />
                 
-                <div className="border-top-1 surface-border my-2"></div>
                 
-                <div className="flex flex-column gap-2">
-                    <span className="text-xs text-red-500 font-bold uppercase">Zona de Perigo</span>
+                <Divider className="my-3" />
+                
+                <div className="flex flex-column">
+                    <span className="danger-zone-label">Zona de Perigo</span>
                     <Button 
                         label="Excluir Conta" 
                         icon="pi pi-trash" 
                         severity="danger" 
                         text 
-                        className="w-full hover:bg-red-50" 
+                        className="w-full btn-delete-account" 
                         onClick={handleDeleteAccount} 
                     />
                 </div>

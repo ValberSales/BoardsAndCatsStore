@@ -10,6 +10,9 @@ import AddressService from "@/services/address-service";
 import { AddressForm } from "@/components/address-form";
 import type { IAddress } from "@/commons/types";
 
+// Importa o CSS externo
+import "./AddressList.css";
+
 export const AddressList = () => {
     const toast = useRef<Toast>(null);
     const [addresses, setAddresses] = useState<IAddress[]>([]);
@@ -45,6 +48,7 @@ export const AddressList = () => {
             message: `Deseja remover o endereço de ${address.city}?`,
             header: 'Confirmar Exclusão',
             icon: 'pi pi-exclamation-triangle',
+            acceptClassName: 'p-button-danger',
             acceptLabel: 'Sim',
             rejectLabel: 'Não',
             accept: async () => {
@@ -77,25 +81,48 @@ export const AddressList = () => {
 
     const itemTemplate = (address: IAddress) => {
         return (
-            <div className="col-12">
-                <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4 border-bottom-1 surface-border">
-                    <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                        <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                            <div className="text-xl font-bold text-900">{address.street}</div>
-                            <div className="flex align-items-center gap-3">
-                                <span className="flex align-items-center gap-2">
-                                    <i className="pi pi-map-marker"></i>
-                                    <span className="font-semibold">{address.city} - {address.state}</span>
-                                </span>
-                                <Tag value={address.zip} severity="info"></Tag>
+            <div className="col-12 p-0">
+                <div className="address-list-item">
+                    {/* Ajuste aqui: md:align-items-center para centralizar verticalmente */}
+                    <div className="flex flex-column md:flex-row justify-content-between align-items-center md:align-items-center gap-4 address-list-item-content">
+                        
+                        {/* Informações do Endereço */}
+                        <div className="address-info-container flex-1">
+                            <span className="address-street">{address.street}</span>
+                            
+                            <div className="address-city-state">
+                                <i className="pi pi-map-marker text-primary"></i>
+                                <span>{address.city} - {address.state}</span>
+                                <Tag value={address.zip} severity="info" className="ml-2"></Tag>
                             </div>
+                            
                             {address.complement && (
-                                <span className="text-sm text-gray-500">Comp: {address.complement}</span>
+                                <span className="address-complement">
+                                    {address.complement}
+                                </span>
                             )}
                         </div>
-                        <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                            <Button icon="pi pi-pencil" rounded text severity="secondary" onClick={() => openEdit(address)} tooltip="Editar" />
-                            <Button icon="pi pi-trash" rounded text severity="danger" onClick={() => confirmDelete(address)} tooltip="Excluir" />
+
+                        {/* Ações */}
+                        <div className="address-actions">
+                            <Button 
+                                icon="pi pi-pencil" 
+                                rounded 
+                                text 
+                                className="btn-circle-action edit" 
+                                onClick={() => openEdit(address)} 
+                                tooltip="Editar"
+                                tooltipOptions={{ position: 'bottom' }}
+                            />
+                            <Button 
+                                icon="pi pi-trash" 
+                                rounded 
+                                text 
+                                className="btn-circle-action delete" 
+                                onClick={() => confirmDelete(address)} 
+                                tooltip="Excluir"
+                                tooltipOptions={{ position: 'bottom' }}
+                            />
                         </div>
                     </div>
                 </div>
@@ -104,17 +131,27 @@ export const AddressList = () => {
     };
 
     return (
-        <Card title="Meus Endereços" className="shadow-2 h-full mt-4">
+        <Card title="Meus Endereços" className="shadow-2 address-list-card mt-4">
             <Toast ref={toast} />
             
-            <div className="flex justify-content-end mb-3">
-                <Button label="Novo Endereço" icon="pi pi-plus" size="small" severity="success" outlined onClick={openNew} />
+            <div className="new-address-container">
+                <Button 
+                    label="Novo Endereço" 
+                    icon="pi pi-plus" 
+                    size="small" 
+                    severity="success" 
+                    outlined 
+                    onClick={openNew} 
+                />
             </div>
 
             {addresses.length === 0 ? (
-                <div className="text-center p-4 text-gray-500">Nenhum endereço cadastrado.</div>
+                <div className="empty-state">
+                    <i className="pi pi-map text-4xl mb-3 block text-gray-300"></i>
+                    Nenhum endereço cadastrado.
+                </div>
             ) : (
-                <DataView value={addresses} itemTemplate={itemTemplate} />
+                <DataView value={addresses} itemTemplate={itemTemplate} className="border-none" />
             )}
 
             <AddressForm 

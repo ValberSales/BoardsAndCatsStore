@@ -37,7 +37,7 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
-    border-radius: 12px;
+    border-radius: 16px;
     background-color: var(--surface-card);
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     transition: all 0.3s ease;
@@ -90,11 +90,9 @@
 /* --- RESPONSIVIDADE MOBILE E TABLET --- */
 @media screen and (max-width: 991px) {
     
-    /* 1. Ajusta o layout principal para empilhar conteúdo */
+    
     .profile-layout-flex {
         display: block;
-        padding: 1rem;
-        padding-bottom: 100px; /* Espaço extra no fundo para o menu não cobrir o conteúdo */
     }
 
     /* 2. Transforma o "Trilho" em um Container Flutuante no Rodapé */
@@ -134,7 +132,6 @@
     
     .right-column { 
         order: 2; 
-        margin-top: 2rem;
     }
 
     .security-card-sticky {

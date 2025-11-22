@@ -1,0 +1,44 @@
+.address-card {
+    border: 1px solid var(--surface-border);
+    background-color: var(--surface-card);
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+}
+
+.address-card:hover {
+    border-color: var(--primary-color);
+    background-color: var(--surface-hover);
+}
+
+.address-card.selected {
+    border-color: var(--primary-color);
+    background-color: var(--surface-hover);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.address-radio {
+    pointer-events: none;
+}
+
+.new-address-btn {
+    height: 100%;
+    min-height: 120px;
+    border: 2px dashed var(--surface-border);
+    background-color: transparent;
+    color: var(--text-color-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+.new-address-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--surface-hover);
+}

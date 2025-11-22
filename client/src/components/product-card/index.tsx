@@ -1,9 +1,12 @@
-import type { IProduct } from "@/commons/types";
+import { useContext } from "react"; 
 import { useNavigate } from "react-router-dom";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
+import { CartContext } from "@/context/CartContext";
+import { useToast } from "@/context/ToastContext"; 
 import { API_BASE_URL } from "@/lib/axios";
+import type { IProduct } from "@/commons/types";
 import "./ProductCard.css"; 
 
 interface ProductCardProps {
@@ -19,6 +22,8 @@ const formatCurrency = (value: number) => {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
+  const { addToCart } = useContext(CartContext);
+  const { showToast } = useToast(); // <--- Usando o contexto global
 
   const handleCardClick = () => {
     navigate(`/products/${product.id}`);
@@ -26,10 +31,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log("Adicionar produto:", product.id);
+    
+    addToCart(product);
+
+    // Chama o toast global
+    showToast({ 
+        severity: 'success', 
+        summary: 'Adicionado', 
+        detail: `${product.name} foi para o carrinho!`,
+        life: 2000 
+    });
   };
 
-  // Cabeçalho com a Imagem
+  const isOutOfStock = product.stock === 0;
+
   const productHeader = (
     <div className="product-card-image-container relative">
       <img
@@ -45,30 +60,37 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           style={{ top: "10px", left: "10px" }}
         />
       )}
+      {isOutOfStock && (
+         <Tag 
+            value="ESGOTADO" 
+            severity="warning" 
+            className="absolute" 
+            style={{ top: "10px", right: "10px" }} 
+         />
+      )}
     </div>
   );
 
-  // Rodapé com o Botão customizado
   const productFooter = (
     <div className="">
       <Button
-        label="Adicionar"
+        label={isOutOfStock ? "Indisponível" : "Adicionar"}
         icon="pi pi-shopping-cart"
-        className="btn-add-cart" // Classe CSS customizada (Roxo/Branco)
+        className="btn-add-cart" 
         onClick={handleAddToCart}
+        disabled={isOutOfStock}
       />
     </div>
   );
 
   return (
+    // Removemos o <Toast /> daqui de dentro
     <div className="product-card-wrapper" onClick={handleCardClick}>
       <Card
         title={product.name}
         header={productHeader}
         footer={productFooter}
-        // Removemos classes utilitárias aqui para deixar o CSS controlar o layout
       >
-        {/* Preço em linha única e roxo */}
         <div className="product-card-price">
           {formatCurrency(product.price)}
         </div>

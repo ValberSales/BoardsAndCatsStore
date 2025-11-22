@@ -7,6 +7,9 @@ import { InputMask } from "primereact/inputmask";
 import { classNames } from "primereact/utils";
 import type { IAddress } from "@/commons/types";
 
+// Importa o CSS externo
+import "./AddressForm.css";
+
 interface AddressFormProps {
     visible: boolean;
     onHide: () => void;
@@ -33,82 +36,117 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
     };
 
     const dialogFooter = (
-        <div>
-            <Button label="Cancelar" icon="pi pi-times" outlined onClick={onHide} className="p-button-text" />
-            <Button label="Salvar" icon="pi pi-check" onClick={handleSubmit(submitForm)} loading={loading} autoFocus />
+        <div className="address-dialog-footer">
+            <Button 
+                label="Cancelar" 
+                icon="pi pi-times" 
+                outlined 
+                onClick={onHide} 
+                className="p-button-text btn-cancel" 
+            />
+            <Button 
+                label="Salvar" 
+                icon="pi pi-check" 
+                onClick={handleSubmit(submitForm)} 
+                loading={loading} 
+                autoFocus 
+                className="btn-save"
+            />
         </div>
     );
 
     return (
         <Dialog 
             visible={visible} 
-            style={{ width: '450px' }} 
+            className="address-dialog p-fluid" 
             header={addressToEdit ? "Editar Endereço" : "Novo Endereço"} 
             modal 
-            className="p-fluid" 
             footer={dialogFooter} 
             onHide={onHide}
         >
-            <div className="field">
-                <label htmlFor="street">Rua / Logradouro</label>
+            <div className="field mb-3">
+                <label htmlFor="street" className="address-label">Rua / Logradouro</label>
                 <Controller
                     name="street"
                     control={control}
                     rules={{ required: "Rua é obrigatória", minLength: { value: 4, message: "Mínimo 4 caracteres" } }}
                     render={({ field }) => (
-                        <InputText id="street" {...field} className={classNames({ 'p-invalid': errors.street })} autoFocus />
+                        <InputText 
+                            id="street" 
+                            {...field} 
+                            className={classNames("address-input", { 'p-invalid': errors.street })} 
+                            autoFocus 
+                        />
                     )}
                 />
-                {errors.street && <small className="p-error">{errors.street.message}</small>}
+                {errors.street && <small className="error-msg">{errors.street.message}</small>}
             </div>
 
-            <div className="formgrid grid">
-                <div className="field col">
-                    <label htmlFor="zip">CEP</label>
+            <div className="address-form-grid mb-3">
+                <div className="field mb-0">
+                    <label htmlFor="zip" className="address-label">CEP</label>
                     <Controller
                         name="zip"
                         control={control}
                         rules={{ required: "CEP é obrigatório" }}
                         render={({ field }) => (
-                            <InputMask id="zip" mask="99999-999" {...field} className={classNames({ 'p-invalid': errors.zip })} />
+                            <InputMask 
+                                id="zip" 
+                                mask="99999-999" 
+                                {...field} 
+                                className={classNames("address-input", { 'p-invalid': errors.zip })} 
+                            />
                         )}
                     />
-                    {errors.zip && <small className="p-error">{errors.zip.message}</small>}
+                    {errors.zip && <small className="error-msg">{errors.zip.message}</small>}
                 </div>
-                <div className="field col">
-                    <label htmlFor="state">Estado (UF)</label>
+                <div className="field mb-0">
+                    <label htmlFor="state" className="address-label">Estado (UF)</label>
                     <Controller
                         name="state"
                         control={control}
                         rules={{ required: "Estado é obrigatório", minLength: { value: 2, message: "Mínimo 2 letras" } }}
                         render={({ field }) => (
-                            <InputText id="state" maxLength={2} {...field} className={classNames({ 'p-invalid': errors.state })} />
+                            <InputText 
+                                id="state" 
+                                maxLength={2} 
+                                {...field} 
+                                className={classNames("address-input", { 'p-invalid': errors.state })} 
+                            />
                         )}
                     />
-                    {errors.state && <small className="p-error">{errors.state.message}</small>}
+                    {errors.state && <small className="error-msg">{errors.state.message}</small>}
                 </div>
             </div>
 
-            <div className="field">
-                <label htmlFor="city">Cidade</label>
+            <div className="field mb-3">
+                <label htmlFor="city" className="address-label">Cidade</label>
                 <Controller
                     name="city"
                     control={control}
                     rules={{ required: "Cidade é obrigatória", minLength: { value: 4, message: "Mínimo 4 caracteres" } }}
                     render={({ field }) => (
-                        <InputText id="city" {...field} className={classNames({ 'p-invalid': errors.city })} />
+                        <InputText 
+                            id="city" 
+                            {...field} 
+                            className={classNames("address-input", { 'p-invalid': errors.city })} 
+                        />
                     )}
                 />
-                {errors.city && <small className="p-error">{errors.city.message}</small>}
+                {errors.city && <small className="error-msg">{errors.city.message}</small>}
             </div>
 
             <div className="field">
-                <label htmlFor="complement">Complemento</label>
+                <label htmlFor="complement" className="address-label">Complemento</label>
                 <Controller
                     name="complement"
                     control={control}
                     render={({ field }) => (
-                        <InputText id="complement" {...field} />
+                        <InputText 
+                            id="complement" 
+                            {...field} 
+                            className="address-input"
+                        />
                     )}
                 />
             </div>

@@ -36,7 +36,7 @@ export const ProfilePage = () => {
                         
                         {/* COLUNA CENTRAL */}
                         <div className="col-12 lg:col-8 center-column">
-                            <div className="flex flex-column gap-4">
+                            <div className="flex flex-column gap-2">
                                 <section id="personal-data" className="profile-section">
                                     <ProfileForm />
                                 </section>
