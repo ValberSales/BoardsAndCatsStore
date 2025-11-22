@@ -14,6 +14,7 @@ import { ProfilePage } from "@/pages/profile";
 import { OrdersPage } from "@/pages/orders";
 import { CartPage } from "@/pages/cart";
 import { CheckoutPage } from "@/pages/checkout";
+import { WishlistPage } from "@/pages/wishlist";
 
 
 export function AppRoutes() {
@@ -39,6 +40,7 @@ export function AppRoutes() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
 
         </Route>
       </Route>

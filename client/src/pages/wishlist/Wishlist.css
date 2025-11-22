@@ -1,0 +1,162 @@
+/* ============================================================
+   ESTILOS GERAIS
+   ============================================================ */
+.wishlist-container .p-dataview .p-dataview-content {
+
+    border: none;
+}
+
+.wishlist-card {
+    border-radius: 16px !important;
+    overflow: hidden;
+}
+
+.wishlist-item-hover:hover {
+    background-color: var(--surface-hover);
+    transition: background-color 0.2s;
+}
+
+/* ============================================================
+   LAYOUT CUSTOMIZADO (Breakpoint 886px)
+   ============================================================ */
+
+/* 1. COMPORTAMENTO PADRÃO (DESKTOP >= 886px) 
+   Define o layout como LINHA (horizontal)
+*/
+.wishlist-responsive-container {
+    display: flex;
+    flex-direction: row; /* Horizontal por padrão */
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+/* Wrapper da imagem no Desktop */
+.list-image-wrapper {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Detalhes no Desktop */
+.wishlist-item-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinhado à esquerda */
+    gap: 1rem;
+    flex: 1;
+}
+
+/* Ações no Desktop */
+.wishlist-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinhado à direita */
+    gap: 0.5rem;
+}
+
+.wishlist-price-desktop {
+    display: block;
+}
+
+.wishlist-price-mobile {
+    display: none; /* Escondido no desktop */
+}
+
+/* Imagem base */
+.list-item-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--surface-border);
+    padding: 0.5rem;
+    display: block;
+}
+
+.promo-badge {
+    position: absolute;
+    top: -8px; left: -8px;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Botões de Ação Circulares */
+.btn-circle-action {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    border: none !important;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+}
+
+/* Estilo Editar (Cinza) */
+.btn-circle-action.cart {
+    background-color: var(--surface-100) !important;
+    color: var(--text-color-secondary) !important;
+}
+
+.btn-circle-action.cart:hover {
+    background-color: var(--surface-200) !important;
+    color: var(--text-color) !important;
+    transform: scale(1.05);
+}
+
+/* Estilo Excluir (Vermelho) */
+.btn-circle-action.delete {
+    background-color: var(--red-50) !important;
+    color: var(--red-500) !important;
+}
+
+.btn-circle-action.delete:hover {
+    background-color: var(--red-100) !important;
+    color: var(--red-700) !important;
+    transform: scale(1.05);
+}
+
+/* ============================================================
+   2. COMPORTAMENTO MOBILE (<= 885px)
+   Muda tudo para COLUNA e centraliza
+   ============================================================ */
+@media (max-width: 885px) {
+    
+    .wishlist-responsive-container {
+        flex-direction: column !important; /* Vira coluna */
+        align-items: center !important;
+        text-align: center;
+    }
+
+    .list-image-wrapper {
+     
+        margin-bottom: 1rem;
+    }
+
+    .wishlist-item-details {
+        align-items: center !important; /* Centraliza textos */
+        width: 100%;
+    }
+
+    .wishlist-item-actions {
+        flex-direction: row; /* Botões lado a lado no mobile */
+        align-items: center !important;
+        justify-content: center;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    /* Troca a visibilidade do preço */
+    .wishlist-price-desktop { display: none !important; }
+    .wishlist-price-mobile { display: block !important; margin-top: 0.5rem; }
+}
