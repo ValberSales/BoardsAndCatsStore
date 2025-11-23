@@ -47,31 +47,59 @@ const findById = async (id: number): Promise<IResponse> => {
 
 // ##### ADIÇÃO: Buscar por Categoria #####
 const findByCategoryId = async (categoryId: number): Promise<IResponse> => {
-    let response = {} as IResponse;
-    try {
-      // Endpoint que já existe no seu backend
-      const data = await api.get(`${productURL}/category/${categoryId}`);
-      response = {
-        status: 200,
-        success: true,
-        message: "Produtos da categoria carregados!",
-        data: data.data,
-      };
-    } catch (err: any) {
-      response = {
-        status: err.response?.status || 500,
-        success: false,
-        message: "Falha ao carregar produtos da categoria",
-        data: err.response?.data,
-      };
-    }
-    return response;
-  };
+  let response = {} as IResponse;
+  try {
+    // Endpoint que já existe no seu backend
+    const data = await api.get(`${productURL}/category/${categoryId}`);
+    response = {
+      status: 200,
+      success: true,
+      message: "Produtos da categoria carregados!",
+      data: data.data,
+    };
+  } catch (err: any) {
+    response = {
+      status: err.response?.status || 500,
+      success: false,
+      message: "Falha ao carregar produtos da categoria",
+      data: err.response?.data,
+    };
+  }
+  return response;
+};
+
+
+// ##### NOVA FUNÇÃO DE BUSCA #####
+const search = async (query: string): Promise<IResponse> => {
+  let response = {} as IResponse;
+  try {
+    // Chama /products/search?query=O_QUE_O_USUARIO_DIGITOU
+    const data = await api.get(`${productURL}/search`, {
+      params: { query: query }
+    });
+
+    response = {
+      status: 200,
+      success: true,
+      message: "Resultados da busca carregados!",
+      data: data.data,
+    };
+  } catch (err: any) {
+    response = {
+      status: err.response?.status || 500,
+      success: false,
+      message: "Falha ao realizar a busca.",
+      data: err.response?.data,
+    };
+  }
+  return response;
+};
 
 const ProductService = {
   findAll,
   findById,
   findByCategoryId,
+  search, // Não esqueça de exportar
 };
 
 export default ProductService;

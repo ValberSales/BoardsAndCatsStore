@@ -27,4 +27,9 @@ public class ProductServiceImpl extends CrudServiceImpl<Product, Long> implement
     public List<Product> findAllByCategoryId(Long categoryId) {
         return this.productRepository.findAllByCategoryId(categoryId);
     }
+
+    @Override
+    public List<Product> search(String term) {
+        return this.productRepository.search(term);
+    }
 }

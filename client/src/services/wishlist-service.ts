@@ -1,9 +1,15 @@
 import { api } from "@/lib/axios";
 import type { IResponse } from "@/commons/types";
 
-const toggle = async (productId: number): Promise<IResponse> => {
+// Retorno padronizado para o toggle incluir o estado atual (adicionado/removido)
+interface WishlistToggleResponse extends IResponse {
+    data?: boolean; // true = adicionado, false = removido
+}
+
+const toggle = async (productId: number): Promise<WishlistToggleResponse> => {
     try {
         const response = await api.post(`/wishlist/${productId}`);
+        // O backend retorna true (adicionado) ou false (removido)
         return { status: 200, success: true, data: response.data };
     } catch (err: any) {
         return { status: 500, success: false, message: "Erro ao atualizar lista de desejos" };

@@ -1,11 +1,13 @@
-import { useContext } from "react"; 
+import { useContext, useEffect, useState } from "react"; 
 import { useNavigate } from "react-router-dom";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
 import { CartContext } from "@/context/CartContext";
+import { AuthContext } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext"; 
 import { API_BASE_URL } from "@/lib/axios";
+import WishlistService from "@/services/wishlist-service";
 import type { IProduct } from "@/commons/types";
 import "./ProductCard.css"; 
 
@@ -23,24 +25,60 @@ const formatCurrency = (value: number) => {
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
-  const { showToast } = useToast(); // <--- Usando o contexto global
+  const { authenticated } = useContext(AuthContext);
+  const { showToast } = useToast();
+  
+  const [inWishlist, setInWishlist] = useState(false);
+
+  useEffect(() => {
+    if (authenticated && product.id) {
+      WishlistService.check(product.id).then((status) => {
+        setInWishlist(status);
+      });
+    }
+  }, [authenticated, product.id]);
 
   const handleCardClick = () => {
-    navigate(`/products/${product.id}`);
+    if (product.id) navigate(`/products/${product.id}`);
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    
     addToCart(product);
-
-    // Chama o toast global
     showToast({ 
         severity: 'success', 
         summary: 'Adicionado', 
         detail: `${product.name} foi para o carrinho!`,
         life: 2000 
     });
+  };
+
+  const handleWishlistClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!authenticated) {
+        showToast({
+            severity: 'info',
+            summary: 'Login necessário',
+            detail: 'Faça login para adicionar aos favoritos.',
+            life: 3000
+        });
+        return;
+    }
+
+    if (product.id) {
+        const response = await WishlistService.toggle(product.id);
+        if (response.success) {
+            const isAdded = response.data === true;
+            setInWishlist(isAdded);
+            showToast({
+                severity: 'success',
+                summary: isAdded ? 'Favoritado' : 'Removido',
+                detail: isAdded ? 'Produto adicionado aos favoritos!' : 'Produto removido dos favoritos.',
+                life: 2000
+            });
+        }
+    }
   };
 
   const isOutOfStock = product.stock === 0;
@@ -84,15 +122,36 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   );
 
   return (
-    // Removemos o <Toast /> daqui de dentro
     <div className="product-card-wrapper" onClick={handleCardClick}>
       <Card
-        title={product.name}
         header={productHeader}
         footer={productFooter}
+        className="h-full"
       >
-        <div className="product-card-price">
-          {formatCurrency(product.price)}
+        {/* Container flexível que ocupa toda a altura disponível */}
+        <div className="product-card-content-wrapper">
+            
+            {/* Título no topo */}
+            <div className="product-card-title" title={product.name}>
+                {product.name}
+            </div>
+
+            {/* Linha Inferior: Preço (Esq) + Botão Wishlist (Dir) */}
+            <div className="product-card-bottom-row">
+                <div className="product-card-price">
+                    {formatCurrency(product.price)}
+                </div>
+                
+                <Button 
+                    icon={inWishlist ? "pi pi-heart-fill" : "pi pi-heart"} 
+                    rounded 
+                    text 
+                    severity={inWishlist ? "danger" : "secondary"} 
+                    aria-label="Favoritos"
+                    className="btn-wishlist-inline"
+                    onClick={handleWishlistClick}
+                />
+            </div>
         </div>
       </Card>
     </div>

@@ -19,21 +19,33 @@
   flex-direction: column;
   overflow: hidden; 
   box-shadow: 0 0.25rem 0.6rem rgba(0,0,0,0.1); 
-  
-  /* DINÂMICO: Borda e Fundo baseados no tema */
   border: 1px solid var(--surface-border);
   background-color: var(--surface-card);
   color: var(--text-color);
   border-radius: 16px;
 }
 
-/* --- 1. ÁREA DA IMAGEM (CABEÇALHO) --- */
+/* Força o corpo do card a ocupar o espaço restante */
+.product-card-wrapper .p-card-body {
+  flex: 1 1 auto;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-card);
+}
+
+.product-card-wrapper .p-card-content {
+  padding: 0;
+  flex: 1; /* Faz o conteúdo crescer */
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- 1. ÁREA DA IMAGEM --- */
 .product-card-wrapper .p-card-header {
-  flex: 1 1 auto; 
-  min-height: 0;  
+  flex: 0 0 auto;
   position: relative;
   display: flex;
-  align-items: flex-start;
   justify-content: center;
   background-color: var(--surface-card);
 }
@@ -42,13 +54,12 @@
   width: 100%;
   height: 15rem; 
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   padding: 0.5rem;
   background-color: white;
   margin: 0.5rem;
   border-radius: 16px;
-
 }
 
 .product-card-image {  
@@ -57,48 +68,69 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  overflow: hidden;
   border-radius: 16px; 
 }
 
-/* --- 2. ÁREA DE TEXTO (CORPO) --- */
-.product-card-wrapper .p-card-body {
-  flex: 0 0 auto; 
-  padding: 0.8rem;
+/* --- 2. CONTEÚDO INTERNO --- */
+
+.product-card-content-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem; 
-  z-index: 1; 
-  background-color: var(--surface-card);
+  justify-content: space-between; /* Título no topo, Preço embaixo */
+  height: 100%;
+  min-height: 5rem; /* Altura mínima para garantir alinhamento */
 }
 
-.product-card-wrapper .p-card-content {
-  padding: 0;
-  margin-bottom: 0.3rem;
-}
-
-/* Título do Produto */
-.product-card-wrapper .p-card-title {
+/* Título do Produto (Sem Webkit) */
+.product-card-title {
   font-size: 1rem;
   font-weight: 600;
-  margin: 0;
-  line-height: 1.2;
-  max-height: 2.4em; 
-  overflow: hidden;
-  color: var(--text-color); 
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+
+  /* Lógica para limitar a 2 linhas (Padrão CSS) */
+  line-height: 1.25;      /* Altura de cada linha */
+  height: 2.5em;          /* 1.25 * 2 linhas = 2.5em */
+  overflow: hidden;       /* Corta o excedente */
+  
+  /* Opcional: Quebra de palavra se for muito longa */
+  word-wrap: break-word;
 }
 
-/* Preço */
+/* Linha Inferior: Preço e Botão */
+.product-card-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Preço na esq, Botão na dir */
+  margin-top: auto; /* Garante que fique no fundo se o título for curto */
+}
+
 .product-card-price {
   color: var(--primary-color); 
   font-weight: 700;
-  font-size: 1.1rem; 
+  font-size: 1.2rem; 
   white-space: nowrap; 
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* --- 4. BOTÃO --- */
+/* Botão Wishlist */
+.btn-wishlist-inline {
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  padding: 0 !important;
+  flex-shrink: 0;
+}
+
+.btn-wishlist-inline:hover {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* --- 3. FOOTER --- */
+.product-card-wrapper .p-card-footer {
+  padding: 0;
+  margin-top: 0.5rem;
+  flex: 0 0 auto;
+}
+
 .btn-add-cart {
   width: 100%;
   height: 2.5rem;
@@ -117,9 +149,4 @@
   background-color: var(--primary-color) !important; 
   color: var(--primary-color-text) !important; 
   border-color: var(--primary-color) !important;
-}
-
-.product-card-wrapper .p-card-footer {
-  padding: 0;
-  margin-top: auto;
 }

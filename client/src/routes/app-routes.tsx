@@ -15,6 +15,7 @@ import { OrdersPage } from "@/pages/orders";
 import { CartPage } from "@/pages/cart";
 import { CheckoutPage } from "@/pages/checkout";
 import { WishlistPage } from "@/pages/wishlist";
+import { SearchResultsPage } from "@/pages/search-results";
 
 
 export function AppRoutes() {
@@ -30,7 +31,7 @@ export function AppRoutes() {
         <Route path="/categories/:id" element={<CategoryPage />} />
         <Route path="/promotions" element={<PromotionsPage />} />
         <Route path="/cart" element={<CartPage />} />
-
+        <Route path="/search" element={<SearchResultsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/location" element={<LocationPage />} />
         <Route path="/contact" element={<ContactPage />} />

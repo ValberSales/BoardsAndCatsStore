@@ -1,0 +1,203 @@
+/* Container Principal: Layout de 2 colunas (Sidebar + Lista) */
+.search-results-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px; /* Largura máxima maior para acomodar sidebar */
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Coluna da Esquerda: Filtros (Sticky) */
+.search-filters-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 2rem; /* Distância do topo ao rolar */
+    background-color: var(--surface-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    border: 1px solid var(--surface-border);
+}
+
+.filter-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.category-filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.category-filter-item {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    color: var(--text-color-secondary);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.category-filter-item:hover {
+    background-color: var(--surface-hover);
+    color: var(--text-color);
+}
+
+.category-filter-item.active {
+    background-color: var(--primary-50); /* Ajuste conforme sua cor primária */
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Coluna da Direita: Lista de Resultados */
+.search-results-content {
+    flex: 1;
+    width: 100%;
+}
+
+/* REUTILIZAÇÃO DO ESTILO DA WISHLIST 
+   (Copiado e adaptado para manter consistência)
+*/
+.search-item-card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border); /* Borda leve */
+}
+
+.search-responsive-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    transition: background-color 0.2s;
+}
+
+.search-responsive-container:hover {
+    background-color: var(--surface-hover);
+}
+
+/* Wrapper da Imagem */
+.search-image-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid var(--surface-border);
+    padding: 0.5rem;
+}
+
+.search-item-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Detalhes do Produto */
+.search-item-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.search-item-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.search-item-category {
+    font-size: 0.9rem;
+    color: var(--text-color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Ações e Preço */
+.search-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.search-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+/* Botões Circulares */
+.action-buttons-wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-circle-search {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+}
+
+/* Responsividade Mobile */
+@media (max-width: 900px) {
+    .search-results-layout {
+        flex-direction: column;
+    }
+    
+    .search-filters-sidebar {
+        width: 100%;
+        position: static; /* Remove sticky no mobile */
+        margin-bottom: 1rem;
+    }
+
+    .category-filter-list {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+    
+    .category-filter-item {
+        white-space: nowrap;
+    }
+
+    /* Item Mobile */
+    .search-responsive-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .search-item-details {
+        align-items: center;
+    }
+
+    .search-item-actions {
+        align-items: center;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+}

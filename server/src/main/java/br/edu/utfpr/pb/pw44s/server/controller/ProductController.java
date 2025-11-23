@@ -6,10 +6,7 @@ import br.edu.utfpr.pb.pw44s.server.service.ICrudService;
 import br.edu.utfpr.pb.pw44s.server.service.IProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +36,17 @@ public class ProductController extends CrudController<Product, ProductDTO, Long>
     @GetMapping("category/{id}")
     public ResponseEntity<List<ProductDTO>> findByCategoryId(@PathVariable Long id) {
         List<Product> products = productService.findAllByCategoryId(id);
+        List<ProductDTO> productDTOs = products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(productDTOs);
+    }
+
+    @GetMapping("search")
+    public ResponseEntity<List<ProductDTO>> search(@RequestParam("query") String query) {
+        List<Product> products = productService.search(query);
+
         List<ProductDTO> productDTOs = products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .collect(Collectors.toList());

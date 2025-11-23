@@ -31,7 +31,9 @@ const TopMenu: React.FC = () => {
   const loginPanel = useRef<OverlayPanel>(null);
   const tabletControlPanel = useRef<OverlayPanel>(null); 
   const userMenu = useRef<Menu>(null);
+  
   const [visibleSidebar, setVisibleSidebar] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // 1. Estado para a busca
 
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     return localStorage.getItem("theme") === "dark";
@@ -56,6 +58,22 @@ const TopMenu: React.FC = () => {
     }
   }, [darkMode]);
 
+  // 2. Função para realizar a busca
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchTerm)}`); // Redireciona
+      searchPanel.current?.hide(); // Fecha o overlay
+      setSearchTerm(""); // Limpa o campo (opcional, mas recomendado aqui)
+    }
+  };
+
+  // 3. Capturar o "Enter"
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   const userMenuItems = [
     {
         label: 'Minha Conta',
@@ -73,6 +91,7 @@ const TopMenu: React.FC = () => {
     }
   ];
 
+  // ... (renderTabletPopupContent e renderNavLinks permanecem iguais)
   const renderTabletPopupContent = () => (
       <div className="flex flex-column gap-2">
           {authenticated ? (
@@ -142,6 +161,7 @@ const TopMenu: React.FC = () => {
         className="w-20rem"
         showCloseIcon={false} 
       >
+        {/* ... conteúdo da sidebar permanece igual ... */}
           <div className="flex flex-column h-full">
               <div className="flex align-items-center justify-content-between mb-2">
                   <Button 
@@ -236,14 +256,28 @@ const TopMenu: React.FC = () => {
 
       {/* --- 4. DIREITA --- */}
       <div className="flex align-items-center gap-2 md:gap-3">
+        {/* --- CAMPO DE BUSCA --- */}
         <Button 
             icon="pi pi-search" rounded text severity="secondary" aria-label="Buscar" 
-            onClick={(e) => searchPanel.current?.toggle(e)}
+            onClick={(e) => {
+              searchPanel.current?.toggle(e);
+              // Pequeno hack para focar no input ao abrir, se necessário (opcional)
+              setTimeout(() => {
+                const input = document.getElementById('search-input');
+                if (input) input.focus();
+              }, 100);
+            }}
         />
         <OverlayPanel ref={searchPanel} className="w-20rem">
             <div className="p-inputgroup">
-                <InputText placeholder="Buscar produtos..." />
-                <Button icon="pi pi-search" />
+                <InputText 
+                  id="search-input"
+                  placeholder="Buscar produtos..." 
+                  value={searchTerm} // 4. Conectando ao estado
+                  onChange={(e) => setSearchTerm(e.target.value)} // 4. Atualizando estado
+                  onKeyDown={handleKeyDown} // 5. Ouvindo Enter
+                />
+                <Button icon="pi pi-search" onClick={handleSearch} /> {/* 6. Botão também dispara busca */}
             </div>
         </OverlayPanel>
 
