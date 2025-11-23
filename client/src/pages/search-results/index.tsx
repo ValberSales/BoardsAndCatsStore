@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DataView } from 'primereact/dataview';
-import { Sidebar } from 'primereact/sidebar'; // <--- NOVO IMPORT
+import { Sidebar } from 'primereact/sidebar'; 
 import { Button } from 'primereact/button';
 
 // Tipos
@@ -10,7 +10,6 @@ import type { IProduct, ICategory } from '@/commons/types';
 // Serviços
 import ProductService from '@/services/product-service';
 import CategoryService from '@/services/category-service';
-import WishlistService from '@/services/wishlist-service';
 
 // Contextos
 import { CartContext } from '@/context/CartContext';
@@ -85,18 +84,6 @@ export function SearchResultsPage() {
         showToast({ severity: 'success', summary: 'Sucesso', detail: `${product.name} adicionado ao carrinho!` });
     };
 
-    const handleToggleWishlist = async (e: React.MouseEvent, product: IProduct) => {
-        e.stopPropagation();
-        try {
-            const response = await WishlistService.toggle(product.id!);
-            if (response.success) {
-                showToast({ severity: 'info', summary: 'Wishlist', detail: 'Lista de desejos atualizada.' });
-            }
-        } catch (error) {
-            showToast({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar wishlist.' });
-        }
-    };
-
     const handleSelectCategory = (id: number | null) => {
         setSelectedCategory(id);
         setMobileFilterVisible(false); // Fecha o sidebar ao selecionar
@@ -109,7 +96,6 @@ export function SearchResultsPage() {
                 product={product}
                 showDivider={index !== 0}
                 onAddToCart={handleAddToCart}
-                onToggleWishlist={handleToggleWishlist}
             />
         );
     };
@@ -161,8 +147,8 @@ export function SearchResultsPage() {
                     />
                 </div>
 
-                <div className="surface-card shadow-2 border-round-xl overflow-hidden">
-                    <div className="p-4 border-bottom-1 surface-border flex align-items-center justify-content-between flex-wrap gap-2">
+                <div className="surface-card shadow-2 border-round-2xl overflow-hidden">
+                    <div className="p-4 surface-border results-card flex align-items-center justify-content-between flex-wrap gap-2">
                         <span className="text-xl font-bold text-900">
                             Resultados para: <span className="text-primary">"{query}"</span>
                         </span>

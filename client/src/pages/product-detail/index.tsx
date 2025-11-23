@@ -1,53 +1,39 @@
-import { useEffect, useState, useRef, useContext } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Tag } from "primereact/tag";
 import { Divider } from "primereact/divider";
 import { classNames } from "primereact/utils";
 
 import ProductService from "@/services/product-service";
-import WishlistService from "@/services/wishlist-service";
 import type { IProduct } from "@/commons/types";
 import { ProductGallery } from "@/components/product-gallery";
-import { useAuth } from "@/context/hooks/use-auth";
-import { CartContext } from "@/context/CartContext"; // <--- 1. Importar Contexto
+import { CartContext } from "@/context/CartContext";
+import { useToast } from "@/context/ToastContext"; // Usando o contexto global
+import { useWishlist } from "@/hooks/use-wishlist"; // <--- Importando o Hook criado
 
 import "./ProductDetail.css";
 
 export const ProductDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const location = useLocation();
-    const { authenticated } = useAuth();
-    const { addToCart } = useContext(CartContext); // <--- 2. Consumir Contexto
-    const toast = useRef<Toast>(null);
+    
+    // Hooks de contexto
+    const { addToCart } = useContext(CartContext);
+    const { showToast } = useToast(); 
     
     const [product, setProduct] = useState<IProduct | null>(null);
     const [loading, setLoading] = useState(true);
     
-    // Estado da Wishlist
-    const [isInWishlist, setIsInWishlist] = useState(false);
-    const [wishlistLoading, setWishlistLoading] = useState(false);
+    // Lógica da Wishlist extraída para o Hook
+    const { inWishlist, toggleWishlist, wishlistLoading } = useWishlist(product);
 
     useEffect(() => {
         if (id) {
             loadProduct(Number(id));
         }
     }, [id]);
-
-    // Check inicial da wishlist
-    useEffect(() => {
-        if (authenticated && id) {
-            checkWishlistStatus(Number(id));
-        }
-    }, [authenticated, id]);
-
-    const checkWishlistStatus = async (productId: number) => {
-        const status = await WishlistService.check(productId);
-        setIsInWishlist(status);
-    };
 
     const loadProduct = async (productId: number) => {
         setLoading(true);
@@ -56,11 +42,11 @@ export const ProductDetailPage = () => {
             if (response.status === 200 && response.data) {
                 setProduct(response.data);
             } else {
-                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Produto não encontrado' });
+                showToast({ severity: 'error', summary: 'Erro', detail: 'Produto não encontrado' });
                 setTimeout(() => navigate("/"), 2000);
             }
         } catch (error) {
-            toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Falha de conexão' });
+            showToast({ severity: 'error', summary: 'Erro', detail: 'Falha de conexão' });
         } finally {
             setLoading(false);
         }
@@ -68,38 +54,8 @@ export const ProductDetailPage = () => {
 
     const handleAddToCart = () => {
         if (product) {
-            addToCart(product); // <--- 3. Chamar a função real
-            toast.current?.show({ severity: 'success', summary: 'Adicionado', detail: 'Produto no carrinho!', life: 2000 });
-        }
-    };
-
-    const handleWishlistToggle = async () => {
-        // Redirecionamento inteligente se não logado
-        if (!authenticated) {
-            navigate('/login', { state: { from: location } });
-            return;
-        }
-
-        if (!product?.id) return;
-
-        setWishlistLoading(true);
-        try {
-            const response = await WishlistService.toggle(product.id);
-            if (response.success) {
-                const added = response.data; // true = adicionou, false = removeu
-                setIsInWishlist(added);
-                
-                toast.current?.show({ 
-                    severity: added ? 'success' : 'info', 
-                    summary: added ? 'Salvo' : 'Removido', 
-                    detail: added ? 'Produto adicionado à sua lista.' : 'Produto removido da lista.',
-                    life: 2000
-                });
-            }
-        } catch (error) {
-            toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Não foi possível atualizar a lista.' });
-        } finally {
-            setWishlistLoading(false);
+            addToCart(product);
+            showToast({ severity: 'success', summary: 'Adicionado', detail: 'Produto no carrinho!', life: 2000 });
         }
     };
 
@@ -114,7 +70,7 @@ export const ProductDetailPage = () => {
 
     return (
         <div className="container container-pdetail">
-            <Toast ref={toast} />
+            {/* Toast local removido, usando o global do Layout */}
             
             <div className="product-detail-container">
                 
@@ -151,22 +107,22 @@ export const ProductDetailPage = () => {
                                 size="large"
                                 className="w-full font-bold"
                                 onClick={handleAddToCart}
-                                disabled={isOutOfStock} // Bloqueia se sem estoque
+                                disabled={isOutOfStock}
                             />
                             
-                            {/* Botão Wishlist Lógico */}
+                            {/* Botão Wishlist usando o Hook */}
                             <Button 
-                                label={isInWishlist ? "Remover da Lista de Desejos" : "Adicionar à Lista de Desejos"}
+                                label={inWishlist ? "Remover da Lista de Desejos" : "Adicionar à Lista de Desejos"}
                                 icon={classNames("pi", {
-                                    "pi-heart-fill text-red-500": isInWishlist,
-                                    "pi-heart": !isInWishlist
+                                    "pi-heart-fill text-red-500": inWishlist,
+                                    "pi-heart": !inWishlist
                                 })}
                                 severity="secondary" 
                                 outlined 
                                 className={classNames("w-full transition-colors", {
-                                    "border-red-200 bg-red-50 text-red-600": isInWishlist
+                                    "border-red-200 bg-red-50 text-red-600": inWishlist
                                 })}
-                                onClick={handleWishlistToggle}
+                                onClick={toggleWishlist}
                                 loading={wishlistLoading}
                             />
                         </div>

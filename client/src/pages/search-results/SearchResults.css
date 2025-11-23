@@ -15,6 +15,11 @@
     width: 100%;
 }
 
+.results-card {
+    background-color: var(--surface-card);
+}
+
+
 @media (min-width: 901px) {
 
     .filter-button {

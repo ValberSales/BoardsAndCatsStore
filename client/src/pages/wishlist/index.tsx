@@ -164,7 +164,8 @@ export function WishlistPage() {
     };
 
     return (
-        <div className="wishlist-container w-full max-w-6 flex flex-column align-items-center mx-auto my-6 px-4">
+        /* Controle de largura movido para o CSS .wishlist-container */
+        <div className="wishlist-container flex flex-column align-items-center px-4">
             <h2 className="text-900 font-bold mb-4 align-self-start">Minha Lista de Desejos</h2>
             
             <div className="surface-card shadow-2 wishlist-card w-full">

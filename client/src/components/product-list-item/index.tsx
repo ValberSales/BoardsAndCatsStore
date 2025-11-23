@@ -1,25 +1,71 @@
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
 import { Divider } from 'primereact/divider';
+
 import { API_BASE_URL } from "@/lib/axios";
 import type { IProduct } from '@/commons/types';
+import WishlistService from "@/services/wishlist-service";
+import { AuthContext } from "@/context/AuthContext";
+import { useToast } from "@/context/ToastContext";
+
 import './ProductListItem.css';
 
 interface ProductListItemProps {
     product: IProduct;
     showDivider: boolean;
     onAddToCart: (e: React.MouseEvent, product: IProduct) => void;
-    onToggleWishlist: (e: React.MouseEvent, product: IProduct) => void;
+    // onToggleWishlist removido, pois agora é interno
 }
 
 export function ProductListItem({ 
     product, 
     showDivider, 
-    onAddToCart, 
-    onToggleWishlist 
+    onAddToCart 
 }: ProductListItemProps) {
     const navigate = useNavigate();
+    const { authenticated } = useContext(AuthContext);
+    const { showToast } = useToast();
+    
+    const [inWishlist, setInWishlist] = useState(false);
+
+    // Verifica se o item já está na wishlist ao carregar
+    useEffect(() => {
+        if (authenticated && product.id) {
+            WishlistService.check(product.id).then((status) => {
+                setInWishlist(status);
+            });
+        }
+    }, [authenticated, product.id]);
+
+    const handleWishlistClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+    
+        if (!authenticated) {
+            showToast({
+                severity: 'info',
+                summary: 'Login necessário',
+                detail: 'Faça login para adicionar aos favoritos.',
+                life: 3000
+            });
+            return;
+        }
+    
+        if (product.id) {
+            const response = await WishlistService.toggle(product.id);
+            if (response.success) {
+                const isAdded = response.data === true;
+                setInWishlist(isAdded);
+                showToast({
+                    severity: 'success',
+                    summary: isAdded ? 'Favoritado' : 'Removido',
+                    detail: isAdded ? 'Produto adicionado aos favoritos!' : 'Produto removido dos favoritos.',
+                    life: 2000
+                });
+            }
+        }
+    };
 
     const getInventoryStatus = (stock: number) => {
         if (stock === 0) return { label: 'ESGOTADO', severity: 'danger' };
@@ -73,16 +119,16 @@ export function ProductListItem({
 
                     <div className="action-buttons-wrapper">
                         <Button 
-                            icon="pi pi-heart" 
-                            className="p-button-rounded p-button-outlined p-button-secondary btn-circle-search" 
+                            icon={inWishlist ? "pi pi-heart-fill" : "pi pi-heart"} 
+                            className={`btn-circle-action heart ${inWishlist ? 'btn-circle-action heartfill' : 'btn-circle-action heart'}`}
                             tooltip="Salvar na Lista de Desejos"
                             tooltipOptions={{ position: 'bottom' }}
-                            onClick={(e) => onToggleWishlist(e, product)}
+                            onClick={handleWishlistClick}
                         />
 
                         <Button 
                             icon="pi pi-shopping-cart" 
-                            className="p-button-rounded p-button-primary btn-circle-search" 
+                            className="btn-circle-action cart" 
                             tooltip="Adicionar ao Carrinho"
                             tooltipOptions={{ position: 'bottom' }}
                             disabled={product.stock === 0}

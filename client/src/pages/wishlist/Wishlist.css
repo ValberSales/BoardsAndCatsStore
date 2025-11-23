@@ -1,8 +1,13 @@
 /* ============================================================
    ESTILOS GERAIS
    ============================================================ */
-.wishlist-container .p-dataview .p-dataview-content {
+.wishlist-container {
+    width: 100%;
+    max-width: 960px; /* Largura máxima "encolhida" para desktop */
+    margin: 3rem auto; /* Centraliza horizontalmente e dá espaço vertical */
+}
 
+.wishlist-container .p-dataview .p-dataview-content {
     border: none;
 }
 

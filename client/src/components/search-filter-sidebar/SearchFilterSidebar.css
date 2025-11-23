@@ -4,7 +4,7 @@
     position: sticky;
     top: 2rem;
     background-color: var(--surface-card);
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 1.5rem;
     box-shadow: 0 4px 10px rgba(0,0,0,0.03);
     border: 1px solid var(--surface-border);

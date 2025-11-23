@@ -71,11 +71,49 @@
     gap: 0.5rem;
 }
 
-.btn-circle-search {
+/* Botões de Ação Circulares */
+.btn-circle-action {
     width: 2.5rem !important;
     height: 2.5rem !important;
     border-radius: 50% !important;
     padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    border: none !important;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+}
+
+/* Estilo Editar (Cinza) */
+.btn-circle-action.cart {
+    background-color: var(--surface-100) !important;
+    color: var(--text-color-secondary) !important;
+}
+
+.btn-circle-action.cart:hover {
+    background-color: var(--surface-200) !important;
+    color: var(--text-color) !important;
+    transform: scale(1.05);
+}
+
+/* Estilo Wishlist (Vermelho) */
+.btn-circle-action.heart {
+    background-color: var(--red-50) !important;
+    color: var(--red-500) !important;
+}
+
+.btn-circle-action.heartfill {
+    background-color: var(--red-50) !important;
+    color: var(--red-700) !important;
+}
+
+
+
+.btn-circle-action.heart:hover {
+    background-color: var(--red-100) !important;
+    color: var(--red-700) !important;
+    transform: scale(1.05);
 }
 
 /* Responsividade Específica do Item */
@@ -93,7 +131,7 @@
         align-items: center;
         flex-direction: row;
         width: 100%;
-        justify-content: space-between;
+        justify-content: center; /* Centraliza os botões */
         margin-top: 1rem;
     }
 }
