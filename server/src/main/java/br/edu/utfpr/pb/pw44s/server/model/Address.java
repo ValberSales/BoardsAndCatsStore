@@ -46,7 +46,7 @@ public class Address {
     @Column(nullable = false)
     private String zip;
 
-    @Size(min = 4, max = 255)
+    @Size(max = 255)
     private String complement;
 
     @NotNull

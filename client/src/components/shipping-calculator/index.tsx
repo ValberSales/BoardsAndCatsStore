@@ -2,16 +2,19 @@ import { useState } from 'react';
 import { InputMask } from 'primereact/inputmask';
 import { Button } from 'primereact/button';
 import axios from 'axios';
-import { api } from '@/lib/axios'; // Sua instância do axios configurada para o backend
+import { api } from '@/lib/axios';
 
-export const ShippingCalculator = () => {
+interface ShippingCalculatorProps {
+    onCalculate?: (value: number) => void;
+}
+
+export const ShippingCalculator = ({ onCalculate }: ShippingCalculatorProps) => {
     const [cep, setCep] = useState('');
     const [shippingValue, setShippingValue] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     const handleCalculate = async () => {
-        // Remove formatação do CEP
         const cleanCep = cep.replace(/\D/g, '');
 
         if (cleanCep.length !== 8) {
@@ -22,9 +25,10 @@ export const ShippingCalculator = () => {
         setLoading(true);
         setError('');
         setShippingValue(null);
+        if (onCalculate) onCalculate(0); // Reseta o pai
 
         try {
-            // 1. Busca o Estado (UF) no ViaCEP
+            // 1. Busca UF
             const viaCepResponse = await axios.get(`https://viacep.com.br/ws/${cleanCep}/json/`);
             
             if (viaCepResponse.data.erro) {
@@ -35,10 +39,14 @@ export const ShippingCalculator = () => {
 
             const uf = viaCepResponse.data.uf;
 
-            // 2. Busca o valor do frete no nosso Backend baseado na UF
+            // 2. Busca valor no Backend
             const backendResponse = await api.get(`/shipping/calculate?state=${uf}`);
             
-            setShippingValue(backendResponse.data.value);
+            const value = backendResponse.data.value;
+            setShippingValue(value);
+            
+            // Avisa o componente pai
+            if (onCalculate) onCalculate(value);
 
         } catch (err) {
             console.error(err);
@@ -49,7 +57,7 @@ export const ShippingCalculator = () => {
     };
 
     return (
-        <div className="surface-card p-4 border-round shadow-1 mt-3">
+        <div className="surface-card p-3 calc-container border-round-2xl shadow-1 mt-3">
             <div className="text-900 font-medium text-xl mb-3">Calcular Frete</div>
             
             <div className="flex gap-2 align-items-start">
@@ -73,14 +81,14 @@ export const ShippingCalculator = () => {
                 </div>
             </div>
 
-            {/* Resultado do Cálculo */}
+            {/* Resultado do Cálculo com Design Original (Ícone de Caixa) */}
             {shippingValue !== null && !error && (
-                <div className="mt-3 bg-green-50 border-round p-3 flex justify-content-between align-items-center fadein animation-duration-500">
+                <div className="mt-3 border-round p-2 flex justify-content-between align-items-center fadein animation-duration-500">
                     <div className="flex align-items-center gap-2">
-                        <i className="pi pi-box text-green-600 text-xl"></i>
-                        <span className="text-green-800 font-medium">Entrega Econômica</span>
+                        <i className="pi pi-box text-l"></i>
+                        <span className="font-small text-l">Entrega Econômica</span>
                     </div>
-                    <span className="text-green-800 font-bold text-xl">
+                    <span className="font-bold text-l">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(shippingValue)}
                     </span>
                 </div>

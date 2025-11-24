@@ -1,5 +1,6 @@
 .summary-card {
     background-color: var(--surface-card);
+    min-width: 300px;
 }
 
 .summary-total-label {

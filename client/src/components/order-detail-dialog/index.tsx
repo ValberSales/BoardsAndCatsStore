@@ -9,7 +9,6 @@ import { Toast } from "primereact/toast";
 import { API_BASE_URL } from "@/lib/axios";
 import type { IOrder, IOrderItem } from "@/commons/types";
 
-// Importa o CSS externo
 import "./OrderDetailDialog.css";
 
 interface OrderDetailDialogProps {
@@ -23,6 +22,7 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
 
     if (!order) return null;
 
+    // Lógica da Timeline
     const events = [
         { status: 'PENDING', label: 'Recebido', icon: 'pi pi-shopping-cart', color: '#9C27B0' },
         { status: 'PAID', label: 'Pago', icon: 'pi pi-wallet', color: '#673AB7' },
@@ -42,12 +42,10 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
 
     const copyTracking = () => {
         if (order.trackingCode) {
-            // Tenta usar a API de clipboard moderna, com fallback
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(order.trackingCode);
                 toast.current?.show({ severity: 'success', summary: 'Copiado', detail: 'Código copiado!', life: 2000 });
             } else {
-                // Fallback simples usando execCommand (funciona melhor em iframes/ambientes restritos)
                 const textArea = document.createElement("textarea");
                 textArea.value = order.trackingCode;
                 document.body.appendChild(textArea);
@@ -84,6 +82,10 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
         );
     };
 
+    // --- CÁLCULO DO SUBTOTAL REAL ---
+    // O backend envia o subtotal já calculado em cada item, basta somar.
+    const subTotalItems = order.items.reduce((acc, item) => acc + item.subtotal, 0);
+
     return (
         <Dialog 
             visible={visible} 
@@ -102,7 +104,6 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
                     <Card className="detail-card shadow-none h-full">
                         <span className="section-title mb-4">Status do Pedido</span>
                         
-                        {/* Timeline Alinhada à Esquerda */}
                         <Timeline 
                             value={timelineEvents} 
                             layout="vertical" 
@@ -112,7 +113,6 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
                             className="custom-timeline w-full"
                         />
                         
-                        {/* Código de Rastreio */}
                         {order.trackingCode && (
                             <>
                                 <Divider className="my-4" />
@@ -171,15 +171,33 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
                             ))}
                         </div>
 
+                        {/* --- INICIO DA CORREÇÃO FINANCEIRA --- */}
                         <div className="financial-summary">
                             <div className="summary-row">
                                 <span>Subtotal</span>
-                                <span className="font-medium text-900">{order.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                                {/* Exibe a soma dos itens, não o total final */}
+                                <span className="font-medium text-900">
+                                    {subTotalItems.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </span>
                             </div>
+                            
                             <div className="summary-row">
                                 <span>Frete</span>
-                                <span className="font-medium text-green-600">Grátis</span>
+                                {/* Lógica para exibir Grátis ou o Valor do Frete */}
+                                <span className={order.shipping > 0 ? "font-medium text-900" : "font-medium text-green-600"}>
+                                    {order.shipping > 0 
+                                        ? order.shipping.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                                        : 'Grátis'}
+                                </span>
                             </div>
+
+                            {/* Exibe desconto apenas se existir (> 0) */}
+                            {order.discount > 0 && (
+                                <div className="summary-row text-green-600">
+                                    <span>Desconto</span>
+                                    <span>- {order.discount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                                </div>
+                            )}
                             
                             <Divider className="my-2" />
                             
@@ -198,6 +216,8 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
                                 ></Tag>
                             </div>
                         </div>
+                        {/* --- FIM DA CORREÇÃO FINANCEIRA --- */}
+                        
                     </Card>
                 </div>
             </div>

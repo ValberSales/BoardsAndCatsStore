@@ -6,17 +6,19 @@ import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
 
 import PaymentMethodService from "@/services/payment-method-service";
+import CouponService from "@/services/coupon-service"; // <--- Novo Serviço
 import { PaymentMethodForm } from "@/components/payment-method-form";
-import type { IPaymentMethod } from "@/commons/types";
+import type { IPaymentMethod, ICoupon } from "@/commons/types"; // <--- Novo Tipo
 import "./PaymentSelector.css";
 
 interface PaymentSelectorProps {
     selectedPaymentId?: number;
     onSelect: (payment: IPaymentMethod) => void;
     onCouponApply: (discount: number) => void;
+    orderTotal: number; // <--- Nova prop necessária para cálculo de %
 }
 
-export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply }: PaymentSelectorProps) => {
+export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply, orderTotal }: PaymentSelectorProps) => {
     const [methods, setMethods] = useState<IPaymentMethod[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -66,23 +68,49 @@ export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply }: 
         }
     };
 
-    const applyCoupon = () => {
+    // --- LÓGICA DO CUPOM ATUALIZADA ---
+    const applyCoupon = async () => {
         if (!couponCode) return;
         setCouponLoading(true);
 
-        // Simulação de validação de cupom no backend
-        setTimeout(() => {
-            if (couponCode.toUpperCase() === "BOARDS10") {
-                onCouponApply(10.00); // Aplica R$ 10,00 de desconto
-                setCouponApplied(true);
-                toast.current?.show({ severity: 'success', summary: 'Cupom Aplicado', detail: 'Desconto de R$ 10,00!' });
-            } else {
-                onCouponApply(0);
-                setCouponApplied(false);
-                toast.current?.show({ severity: 'error', summary: 'Inválido', detail: 'Cupom não encontrado.' });
+        const response = await CouponService.validate(couponCode);
+
+        if (response.success) {
+            const coupon: ICoupon = response.data;
+
+            // 1. Converter para garantir que é número
+            const percent = Number(coupon.percentage);
+            
+            // 2. Cálculo de segurança
+            if (isNaN(percent)) {
+                 toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao ler porcentagem do cupom.' });
+                 setCouponLoading(false);
+                 return;
             }
-            setCouponLoading(false);
-        }, 1000);
+
+            // 3. Calcular valor absoluto (R$) baseando-se no total do pedido
+            // orderTotal vem das props
+            const discountCalculated = (orderTotal * percent) / 100;
+            
+            // 4. Passar o valor em REAIS para o pai (CheckoutPage)
+            onCouponApply(discountCalculated); 
+            setCouponApplied(true);
+            
+            toast.current?.show({ 
+                severity: 'success', 
+                summary: 'Cupom Aplicado', 
+                detail: `Desconto de ${percent}% (R$ ${discountCalculated.toFixed(2)}) aplicado!` 
+            });
+        } else {
+            // ... erro
+        }
+        setCouponLoading(false);
+    };
+
+    const handleRemoveCoupon = () => {
+        setCouponApplied(false); 
+        setCouponCode(""); 
+        onCouponApply(0);
     };
 
     const getIcon = (type: string) => {
@@ -105,7 +133,6 @@ export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply }: 
         <div className="fadein animation-duration-500">
             <Toast ref={toast} />
             
-            {/* Seção de Métodos de Pagamento */}
             <h2 className="text-2xl font-bold text-900 m-0 mb-4">Como você prefere pagar?</h2>
             
             <div className="grid">
@@ -163,7 +190,7 @@ export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply }: 
                         label={couponApplied ? "Remover" : "Aplicar"} 
                         severity={couponApplied ? "danger" : undefined}
                         outlined={couponApplied}
-                        onClick={couponApplied ? () => { setCouponApplied(false); setCouponCode(""); onCouponApply(0); } : applyCoupon}
+                        onClick={couponApplied ? handleRemoveCoupon : applyCoupon}
                         loading={couponLoading}
                         disabled={!couponCode && !couponApplied}
                     />

@@ -102,6 +102,8 @@ INSERT INTO tb_product_images (product_id, image_url) VALUES
 -- Certifique-se de que a tabela tb_cart existe
 INSERT INTO tb_cart (user_id) VALUES (4);
 
+INSERT INTO tb_coupon (code, discount_value, active, valid_until) VALUES ('BOARDS10', 10.00, true, '2030-12-31');
+
 -- Certifique-se de que a tabela tb_cart_item existe e tem a coluna price_at_save
 INSERT INTO tb_cart_item (cart_id, product_id, quantity, price_at_save) VALUES
                                                                             (1, 2, 1, 249.90), -- 1x Catan

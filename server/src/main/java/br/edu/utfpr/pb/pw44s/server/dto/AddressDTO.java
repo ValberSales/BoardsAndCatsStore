@@ -33,7 +33,7 @@ public class AddressDTO {
     @Size(min = 8, max = 255)
     private String zip;
 
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     private String complement;
 
 }

@@ -154,3 +154,8 @@ export interface ICartResponse {
   items: ICartItemResponse[];
   total: number;
 }
+
+export interface ICoupon {
+    code: string;
+    percentage: number;
+}

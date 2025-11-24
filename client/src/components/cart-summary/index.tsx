@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
-import { classNames } from "primereact/utils";
 import { ShippingCalculator } from "@/components/shipping-calculator";
 import "./CartSummary.css";
 
@@ -15,7 +14,10 @@ interface CartSummaryProps {
 }
 
 export const CartSummary = ({ subTotal, onCheckout, loading, disableCheckout }: CartSummaryProps) => {
+    // Estado para armazenar o frete calculado vindo do filho
     const [shippingCost, setShippingCost] = useState(0);
+
+    // Total dinâmico
     const finalTotal = subTotal + shippingCost;
 
     return (
@@ -31,24 +33,22 @@ export const CartSummary = ({ subTotal, onCheckout, loading, disableCheckout }: 
                         </span>
                     </div>
                     
+                    {/* Calculadora injeta o valor no estado shippingCost */}
                     <ShippingCalculator onCalculate={setShippingCost} />
                     
-                    <div className="flex justify-content-between mt-3 mb-3">
-                        <span className="text-600">Frete Estimado</span>
-                        <span className={classNames("font-medium", { "text-green-600": shippingCost > 0 })}>
-                            {shippingCost === 0 ? '--' : shippingCost.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </span>
-                    </div>
-
                     <Divider />
 
                     <div className="flex justify-content-between align-items-center mb-4">
-                        <span className="font-bold text-900 summary-total-label">Total</span>
+                        <div className="flex flex-column">
+                            <span className="font-bold text-900 summary-total-label">Total</span>
+                            {shippingCost === 0 && (
+                                <small className="text-gray-500 text-xs font-normal">s/ frete incluso</small>
+                            )}
+                        </div>
                         <div className="text-right">
-                            <span className="font-bold summary-total-value block">
+                            <span className="font-bold summary-total-value block text-primary text-xl">
                                 {finalTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                             </span>
-                            {shippingCost === 0 && <small className="text-gray-500">calcule o frete</small>}
                         </div>
                     </div>
 

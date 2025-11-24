@@ -12,7 +12,7 @@ import { CartContext } from "@/context/CartContext";
 import { CheckoutSummary } from "@/components/checkout-summary";
 import { CartReviewList } from "@/components/cart-review-list";
 import { AddressSelector } from "@/components/address-selector";
-import { PaymentSelector } from "@/components/payment-selector"; // <--- Novo Componente
+import { PaymentSelector } from "@/components/payment-selector"; 
 import { api } from "@/lib/axios";
 
 import type { IAddress, IPaymentMethod } from "@/commons/types";
@@ -20,18 +20,18 @@ import "./Checkout.css";
 
 export const CheckoutPage = () => {
     const navigate = useNavigate();
-    const { items, total, clearCart } = useContext(CartContext); // clearCart necessário
+    const { items, total, clearCart } = useContext(CartContext);
     const toast = useRef<Toast>(null);
 
     const [activeIndex, setActiveIndex] = useState(0);
     const [orderProcessing, setOrderProcessing] = useState(false);
-    const [orderFinished, setOrderFinished] = useState(false); // Controla tela de sucesso
+    const [orderFinished, setOrderFinished] = useState(false);
 
     // Dados do Pedido
     const [selectedAddress, setSelectedAddress] = useState<IAddress | null>(null);
     const [selectedPayment, setSelectedPayment] = useState<IPaymentMethod | null>(null);
     const [shippingCost, setShippingCost] = useState(0);
-    const [discount, setDiscount] = useState(0);
+    const [discount, setDiscount] = useState(0); // Armazena o valor em R$ (ex: 50.00)
 
     const stepsItems = [
         { label: 'Revisão' },
@@ -39,14 +39,31 @@ export const CheckoutPage = () => {
         { label: 'Pagamento' }
     ];
 
+    // Redireciona se carrinho vazio
     useEffect(() => {
         if (items.length === 0 && !orderFinished) {
             navigate("/cart");
         }
     }, [items, navigate, orderFinished]);
 
+    // --- CÁLCULO AUTOMÁTICO DE FRETE ---
     useEffect(() => {
-        if (selectedAddress) setShippingCost(25.90);
+        const calculateShipping = async () => {
+            if (selectedAddress && selectedAddress.state) {
+                try {
+                    // Consulta o backend para pegar o valor real baseado no estado
+                    const response = await api.get(`/shipping/calculate?state=${selectedAddress.state}`);
+                    setShippingCost(response.data.value);
+                } catch (error) {
+                    console.error("Erro ao calcular frete:", error);
+                    setShippingCost(0); 
+                }
+            } else {
+                setShippingCost(0);
+            }
+        };
+
+        calculateShipping();
     }, [selectedAddress]);
 
     const hasStockIssues = items.some(i => i.quantity > i.product.stock || i.product.stock === 0);
@@ -57,19 +74,19 @@ export const CheckoutPage = () => {
 
         setOrderProcessing(true);
         try {
-            // Enviando para a API (Backend)
+            // Enviando payload completo para a API
+            // O backend espera que 'discount' seja o valor em DINHEIRO para subtrair
             const response = await api.post("/orders/checkout", {
                 addressId: selectedAddress.id,
-                paymentMethodId: selectedPayment.id
-                // discount: discount (Se o back suportar no futuro)
+                paymentMethodId: selectedPayment.id,
+                shipping: shippingCost, 
+                discount: discount      
             });
 
             if (response.status === 201) {
-                // SUCESSO!
-                clearCart(); // Limpa o contexto e localStorage
-                setOrderFinished(true); // Mostra tela de sucesso
+                clearCart(); 
+                setOrderFinished(true); 
 
-                // Redireciona após 3 segundos
                 setTimeout(() => {
                     navigate("/orders");
                 }, 3500);
@@ -86,7 +103,7 @@ export const CheckoutPage = () => {
         }
     };
 
-    // --- RENDERIZAÇÃO DA TELA DE SUCESSO ---
+    // --- TELA DE SUCESSO ---
     if (orderFinished) {
         return (
             <div className="surface-ground min-h-screen flex align-items-center justify-content-center">
@@ -109,7 +126,7 @@ export const CheckoutPage = () => {
         );
     }
 
-    // --- RENDERIZAÇÃO DO FLUXO DE STEPS ---
+    // --- CONTEÚDO DOS PASSOS ---
     const renderStepContent = () => {
         switch (activeIndex) {
             case 0: // Revisão
@@ -135,7 +152,8 @@ export const CheckoutPage = () => {
                         <PaymentSelector
                             selectedPaymentId={selectedPayment?.id}
                             onSelect={setSelectedPayment}
-                            onCouponApply={setDiscount}
+                            onCouponApply={setDiscount} // Recebe o valor já calculado em R$
+                            orderTotal={total} // Passa o total para o cálculo da % no filho
                         />
                     </div>
                 );
@@ -146,7 +164,7 @@ export const CheckoutPage = () => {
     const isNextDisabled = () => {
         if (activeIndex === 0 && hasStockIssues) return true;
         if (activeIndex === 1 && !selectedAddress) return true;
-        if (activeIndex === 2 && !selectedPayment) return true; // Bloqueia finalizar se não selecionar pagto
+        if (activeIndex === 2 && !selectedPayment) return true;
         return false;
     };
 
@@ -164,12 +182,9 @@ export const CheckoutPage = () => {
                         <Card className="checkout-content-card shadow-2 border-round-2xl">
                             {renderStepContent()}
 
-
                             <div>
                                 <Divider className="mt-5" />
                                 <div className="flex justify-content-between pt-4 surface-border px-2 md:px-4">
-
-
 
                                     <Button
                                         label={activeIndex === 0 ? "Voltar ao Carrinho" : "Voltar"}
@@ -179,7 +194,6 @@ export const CheckoutPage = () => {
                                         disabled={orderProcessing}
                                     />
 
-                                    {/* Botão Dinâmico: Continuar ou Finalizar */}
                                     {activeIndex < 2 ? (
                                         <Button
                                             label="Continuar"

@@ -83,7 +83,7 @@
 /* --- RESPONSIVIDADE AJUSTADA --- */
 /* Breakpoint reduzido de 991px para 768px (Tablets ficam lado a lado, Mobile empilha) */
 @media (max-width: 768px) { 
-    
+
     .cart-header {
         justify-content: center; 
         margin-top: 1rem;
@@ -98,4 +98,5 @@
     .cart-title {
         font-size: 2.5rem;
     }
+
 }

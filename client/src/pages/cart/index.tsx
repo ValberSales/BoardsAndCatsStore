@@ -42,7 +42,7 @@ export const CartPage = () => {
     }
 
     return (
-        <div className="surface-ground min-h-screen pb-8 pt-6 md:pt-8">
+        <div className="surface-ground min-h-screen pb-8 pt-6 md:pt-8 cart-container">
             <Toast />
             <ConfirmDialog />
             <Tooltip target=".btn-circle" />

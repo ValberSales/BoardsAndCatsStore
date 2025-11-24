@@ -14,7 +14,7 @@ import { CartProvider } from './context/CartContext.tsx';
 import { ToastProvider } from './context/ToastContext.tsx'; // <--- Importar
 
 const themeId = "theme-link";
-const themeBase = "teal"; 
+const themeBase = "cyan"; 
 let themeHref = `https://unpkg.com/primereact/resources/themes/lara-light-${themeBase}/theme.css`;
 
 const savedTheme = localStorage.getItem("theme");
