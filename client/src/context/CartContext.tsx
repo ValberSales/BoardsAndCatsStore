@@ -72,34 +72,46 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [authenticated]);
 
   const syncOnLogin = async () => {
-      if (!isInitialSyncDone.current) {
-        setIsLoadingCart(true);
-        try {
-          const response = await CartService.getCart();
-          
-          if (response.success && response.data) {
-            const serverItems: ICartItemResponse[] = response.data.items || [];
+    if (!isInitialSyncDone.current) {
+      setIsLoadingCart(true);
+      try {
+        const response = await CartService.getCart();
+        
+        
+        const serverItems: ICartItemResponse[] = (response.success && response.data && response.data.items) 
+          ? response.data.items 
+          : [];
+
+        
+        if (serverItems.length > 0) {
             
-            if (items.length === 0 && serverItems.length > 0) {
-              // Backend vence: Restaura sessão antiga
-              const mappedItems: ICartItem[] = serverItems.map(i => ({
-                product: i.product,
-                quantity: i.quantity
-              }));
-              setItems(mappedItems);
-            } else if (items.length > 0) {
-              // Frontend vence: Sobrescreve backend com itens novos do guest
-              await sendCartToBackend(items);
+            
+            if (items.length === 0) {
+               
+               const mappedItems: ICartItem[] = serverItems.map(i => ({
+                  product: i.product,
+                  quantity: i.quantity
+               }));
+               setItems(mappedItems);
+            } else {
+               
+               await sendCartToBackend(items);
             }
-          }
-        } catch (error) {
-          console.error("Erro ao sincronizar carrinho:", error);
-        } finally {
-          isInitialSyncDone.current = true;
-          setIsLoadingCart(false);
+        } 
+        
+        else if (items.length > 0) {
+            
+            await sendCartToBackend(items);
         }
+        
+      } catch (error) {
+        console.error("Erro ao sincronizar carrinho:", error);
+      } finally {
+        isInitialSyncDone.current = true;
+        setIsLoadingCart(false);
       }
-  };
+    }
+};
 
   // 4. Auto-Save Debounced
   useEffect(() => {
