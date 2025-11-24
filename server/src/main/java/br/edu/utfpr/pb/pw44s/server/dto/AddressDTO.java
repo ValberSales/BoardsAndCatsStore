@@ -15,6 +15,12 @@ public class AddressDTO {
     @Size(min = 4, max = 255)
     private String street;
 
+    @Size(min = 1, max = 10)
+    private String number;
+
+    @Size(min = 2, max = 255)
+    private String neighborhood;
+
     @NotNull
     @Size(min = 4, max = 255)
     private String city;
@@ -29,4 +35,5 @@ public class AddressDTO {
 
     @Size(min = 1, max = 255)
     private String complement;
+
 }

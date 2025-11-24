@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { API_BASE_URL } from "@/lib/axios";
+import { FaCcVisa, FaCcMastercard, FaCcAmex, FaPix, FaBarcode } from "react-icons/fa6";
 import "./Footer.css"; 
 
 export const Footer = () => {
@@ -48,7 +48,7 @@ export const Footer = () => {
                             </ul>
                         </div>
 
-                        {/* Coluna 3: Redes Sociais */}
+                        {/* Coluna 3: Redes Sociais e Pagamento */}
                         <div className="col-12 md:col-4">
                             <h4 className="font-bold text-xl mb-3">Redes sociais</h4>
                             <div className="flex gap-3 mb-4">
@@ -62,13 +62,17 @@ export const Footer = () => {
                                     <i className="pi pi-whatsapp" style={{ fontSize: '1.5rem' }}></i>
                                 </a>
                             </div>
+
+                            {/* Seção de Pagamento Atualizada */}
                             <div>
-                                <img 
-                                    className="bg-white p-1 border-round-md" 
-                                    src={`${API_BASE_URL}/images/cards.jpg`} 
-                                    alt="Formas de Pagamento"
-                                    style={{ maxWidth: '60%', height: 'auto' }}
-                                />     
+                                <h4 className="font-bold text-lg mb-2 mt-4">Formas de Pagamento</h4>
+                                <div className="flex gap-3 align-items-center text-gray-600" style={{ fontSize: '2rem' }}>
+                                    <FaCcVisa className="hover:text-blue-800 transition-colors cursor-pointer" title="Visa" />
+                                    <FaCcMastercard className="hover:text-orange-600 transition-colors cursor-pointer" title="Mastercard" />
+                                    <FaCcAmex className="hover:text-blue-500 transition-colors cursor-pointer" title="American Express" />
+                                    <FaPix className="hover:text-teal-500 transition-colors cursor-pointer" title="Pix" />
+                                    <FaBarcode className="hover:text-gray-900 transition-colors cursor-pointer" title="Boleto Bancário" />
+                                </div>
                             </div>
                         </div>
                     </div>

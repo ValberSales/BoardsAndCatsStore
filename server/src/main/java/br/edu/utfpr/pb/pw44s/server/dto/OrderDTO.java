@@ -20,6 +20,7 @@ public class OrderDTO {
     private OrderStatus status;
     private OrderPaymentEmbeddable payment;
     private BigDecimal total;
+    private BigDecimal shipping;
     private BigDecimal discount; // Novo campo
     private String trackingCode;
     private UserDTO user;

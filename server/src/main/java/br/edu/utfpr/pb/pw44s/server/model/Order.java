@@ -29,6 +29,8 @@ public class Order {
     @NotNull
     private BigDecimal total;
 
+    private BigDecimal shipping = BigDecimal.ZERO;
+
     private BigDecimal discount = BigDecimal.ZERO;
 
     @Column(name = "tracking_code")

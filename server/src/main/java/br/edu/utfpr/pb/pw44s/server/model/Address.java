@@ -25,6 +25,12 @@ public class Address {
     @Column(nullable = false)
     private String street;
 
+    @Size(min = 1, max = 10)
+    private String number;
+
+    @Size(min = 4, max = 255)
+    private String neighborhood;
+
     @NotNull
     @Size(min = 4, max = 255)
     @Column(nullable = false)

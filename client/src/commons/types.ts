@@ -74,6 +74,8 @@ export interface IProduct {
 export interface IAddress {
     id?: number;
     street: string;
+    number: string;
+    neighborhood: string;
     city: string;
     state: string;
     zip: string;
@@ -116,6 +118,7 @@ export interface IOrder {
     id: number;
     date: string; 
     status: 'PENDING' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
+    shipping: number;
     total: number;
     discount: number;
     trackingCode?: string;

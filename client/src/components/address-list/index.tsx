@@ -10,7 +10,6 @@ import AddressService from "@/services/address-service";
 import { AddressForm } from "@/components/address-form";
 import type { IAddress } from "@/commons/types";
 
-// Importa o CSS externo
 import "./AddressList.css";
 
 export const AddressList = () => {
@@ -83,22 +82,31 @@ export const AddressList = () => {
         return (
             <div className="col-12 p-0">
                 <div className="address-list-item">
-                    {/* Ajuste aqui: md:align-items-center para centralizar verticalmente */}
                     <div className="flex flex-column md:flex-row justify-content-between align-items-center md:align-items-center gap-4 address-list-item-content">
                         
                         {/* Informações do Endereço */}
                         <div className="address-info-container flex-1">
-                            <span className="address-street">{address.street}</span>
+                            {/* Exibindo Rua e Número (com fallback para S/N) */}
+                            <span className="address-street font-bold text-lg">
+                                {address.street}, {address.number || "S/N"}
+                            </span>
                             
-                            <div className="address-city-state">
+                            {/* Exibe Bairro apenas se existir */}
+                            {address.neighborhood && (
+                                <div className="text-600 text-sm mt-1">
+                                    Bairro: {address.neighborhood}
+                                </div>
+                            )}
+
+                            <div className="address-city-state mt-2 flex align-items-center gap-2">
                                 <i className="pi pi-map-marker text-primary"></i>
                                 <span>{address.city} - {address.state}</span>
-                                <Tag value={address.zip} severity="info" className="ml-2"></Tag>
+                                <Tag value={address.zip} severity="info"></Tag>
                             </div>
                             
                             {address.complement && (
-                                <span className="address-complement">
-                                    {address.complement}
+                                <span className="address-complement block mt-1 text-sm text-500 font-italic">
+                                    Comp: {address.complement}
                                 </span>
                             )}
                         </div>
@@ -131,7 +139,7 @@ export const AddressList = () => {
     };
 
     return (
-        <Card title="Meus Endereços" className="shadow-2 address-list-card mt-4">
+        <Card title="Meus Endereços" className="shadow-2 address-list-card">
             <Toast ref={toast} />
             
             <div className="new-address-container">
