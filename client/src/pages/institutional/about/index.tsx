@@ -4,8 +4,8 @@ import "./About.css";
 
 export const AboutPage = () => {
     return (
-        <div style={{ paddingTop: '70px' }} className="fadein animation-duration-500">
-            <div className="container mx-auto px-4 my-6" style={{ maxWidth: '1000px' }}>
+        <div className="about-page fadein animation-duration-500">
+            <div className="container mx-auto px-4 my-4 about-container">
                 
                 <div className="text-center mb-6">
                     <h1 className="text-4xl font-bold mb-2">Quem Somos</h1>
@@ -13,7 +13,7 @@ export const AboutPage = () => {
                 </div>
 
                 <div className="grid align-items-center">
-                    <div className="col-12 md:col-6 p-4">
+                    <div className="col-12 md:col-6">
                         <h2 className="text-2xl font-bold mb-4 text-primary">Nossa História</h2>
                         <p className="line-height-3 text-lg mb-4">
                             A <strong>Boards and Cats</strong> nasceu de uma combinação inusitada, mas perfeita: a paixão por jogos de tabuleiro modernos e o amor incondicional por gatos.
@@ -30,30 +30,29 @@ export const AboutPage = () => {
                         <img 
                             src={`${API_BASE_URL}/images/Logonova.png`} 
                             alt="Boards and Cats Logo" 
-                            className="shadow-2 logo-full w-full md"
-                            style={{ maxHeight: '600px', objectFit: 'contain', backgroundColor: '#fff' }}
+                            className="shadow-2 about-logo"
                         />
                     </div>
                 </div>
 
-                <div className="grid mt-6">
+                <div className="grid mt-2">
                     <div className="col-12 md:col-4">
-                        <Card className="h-full text-center surface-card shadow-1 hover:shadow-3 transition-duration-200">
-                            <i className="pi pi-heart text-4xl text-primary mb-3"></i>
+                        <Card className="about-value-card">
+                            <i className="pi pi-heart about-icon"></i>
                             <h3 className="text-xl font-bold mb-2">Paixão</h3>
                             <p className="m-0">Selecionamos cada jogo do nosso catálogo como se fosse para nossa própria coleção.</p>
                         </Card>
                     </div>
                     <div className="col-12 md:col-4">
-                        <Card className="h-full text-center surface-card shadow-1 hover:shadow-3 transition-duration-200">
-                            <i className="pi pi-users text-4xl text-primary mb-3"></i>
+                        <Card className="about-value-card">
+                            <i className="pi pi-users about-icon"></i>
                             <h3 className="text-xl font-bold mb-2">Comunidade</h3>
                             <p className="m-0">Mais do que vender jogos, queremos criar um ponto de encontro para entusiastas em Pato Branco.</p>
                         </Card>
                     </div>
                     <div className="col-12 md:col-4">
-                        <Card className="h-full text-center surface-card shadow-1 hover:shadow-3 transition-duration-200">
-                            <i className="pi pi-star text-4xl text-primary mb-3"></i>
+                        <Card className="about-value-card">
+                            <i className="pi pi-star about-icon"></i>
                             <h3 className="text-xl font-bold mb-2">Excelência</h3>
                             <p className="m-0">Atendimento rápido e envios protegidos (contra impactos e gatos curiosos).</p>
                         </Card>

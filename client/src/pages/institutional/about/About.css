@@ -1,3 +1,46 @@
-.logo-full{
-    border-radius: 6px;
+
+.about-page {
+    padding-top: 1rem;
+}
+
+
+.about-container {
+    max-width: 1000px;
+}
+
+.about-logo {
+    max-height: 600px;
+    max-width: 600px;
+    object-fit: contain;
+    width: 100%;
+    border-radius: 16px;
+}
+
+/* Estilização dos Cards de valores */
+.about-value-card {
+    height: 100%;
+    text-align: center;
+    background-color: var(--surface-card);
+    
+    /* Sombra Inicial Bem Leve (Base) */
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,0.1), 0 1px 1px 0 rgba(0,0,0,0.06), 0 1px 3px 0 rgba(0,0,0,0.05);
+    
+    /* Transição suave */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-origin: center center;
+}
+
+/* Efeito ao passar o mouse */
+.about-value-card:hover {
+    /* Levanta apenas um pouquinho (metade do anterior) */
+    transform: translateY(-5px); 
+    
+    /* Sombra Sutil: Mais foco no blur (desfoque) do que na cor escura */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.about-icon {
+    font-size: 2.25rem; 
+    color: var(--primary-color);
+    margin-bottom: 1rem;
 }

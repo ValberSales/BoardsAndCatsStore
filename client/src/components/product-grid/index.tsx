@@ -1,7 +1,8 @@
-import React from 'react';
-import { DataView } from 'primereact/dataview';
+import React, { useState, useEffect } from 'react';
+import { DataView, type DataViewPageEvent } from 'primereact/dataview'; // Importar tipo do evento se quiser, ou usar any
 import type { IProduct } from '@/commons/types';
 import { ProductCard } from '@/components/product-card';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
 interface ProductGridProps {
     products: IProduct[];
@@ -10,6 +11,20 @@ interface ProductGridProps {
 }
 
 export const ProductGrid: React.FC<ProductGridProps> = ({ products, title, emptyMessage }) => {
+    const { scrollToTop } = useScrollToTop();
+    
+    // Estado para controlar o início da paginação
+    const [first, setFirst] = useState(0);
+
+    // Reseta a paginação para a página 1 sempre que a lista de produtos mudar (ex: trocar de categoria)
+    useEffect(() => {
+        setFirst(0);
+    }, [products]);
+
+    const onPageChange = (event: DataViewPageEvent) => {
+        setFirst(event.first);
+        scrollToTop();
+    };
 
     const itemTemplate = (product: IProduct) => {
         return (
@@ -32,7 +47,12 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products, title, empty
                 itemTemplate={itemTemplate}
                 layout="grid"
                 paginator
-                rows={12} 
+                rows={12}
+                
+                // Propriedades Controladas
+                first={first}
+                onPage={onPageChange}
+
                 emptyMessage={emptyMessage || "Nenhum produto encontrado."}
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                 

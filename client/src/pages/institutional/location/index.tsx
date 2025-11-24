@@ -1,16 +1,19 @@
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
+import "./Location.css";
 
 export const LocationPage = () => {
     const address = "Rua Aimoré, 983 - Centro, Pato Branco - PR, 85501-296";
     
+    // URL corrigida para busca no Google Maps
     const handleOpenMaps = () => {
-        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+        window.open(mapsUrl, '_blank');
     };
 
     return (
-        <div style={{ paddingTop: '70px' }} className="fadein animation-duration-500">
-            <div className="container mx-auto px-4 my-6" style={{ maxWidth: '1000px' }}>
+        <div className="location-page fadein animation-duration-500">
+            <div className="container mx-auto px-4 location-container">
                 
                 <div className="text-center mb-6">
                     <h1 className="text-4xl font-bold mb-2">Onde Estamos</h1>
@@ -20,10 +23,10 @@ export const LocationPage = () => {
                 <div className="grid">
                     {/* Informações de Contato */}
                     <div className="col-12 md:col-5 mb-4">
-                        <Card title="Boards & Cats (Sede)" className="h-full shadow-2">
+                        <Card title="Boards & Cats (Sede)" className="shadow-2 location-info-card">
                             <div className="flex flex-column gap-4 mt-2">
                                 <div className="flex align-items-start gap-3">
-                                    <i className="pi pi-map-marker text-primary text-2xl mt-1"></i>
+                                    <i className="pi pi-map-marker contact-icon"></i>
                                     <div>
                                         <h4 className="m-0 text-lg">Endereço</h4>
                                         <p className="m-0 text-600 line-height-3 mt-1">
@@ -36,7 +39,7 @@ export const LocationPage = () => {
                                 </div>
 
                                 <div className="flex align-items-start gap-3">
-                                    <i className="pi pi-clock text-primary text-2xl mt-1"></i>
+                                    <i className="pi pi-clock contact-icon"></i>
                                     <div>
                                         <h4 className="m-0 text-lg">Horário de Atendimento</h4>
                                         <p className="m-0 text-600 line-height-3 mt-1">
@@ -48,7 +51,7 @@ export const LocationPage = () => {
                                 </div>
 
                                 <div className="flex align-items-start gap-3">
-                                    <i className="pi pi-envelope text-primary text-2xl mt-1"></i>
+                                    <i className="pi pi-envelope contact-icon"></i>
                                     <div>
                                         <h4 className="m-0 text-lg">Contato</h4>
                                         <p className="m-0 text-600 mt-1">pepper.pbco@gmail.com</p>
@@ -67,24 +70,24 @@ export const LocationPage = () => {
                         </Card>
                     </div>
 
-                    {/* Mapa (Placeholder visual) */}
+                    {/* Mapa */}
                     <div className="col-12 md:col-7 mb-4">
-                        <div className="border-round shadow-2 overflow-hidden h-full bg-gray-200 flex align-items-center justify-content-center relative" style={{ minHeight: '400px' }}>
-                            {/* Aqui iria o Iframe do Google Maps. Como é um exercício, simulamos a área */}
+                        <div className="shadow-2 location-map-wrapper">
+                            
+                            {/* Placeholder (aparece enquanto carrega ou se falhar) */}
                             <div className="text-center p-4">
                                 <i className="pi pi-map text-6xl text-gray-400 mb-3"></i>
-                                <p className="text-gray-600 font-semibold">Mapa da Loja</p>
+                                <p className="text-gray-600 font-semibold">Carregando Mapa...</p>
                                 <p className="text-sm text-gray-500">Rua Aimoré, 983 - Pato Branco</p>
                             </div>
                             
-                            {/* Se quiser usar um iframe real no futuro: */}
+                            {/* Iframe Real */}
                              <iframe 
-                                width="100%" 
-                                height="100%" 
-                                style={{ border: 0, position: 'absolute', top: 0, left: 0 }} 
+                                className="location-map-iframe"
                                 loading="lazy" 
                                 allowFullScreen 
                                 src={`https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                                title="Mapa da Loja"
                             ></iframe> 
                         </div>
                     </div>

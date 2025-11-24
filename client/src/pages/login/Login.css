@@ -11,7 +11,7 @@
 
 /* Estilização do Card de Login */
 .login-card {
-    width: 60vw;
+    max-width: 380px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* shadow-4 aproximado */
     border-radius: 16px !important; /* Requisito solicitado */
     background-color: var(--surface-card);

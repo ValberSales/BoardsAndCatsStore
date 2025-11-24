@@ -1,21 +1,16 @@
 import { useEffect, useState, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { DataView } from 'primereact/dataview';
+import { DataView, type DataViewPageEvent } from 'primereact/dataview'; // Importe DataViewPageEvent
 import { Sidebar } from 'primereact/sidebar'; 
 import { Button } from 'primereact/button';
 
-// Tipos
 import type { IProduct, ICategory } from '@/commons/types';
-
-// Serviços
 import ProductService from '@/services/product-service';
 import CategoryService from '@/services/category-service';
-
-// Contextos
 import { CartContext } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
-// Componentes
 import { SearchFilterSidebar } from '@/components/search-filter-sidebar';
 import { ProductListItem } from '@/components/product-list-item';
 import { EmptyResults } from '@/components/empty-results';
@@ -32,17 +27,24 @@ export function SearchResultsPage() {
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     
-    // Estado para controlar o sidebar mobile
+    // Estado para paginação controlada
+    const [first, setFirst] = useState(0);
+    
     const [mobileFilterVisible, setMobileFilterVisible] = useState(false); 
 
     const { addToCart } = useContext(CartContext);
     const { showToast } = useToast();
+    const { scrollToTop } = useScrollToTop(); 
 
+    // Carregar dados (Reseta paginação se mudar a query)
     useEffect(() => {
+        setFirst(0); 
         loadData();
     }, [query]);
 
+    // Filtrar dados (Reseta paginação se mudar o filtro)
     useEffect(() => {
+        setFirst(0);
         if (selectedCategory === null) {
             setFilteredProducts(allProducts);
         } else {
@@ -84,9 +86,18 @@ export function SearchResultsPage() {
         showToast({ severity: 'success', summary: 'Sucesso', detail: `${product.name} adicionado ao carrinho!` });
     };
 
-    const handleSelectCategory = (id: number | null) => {
+    const handleCategoryChange = (id: number | null, isMobile: boolean = false) => {
         setSelectedCategory(id);
-        setMobileFilterVisible(false); // Fecha o sidebar ao selecionar
+        scrollToTop(); 
+        if (isMobile) {
+            setMobileFilterVisible(false);
+        }
+    };
+
+    // Handler da paginação
+    const onPageChange = (event: DataViewPageEvent) => {
+        setFirst(event.first);
+        scrollToTop();
     };
 
     const itemTemplate = (product: IProduct, index: number) => {
@@ -110,34 +121,31 @@ export function SearchResultsPage() {
     return (
         <div className="search-results-layout">
             
-            {/* --- FILTROS DESKTOP (Escondido no Mobile via CSS) --- */}
             <div className="desktop-filter-container">
                 <SearchFilterSidebar 
                     categories={categories}
                     allProducts={allProducts}
                     selectedCategory={selectedCategory}
-                    onSelectCategory={setSelectedCategory}
+                    onSelectCategory={(id) => handleCategoryChange(id, false)}
                 />
             </div>
 
-            {/* --- SIDEBAR MOBILE (Popup) --- */}
             <Sidebar 
                 visible={mobileFilterVisible} 
                 onHide={() => setMobileFilterVisible(false)}
-                className="sm:w-20rem" // Largura total em telas muito pequenas, ou fixa em sm
+                className="sm:w-20rem" 
             >
                 <div className="pt-3">
                     <SearchFilterSidebar 
                         categories={categories}
                         allProducts={allProducts}
                         selectedCategory={selectedCategory}
-                        onSelectCategory={handleSelectCategory}
+                        onSelectCategory={(id) => handleCategoryChange(id, true)}
                     />
                 </div>
             </Sidebar>
 
             <main className="search-results-content">
-                {/* --- BOTÃO DE FILTRO MOBILE --- */}
                 <div className="filter-button mb-3">
                     <Button 
                         label="Filtrar Resultados" 
@@ -159,8 +167,12 @@ export function SearchResultsPage() {
                         value={filteredProducts} 
                         listTemplate={listTemplate} 
                         paginator 
-                        rows={10} 
+                        rows={5} 
                         loading={loading}
+                        // Controle da Paginação
+                        first={first}
+                        onPage={onPageChange}
+                        
                     />
                 </div>
             </main>

@@ -1,0 +1,25 @@
+
+.contact-page {
+    padding-top: 1rem;
+}
+
+.contact-container {
+    max-width: 800px;
+}
+
+.contact-label {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.contact-whatsapp-section {
+    margin-top: 3rem;
+    text-align: center;
+    color: var(--text-color-secondary);
+}
+
+.contact-card {
+    border-radius: 16px !important; 
+    overflow: hidden; 
+}

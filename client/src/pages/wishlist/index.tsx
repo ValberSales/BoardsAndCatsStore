@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { DataView } from 'primereact/dataview';
+import { DataView, type DataViewPageEvent } from 'primereact/dataview'; // Importe DataViewPageEvent
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
@@ -10,15 +10,23 @@ import { CartContext } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { API_BASE_URL } from "@/lib/axios";
 import { Divider } from 'primereact/divider';
+import { useScrollToTop } from '@/hooks/use-scroll-to-top'; // Importe o hook
+
 import './Wishlist.css';
 
 export function WishlistPage() {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [loading, setLoading] = useState(true);
     
+    // Estado para controlar a paginação
+    const [first, setFirst] = useState(0); 
+
     const navigate = useNavigate();
     const { addToCart } = useContext(CartContext);
     const { showToast } = useToast();
+    
+    // Inicializa o hook de scroll
+    const { scrollToTop } = useScrollToTop(); 
 
     useEffect(() => {
         loadWishlist();
@@ -45,6 +53,12 @@ export function WishlistPage() {
         }
     };
 
+    // Handler para mudança de página
+    const onPageChange = (event: DataViewPageEvent) => {
+        setFirst(event.first);
+        scrollToTop();
+    };
+
     const handleAddToCart = (e: React.MouseEvent, product: IProduct) => {
         e.stopPropagation();
         addToCart(product);
@@ -56,7 +70,17 @@ export function WishlistPage() {
         try {
             const response = await WishlistService.toggle(productId);
             if (response.success) {
-                setProducts(prev => prev.filter(p => p.id !== productId));
+                // Atualiza a lista local removendo o item
+                setProducts(prev => {
+                    const updated = prev.filter(p => p.id !== productId);
+                    
+                    // Correção opcional: Se a página atual ficar vazia após excluir, voltar uma página
+                    if (first >= updated.length && first > 0) {
+                        setFirst(Math.max(0, first - 5)); // 5 é o número de rows
+                    }
+                    return updated;
+                });
+
                 showToast({ severity: 'info', summary: 'Removido', detail: 'Produto removido da lista.', life: 2000 });
             } else {
                 showToast({ severity: 'error', summary: 'Erro', detail: 'Falha ao atualizar a lista.', life: 2000 });
@@ -81,8 +105,6 @@ export function WishlistPage() {
     const itemTemplate = (product: IProduct, index: number) => {
         return (
             <div className="col-12" key={product.id}>
-                
-                {/* Divisor aparece apenas entre itens */}
                 {index !== 0 && <Divider className="m-0" />}
 
                 <div 
@@ -91,8 +113,6 @@ export function WishlistPage() {
                     )}
                     onClick={() => navigate(`/products/${product.id}`)}
                 >
-                    
-                    {/* 1. Imagem */}
                     <div className="list-image-wrapper">
                         <img 
                             className="list-item-img shadow-2" 
@@ -100,12 +120,9 @@ export function WishlistPage() {
                             alt={product.name} 
                             onError={(e) => (e.currentTarget.src = 'https://primefaces.org/cdn/primereact/images/product/bamboo-watch.jpg')}
                         />
-                        {product.promo && (
-                            <span className="promo-badge">%</span>
-                        )}
+                        {product.promo && <span className="promo-badge">%</span>}
                     </div>
 
-                    {/* 2. Detalhes (Central) */}
                     <div className="wishlist-item-details">
                         <div className="text-2xl font-bold text-900">{product.name}</div>
                         
@@ -114,21 +131,15 @@ export function WishlistPage() {
                                 <i className="pi pi-tag text-700"></i>
                                 <span className="font-semibold text-700">{product.category?.name || 'Geral'}</span>
                             </span>
-                            <Tag 
-                                value={getInventoryStatus(product.stock)} 
-                                severity={getSeverity(product)} 
-                            ></Tag>
+                            <Tag value={getInventoryStatus(product.stock)} severity={getSeverity(product)} />
                         </div>
                         
-                        {/* Preço Mobile (Controlado pelo CSS) */}
                         <div className="wishlist-price-mobile text-2xl font-semibold text-900">
                             R$ {product.price.toFixed(2)}
                         </div>
                     </div>
 
-                    {/* 3. Ações e Preço Desktop (Direita) */}
                     <div className="wishlist-item-actions">
-                        {/* Preço Desktop (Controlado pelo CSS) */}
                         <span className="wishlist-price-desktop text-2xl font-semibold text-900">
                             R$ {product.price.toFixed(2)}
                         </span>
@@ -141,7 +152,7 @@ export function WishlistPage() {
                                 tooltipOptions={{ position: 'bottom' }}
                                 disabled={product.stock === 0}
                                 onClick={(e) => handleAddToCart(e, product)}
-                            ></Button>
+                            />
                             
                             <Button 
                                 icon="pi pi-trash" 
@@ -149,7 +160,7 @@ export function WishlistPage() {
                                 tooltip="Excluir"
                                 tooltipOptions={{ position: 'bottom' }}
                                 onClick={(e) => handleRemove(e, product.id!)}
-                            ></Button>
+                            />
                         </div>
                     </div>
                 </div>
@@ -164,7 +175,6 @@ export function WishlistPage() {
     };
 
     return (
-        /* Controle de largura movido para o CSS .wishlist-container */
         <div className="wishlist-container flex flex-column align-items-center px-4">
             <h2 className="text-900 font-bold mb-4 align-self-start">Minha Lista de Desejos</h2>
             
@@ -176,6 +186,10 @@ export function WishlistPage() {
                     rows={5} 
                     emptyMessage="Nenhum item na lista."
                     loading={loading}
+                    
+                    // Propriedades Adicionadas
+                    first={first}
+                    onPage={onPageChange}
                 />
             </div>
         </div>

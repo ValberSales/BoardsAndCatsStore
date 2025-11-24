@@ -1,0 +1,44 @@
+/* Container principal com padding do topo */
+.location-page {
+    padding-top: 1rem;
+}
+
+/* Limite de largura central */
+.location-container {
+    max-width: 1000px;
+}
+
+/* Altura total para o card de informações para alinhar com o mapa */
+.location-info-card {
+    height: 100%;
+    border-radius: 16px;
+}
+
+/* Padronização dos ícones de contato */
+.contact-icon {
+    font-size: 1.5rem; /* text-2xl */
+    color: var(--primary-color);
+    margin-top: 0.25rem; /* mt-1 */
+}
+
+/* Container do Mapa */
+.location-map-wrapper {
+    min-height: 400px;
+    height: 100%;
+    background-color: var(--surface-ground); 
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.location-map-iframe {
+    border: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}

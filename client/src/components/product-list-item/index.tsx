@@ -1,4 +1,3 @@
-import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
@@ -6,9 +5,7 @@ import { Divider } from 'primereact/divider';
 
 import { API_BASE_URL } from "@/lib/axios";
 import type { IProduct } from '@/commons/types';
-import WishlistService from "@/services/wishlist-service";
-import { AuthContext } from "@/context/AuthContext";
-import { useToast } from "@/context/ToastContext";
+import { useWishlist } from '@/hooks/use-wishlist'; // Importando o novo hook
 
 import './ProductListItem.css';
 
@@ -16,7 +13,6 @@ interface ProductListItemProps {
     product: IProduct;
     showDivider: boolean;
     onAddToCart: (e: React.MouseEvent, product: IProduct) => void;
-    // onToggleWishlist removido, pois agora é interno
 }
 
 export function ProductListItem({ 
@@ -25,47 +21,9 @@ export function ProductListItem({
     onAddToCart 
 }: ProductListItemProps) {
     const navigate = useNavigate();
-    const { authenticated } = useContext(AuthContext);
-    const { showToast } = useToast();
     
-    const [inWishlist, setInWishlist] = useState(false);
-
-    // Verifica se o item já está na wishlist ao carregar
-    useEffect(() => {
-        if (authenticated && product.id) {
-            WishlistService.check(product.id).then((status) => {
-                setInWishlist(status);
-            });
-        }
-    }, [authenticated, product.id]);
-
-    const handleWishlistClick = async (e: React.MouseEvent) => {
-        e.stopPropagation();
-    
-        if (!authenticated) {
-            showToast({
-                severity: 'info',
-                summary: 'Login necessário',
-                detail: 'Faça login para adicionar aos favoritos.',
-                life: 3000
-            });
-            return;
-        }
-    
-        if (product.id) {
-            const response = await WishlistService.toggle(product.id);
-            if (response.success) {
-                const isAdded = response.data === true;
-                setInWishlist(isAdded);
-                showToast({
-                    severity: 'success',
-                    summary: isAdded ? 'Favoritado' : 'Removido',
-                    detail: isAdded ? 'Produto adicionado aos favoritos!' : 'Produto removido dos favoritos.',
-                    life: 2000
-                });
-            }
-        }
-    };
+    // Utilizando o hook para gerenciar o estado da wishlist
+    const { inWishlist, toggleWishlist, wishlistLoading } = useWishlist(product);
 
     const getInventoryStatus = (stock: number) => {
         if (stock === 0) return { label: 'ESGOTADO', severity: 'danger' };
@@ -123,7 +81,8 @@ export function ProductListItem({
                             className={`btn-circle-action heart ${inWishlist ? 'btn-circle-action heartfill' : 'btn-circle-action heart'}`}
                             tooltip="Salvar na Lista de Desejos"
                             tooltipOptions={{ position: 'bottom' }}
-                            onClick={handleWishlistClick}
+                            onClick={toggleWishlist} // Usa a função do hook diretamente
+                            loading={wishlistLoading} // Opcional: mostra loading no botão enquanto processa
                         />
 
                         <Button 

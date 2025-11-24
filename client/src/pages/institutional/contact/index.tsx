@@ -4,6 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
+import './Contact.css';
 
 export const ContactPage = () => {
     const [loading, setLoading] = useState(false);
@@ -13,7 +14,6 @@ export const ContactPage = () => {
         e.preventDefault();
         setLoading(true);
 
-        // Simula envio
         setTimeout(() => {
             setLoading(false);
             toast.current?.show({
@@ -22,40 +22,40 @@ export const ContactPage = () => {
                 detail: 'Recebemos seu contato! Responderemos em breve.',
                 life: 3000
             });
-            // Resetar form (opcional)
             (e.target as HTMLFormElement).reset();
         }, 1500);
     };
 
     return (
-        <div style={{ paddingTop: '70px' }} className="fadein animation-duration-500">
+        <div className="contact-page fadein animation-duration-500">
             <Toast ref={toast} />
-            <div className="container mx-auto px-4 my-6" style={{ maxWidth: '800px' }}>
+            <div className="container mx-auto px-4 my-6 contact-container">
                 
                 <div className="text-center mb-6">
                     <h1 className="text-4xl font-bold mb-2">Fale Conosco</h1>
                     <p className="text-xl text-600">Dúvidas, sugestões ou reclamações? Mande um oi!</p>
                 </div>
 
-                <Card className="shadow-2">
+                {/* ADICIONADO: classe 'contact-card' */}
+                <Card className="shadow-2 contact-card">
                     <form onSubmit={handleSubmit} className="p-fluid">
                         <div className="field mb-4">
-                            <label htmlFor="name" className="font-bold mb-2 block">Nome Completo</label>
+                            <label htmlFor="name" className="contact-label">Nome Completo</label>
                             <InputText id="name" required placeholder="Ex: Valber Sales" />
                         </div>
 
                         <div className="field mb-4">
-                            <label htmlFor="email" className="font-bold mb-2 block">E-mail</label>
+                            <label htmlFor="email" className="contact-label">E-mail</label>
                             <InputText id="email" type="email" required placeholder="seu@email.com" />
                         </div>
 
                         <div className="field mb-4">
-                            <label htmlFor="subject" className="font-bold mb-2 block">Assunto</label>
+                            <label htmlFor="subject" className="contact-label">Assunto</label>
                             <InputText id="subject" required placeholder="Ex: Dúvida sobre o jogo Catan" />
                         </div>
 
                         <div className="field mb-4">
-                            <label htmlFor="message" className="font-bold mb-2 block">Mensagem</label>
+                            <label htmlFor="message" className="contact-label">Mensagem</label>
                             <InputTextarea id="message" rows={5} required placeholder="Escreva sua mensagem aqui..." autoResize />
                         </div>
 
@@ -71,7 +71,7 @@ export const ContactPage = () => {
                     </form>
                 </Card>
 
-                <div className="mt-6 text-center text-600">
+                <div className="contact-whatsapp-section">
                     <p>Também atendemos pelo WhatsApp:</p>
                     <Button 
                         label="(46) 99999-8888" 

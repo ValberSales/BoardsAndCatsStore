@@ -14,7 +14,7 @@ import { CartProvider } from './context/CartContext.tsx';
 import { ToastProvider } from './context/ToastContext.tsx'; // <--- Importar
 
 const themeId = "theme-link";
-const themeBase = "cyan"; 
+const themeBase = "teal"; 
 let themeHref = `https://unpkg.com/primereact/resources/themes/lara-light-${themeBase}/theme.css`;
 
 const savedTheme = localStorage.getItem("theme");
@@ -34,7 +34,6 @@ link.href = themeHref;
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <PrimeReactProvider>
-      {/* ToastProvider deve ficar alto na árvore para estar disponível em tudo */}
       <ToastProvider>
         <BrowserRouter>
           <AuthProvider>
