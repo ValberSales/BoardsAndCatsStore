@@ -51,12 +51,12 @@ export const CheckoutPage = () => {
         const calculateShipping = async () => {
             if (selectedAddress && selectedAddress.state) {
                 try {
-                    // Consulta o backend para pegar o valor real baseado no estado
-                    const response = await api.get(`/shipping/calculate?state=${selectedAddress.state}`);
+                   
+                    const response = await api.get(`/shipping/calculate?cep=${selectedAddress.zip}`);
                     setShippingCost(response.data.value);
                 } catch (error) {
                     console.error("Erro ao calcular frete:", error);
-                    setShippingCost(0); 
+                    setShippingCost(0);
                 }
             } else {
                 setShippingCost(0);

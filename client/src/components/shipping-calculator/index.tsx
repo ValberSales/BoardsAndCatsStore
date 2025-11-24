@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { InputMask } from 'primereact/inputmask';
 import { Button } from 'primereact/button';
-import axios from 'axios';
 import { api } from '@/lib/axios';
 
 interface ShippingCalculatorProps {
@@ -28,25 +27,17 @@ export const ShippingCalculator = ({ onCalculate }: ShippingCalculatorProps) => 
         if (onCalculate) onCalculate(0); // Reseta o pai
 
         try {
-            // 1. Busca UF
-            const viaCepResponse = await axios.get(`https://viacep.com.br/ws/${cleanCep}/json/`);
             
-            if (viaCepResponse.data.erro) {
-                setError('CEP não encontrado');
-                setLoading(false);
-                return;
-            }
-
-            const uf = viaCepResponse.data.uf;
-
-            // 2. Busca valor no Backend
-            const backendResponse = await api.get(`/shipping/calculate?state=${uf}`);
+            const backendResponse = await api.get(`/shipping/calculate?cep=${cleanCep}`);
             
             const value = backendResponse.data.value;
-            setShippingValue(value);
             
-            // Avisa o componente pai
-            if (onCalculate) onCalculate(value);
+            if (value === 0) {
+                setError('Não foi possível calcular o frete para este CEP.');
+            } else {
+                setShippingValue(value);
+                if (onCalculate) onCalculate(value);
+            }
 
         } catch (err) {
             console.error(err);
@@ -81,14 +72,17 @@ export const ShippingCalculator = ({ onCalculate }: ShippingCalculatorProps) => 
                 </div>
             </div>
 
-            {/* Resultado do Cálculo com Design Original (Ícone de Caixa) */}
-            {shippingValue !== null && !error && (
-                <div className="mt-3 border-round p-2 flex justify-content-between align-items-center fadein animation-duration-500">
+            {/* Resultado do Cálculo */}
+            {shippingValue !== null && !error && shippingValue > 0 && (
+                <div className="mt-3 border-round p-2 flex justify-content-between align-items-center fadein animation-duration-500 surface-50">
                     <div className="flex align-items-center gap-2">
-                        <i className="pi pi-box text-l"></i>
-                        <span className="font-small text-l">Entrega Econômica</span>
+                        <i className="pi pi-box text-primary text-xl"></i>
+                        <div className="flex flex-column">
+                            <span className="font-medium text-900">PAC - Correios</span>
+                            <span className="text-sm text-500">Entrega Econômica</span>
+                        </div>
                     </div>
-                    <span className="font-bold text-l">
+                    <span className="font-bold text-xl text-primary">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(shippingValue)}
                     </span>
                 </div>

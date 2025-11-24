@@ -18,8 +18,12 @@ public class ShippingController {
     }
 
     @GetMapping("/calculate")
-    public ResponseEntity<?> calculate(@RequestParam String state) {
-        BigDecimal value = shippingService.calculateShipping(state);
+    public ResponseEntity<?> calculate(
+            @RequestParam String cep,
+            @RequestParam(required = false, defaultValue = "1.0") Double weight
+    ) {
+
+        BigDecimal value = shippingService.calculateShipping(cep, weight);
         return ResponseEntity.ok(Map.of("value", value));
     }
 }
