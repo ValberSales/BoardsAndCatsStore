@@ -17,12 +17,18 @@ interface OrderDetailDialogProps {
     order: IOrder | null;
 }
 
+const paymentMap: Record<string, string> = {
+    'DEBIT_CARD': 'Débito',
+    'CREDIT_CARD': 'Crédito',
+    'PIX': 'Pix',
+    'BOLETO': 'Boleto Bancário'
+};
+
 export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogProps) => {
     const toast = useRef<Toast>(null);
 
     if (!order) return null;
 
-    // Lógica da Timeline
     const events = [
         { status: 'PENDING', label: 'Recebido', icon: 'pi pi-shopping-cart', color: '#9C27B0' },
         { status: 'PAID', label: 'Pago', icon: 'pi pi-wallet', color: '#673AB7' },
@@ -46,17 +52,17 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
                 navigator.clipboard.writeText(order.trackingCode);
                 toast.current?.show({ severity: 'success', summary: 'Copiado', detail: 'Código copiado!', life: 2000 });
             } else {
-                const textArea = document.createElement("textarea");
-                textArea.value = order.trackingCode;
-                document.body.appendChild(textArea);
-                textArea.select();
                 try {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = order.trackingCode;
+                    document.body.appendChild(textArea);
+                    textArea.select();
                     document.execCommand('copy');
+                    document.body.removeChild(textArea);
                     toast.current?.show({ severity: 'success', summary: 'Copiado', detail: 'Código copiado!', life: 2000 });
                 } catch (err) {
                     console.error('Erro ao copiar', err);
                 }
-                document.body.removeChild(textArea);
             }
         }
     };
@@ -75,22 +81,31 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
                 <span className="font-bold text-900 text-lg mb-1">{item.label}</span>
                 {item.status === order.status && (
                     <div className="text-sm text-color-secondary">
-                        {new Date(order.date).toLocaleDateString('pt-BR')} às {new Date(order.date).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
+                        {new Date(order.date).toLocaleDateString('pt-BR')} às {new Date(order.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                     </div>
                 )}
             </div>
         );
     };
 
-    // --- CÁLCULO DO SUBTOTAL REAL ---
-    // O backend envia o subtotal já calculado em cada item, basta somar.
     const subTotalItems = order.items.reduce((acc, item) => acc + item.subtotal, 0);
 
+    const rawPaymentDesc = order.payment?.description || '';
+    let displayPayment = 'Não informado';
+
+    if (rawPaymentDesc) {
+        const parts = rawPaymentDesc.split(' - ');
+        const type = parts[0];
+        const detail = parts.slice(1).join(' - ');
+        const translatedType = paymentMap[type] || type;
+        displayPayment = detail ? `${translatedType} - ${detail}` : translatedType;
+    }
+
     return (
-        <Dialog 
-            visible={visible} 
+        <Dialog
+            visible={visible}
             onHide={onHide}
-            header={`Pedido #${order.id}`} 
+            header={`Pedido #${order.id}`}
             className="order-detail-dialog"
             modal
             draggable={false}
@@ -98,21 +113,19 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
         >
             <Toast ref={toast} />
             <div className="grid">
-                
-                {/* Coluna Esquerda: Status, Rastreio e Endereço */}
                 <div className="col-12 md:col-5">
                     <Card className="detail-card shadow-none h-full">
                         <span className="section-title mb-4">Status do Pedido</span>
-                        
-                        <Timeline 
-                            value={timelineEvents} 
-                            layout="vertical" 
-                            align="left" 
-                            marker={customizedMarker} 
-                            content={customizedContent} 
+
+                        <Timeline
+                            value={timelineEvents}
+                            layout="vertical"
+                            align="left"
+                            marker={customizedMarker}
+                            content={customizedContent}
                             className="custom-timeline w-full"
                         />
-                        
+
                         {order.trackingCode && (
                             <>
                                 <Divider className="my-4" />
@@ -122,40 +135,39 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
                                         <i className="pi pi-box text-primary text-xl"></i>
                                         <span className="tracking-code">{order.trackingCode}</span>
                                     </div>
-                                    <Button 
-                                        icon="pi pi-copy" 
-                                        rounded 
-                                        text 
-                                        severity="secondary" 
-                                        tooltip="Copiar" 
-                                        onClick={copyTracking} 
+                                    <Button
+                                        icon="pi pi-copy"
+                                        rounded
+                                        text
+                                        severity="secondary"
+                                        tooltip="Copiar"
+                                        onClick={copyTracking}
                                     />
                                 </div>
                             </>
                         )}
-                        
+
                         <Divider className="my-4" />
-                        
+
                         <span className="section-title">Endereço de Entrega</span>
                         <p className="address-info">
                             <span className="font-semibold block text-900 mb-1">{order.address.street}</span>
-                            {order.address.city} - {order.address.state}<br/>
+                            {order.address.city} - {order.address.state}<br />
                             CEP: {order.address.zip}
                         </p>
                     </Card>
                 </div>
 
-                {/* Coluna Direita: Itens e Total */}
                 <div className="col-12 md:col-7">
                     <Card className="detail-card shadow-none h-full">
                         <span className="section-title">Itens Comprados</span>
-                        
+
                         <div className="flex flex-column mb-2">
                             {order.items?.map((item: IOrderItem, index: number) => (
                                 <div key={index} className="order-item-row">
-                                    <img 
-                                        src={`${API_BASE_URL}${item.product.imageUrl}`} 
-                                        alt={item.product.name} 
+                                    <img
+                                        src={`${API_BASE_URL}${item.product.imageUrl}`}
+                                        alt={item.product.name}
                                         className="order-item-img"
                                     />
                                     <div className="flex-1">
@@ -171,53 +183,47 @@ export const OrderDetailDialog = ({ visible, onHide, order }: OrderDetailDialogP
                             ))}
                         </div>
 
-                        {/* --- INICIO DA CORREÇÃO FINANCEIRA --- */}
                         <div className="financial-summary">
                             <div className="summary-row">
                                 <span>Subtotal</span>
-                                {/* Exibe a soma dos itens, não o total final */}
                                 <span className="font-medium text-900">
                                     {subTotalItems.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                 </span>
                             </div>
-                            
+
                             <div className="summary-row">
                                 <span>Frete</span>
-                                {/* Lógica para exibir Grátis ou o Valor do Frete */}
                                 <span className={order.shipping > 0 ? "font-medium text-900" : "font-medium text-green-600"}>
-                                    {order.shipping > 0 
+                                    {order.shipping > 0
                                         ? order.shipping.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                                         : 'Grátis'}
                                 </span>
                             </div>
 
-                            {/* Exibe desconto apenas se existir (> 0) */}
                             {order.discount > 0 && (
                                 <div className="summary-row text-green-600">
                                     <span>Desconto</span>
                                     <span>- {order.discount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                                 </div>
                             )}
-                            
+
                             <Divider className="my-2" />
-                            
+
                             <div className="total-row">
                                 <span>Total Pago</span>
                                 <span>{order.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                             </div>
-                            
+
                             <div className="mt-3 text-right">
-                                <Tag 
-                                    value={order.payment.description} 
-                                    icon="pi pi-credit-card" 
-                                    severity="info" 
+                                <Tag
+                                    value={displayPayment}
+                                    icon="pi pi-credit-card"
+                                    severity="info"
                                     className="text-sm px-3"
                                     rounded
                                 ></Tag>
                             </div>
                         </div>
-                        {/* --- FIM DA CORREÇÃO FINANCEIRA --- */}
-                        
                     </Card>
                 </div>
             </div>

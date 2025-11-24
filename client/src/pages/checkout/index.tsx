@@ -74,8 +74,7 @@ export const CheckoutPage = () => {
 
         setOrderProcessing(true);
         try {
-            // Enviando payload completo para a API
-            // O backend espera que 'discount' seja o valor em DINHEIRO para subtrair
+
             const response = await api.post("/orders/checkout", {
                 addressId: selectedAddress.id,
                 paymentMethodId: selectedPayment.id,
@@ -89,7 +88,7 @@ export const CheckoutPage = () => {
 
                 setTimeout(() => {
                     navigate("/orders");
-                }, 3500);
+                }, 5000);
             }
         } catch (error) {
             console.error(error);
@@ -106,23 +105,30 @@ export const CheckoutPage = () => {
     // --- TELA DE SUCESSO ---
     if (orderFinished) {
         return (
-            <div className="surface-ground min-h-screen flex align-items-center justify-content-center">
-                <Card className="text-center shadow-4 border-round-2xl p-5" style={{ maxWidth: '500px' }}>
-                    <div className="mb-4">
-                        <div className="bg-green-100 border-circle w-6rem h-6rem flex align-items-center justify-content-center mx-auto mb-4 animation-duration-500 fadeindown">
-                            <i className="pi pi-check text-4xl text-green-600"></i>
-                        </div>
-                        <h1 className="text-3xl font-bold text-900 mb-2">Pedido Enviado!</h1>
-                        <p className="text-gray-600 line-height-3">
-                            Obrigado pela compra! Seus jogos já estão sendo separados por nossa equipe (e pelos gatos).
-                        </p>
+            <div className="success-page">
+            <Card className="success-card shadow-4">
+                <div className="content-wrapper">
+                    
+                    <div className="icon-container animation-duration-500 fadeindown">
+                        <i className="pi pi-check success-icon"></i>
                     </div>
-                    <div className="flex align-items-center justify-content-center gap-2 text-primary">
-                        <ProgressSpinner style={{ width: '30px', height: '30px' }} strokeWidth="4" />
-                        <span className="font-medium">Redirecionando para seus pedidos...</span>
-                    </div>
-                </Card>
-            </div>
+                    
+                    <h1 className="success-title">Pedido Enviado!</h1>
+                    
+                    <p className="success-message">
+                        Obrigado pela compra! Seus jogos já estão sendo separados por nossa equipe (e pelos gatos).
+                    </p>
+                </div>
+
+                <div className="redirect-box">
+                    <ProgressSpinner 
+                        className="spinner-small" 
+                        strokeWidth="4" 
+                    />
+                    <span className="redirect-text">Redirecionando para seus pedidos...</span>
+                </div>
+            </Card>
+        </div>
         );
     }
 
@@ -169,7 +175,7 @@ export const CheckoutPage = () => {
     };
 
     return (
-        <div className="surface-ground min-h-screen pt-7 pb-8">
+        <div className="surface-ground min-h-screen">
             <Toast ref={toast} />
             <div className="container mx-auto px-4 checkout-container">
 
@@ -184,10 +190,10 @@ export const CheckoutPage = () => {
 
                             <div>
                                 <Divider className="mt-5" />
-                                <div className="flex justify-content-between pt-4 surface-border px-2 md:px-4">
+                                <div className="flex justify-content-between pt-4 surface-border px-2">
 
                                     <Button
-                                        label={activeIndex === 0 ? "Voltar ao Carrinho" : "Voltar"}
+                                        label={activeIndex === 0 ? "Voltar" : "Voltar"}
                                         icon="pi pi-arrow-left"
                                         outlined
                                         onClick={() => activeIndex === 0 ? navigate('/cart') : setActiveIndex(prev => prev - 1)}
@@ -204,10 +210,9 @@ export const CheckoutPage = () => {
                                         />
                                     ) : (
                                         <Button
-                                            label="Finalizar Compra"
+                                            label="Finalizar"
                                             icon="pi pi-check-circle"
                                             severity="success"
-                                            size="large"
                                             onClick={handleFinishOrder}
                                             loading={orderProcessing}
                                             disabled={isNextDisabled()}

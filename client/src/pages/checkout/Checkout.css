@@ -26,3 +26,74 @@
         display: none; /* Opcional: Esconder steps em mobile se ocupar muito espaço */
     }
 }
+
+/* Container principal da página */
+.success-page {
+    background-color: var(--surface-ground);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    min-height: 50vh;
+}
+
+/* Card customizado */
+.success-card {
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    border-radius: 16px !important; /* border-round-2xl */
+    box-shadow: var(--card-shadow, 0 4px 10px rgba(0,0,0,0.03)); /* Fallback ou variável do tema */
+}
+
+/* Container do ícone de check */
+.icon-container {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto; /* Centraliza e dá margem inferior */
+    background-color: var(--surface-card);
+    box-shadow: var(--card-shadow, 0 4px 10px rgba(0,0,0,0.2));
+}
+
+/* O ícone em si */
+.success-icon {
+    font-size: 2.5rem !important; /* text-4xl */
+    color: var(--green-600);
+}
+
+/* Títulos e textos */
+.success-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--text-color); /* text-900 */
+    margin-bottom: 0.5rem;
+}
+
+.success-message {
+    color: var(--text-color-secondary); /* text-gray-600 */
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+/* Área de redirecionamento (Spinner + Texto) */
+.redirect-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+}
+
+.redirect-text {
+    font-weight: 500;
+}
+
+/* Spinner pequeno - Substitui o style={{ width: 30px... }} */
+.spinner-small {
+    width: 30px !important;
+    height: 30px !important;
+}

@@ -104,8 +104,6 @@ export const ProductDetailPage = () => {
                             <Button 
                                 label={isOutOfStock ? "Indisponível" : "Adicionar ao Carrinho"}
                                 icon="pi pi-shopping-cart" 
-                                size="large"
-                                className="w-full font-bold"
                                 onClick={handleAddToCart}
                                 disabled={isOutOfStock}
                             />
@@ -114,14 +112,12 @@ export const ProductDetailPage = () => {
                             <Button 
                                 label={inWishlist ? "Remover da Lista de Desejos" : "Adicionar à Lista de Desejos"}
                                 icon={classNames("pi", {
-                                    "pi-heart-fill text-red-500": inWishlist,
+                                    "pi-heart-fill": inWishlist,
                                     "pi-heart": !inWishlist
                                 })}
                                 severity="secondary" 
                                 outlined 
-                                className={classNames("w-full transition-colors", {
-                                    "border-red-200 bg-red-50 text-red-600": inWishlist
-                                })}
+                                
                                 onClick={toggleWishlist}
                                 loading={wishlistLoading}
                             />
