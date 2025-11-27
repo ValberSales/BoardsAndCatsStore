@@ -12,6 +12,62 @@
     margin-bottom: 0.5rem;
 }
 
-.btn-delete-account:hover {
-    background-color: var(--red-50) !important;
+/* Container principal do card */
+.security-card {
+    height: 100%;
+}
+
+.danger-zone-label {
+    color: var(--red-500);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+
+/* 1. Container do Dialog e Arredondamento */
+.delete-account-dialog {
+    width: 450px;
+    border-radius: 16px !important;
+    overflow: hidden; /* Garante que o conteúdo respeite a borda arredondada */
+}
+
+/* Arredonda o topo do header */
+.delete-account-dialog .p-dialog-header {
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+}
+
+/* Arredonda o fundo do footer */
+.delete-account-dialog .p-dialog-footer {
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+    padding: 1.5rem; /* Mais espaçamento para os botões */
+}
+
+/* 2. Ícone de Perigo */
+.danger-icon {
+    font-size: 3rem; /* Equivalente ao text-5xl */
+    color: var(--red-500);
+    margin-bottom: 1.5rem;
+}
+
+/* 3. Input de Senha Expandido */
+.full-width-password {
+    width: 100%;
+}
+.full-width-password .p-inputtext {
+    width: 100%;
+}
+
+/* 4. Footer com botões lado a lado */
+.dialog-footer-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.dialog-btn {
+    flex: 1; /* Faz os botões dividirem o espaço igualmente */
+    justify-content: center;
 }

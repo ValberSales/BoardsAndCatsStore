@@ -85,10 +85,14 @@ const changePassword = async (data: IUserPasswordUpdate): Promise<IResponse> => 
     return response;
 };
 
-const deleteMe = async (): Promise<IResponse> => {
+const deleteMe = async (password: string): Promise<IResponse> => {
     let response = {} as IResponse;
     try {
-        await api.delete("/users/me");
+        // Agora enviamos apenas a password, combinando com o UserConfirmationDTO
+        await api.delete("/users/me", {
+            data: { password: password } 
+        });
+        
         response = {
             status: 204,
             success: true,
@@ -98,7 +102,7 @@ const deleteMe = async (): Promise<IResponse> => {
         response = {
             status: err.response?.status || 500,
             success: false,
-            message: "Erro ao excluir conta",
+            message: err.response?.data?.message || "Erro ao excluir conta",
             data: err.response?.data,
         };
     }

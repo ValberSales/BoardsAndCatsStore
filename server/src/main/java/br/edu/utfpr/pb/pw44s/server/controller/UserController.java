@@ -4,6 +4,7 @@ import br.edu.utfpr.pb.pw44s.server.dto.UserCreateDTO;
 import br.edu.utfpr.pb.pw44s.server.dto.UserDTO;
 import br.edu.utfpr.pb.pw44s.server.dto.UserPasswordDTO;
 import br.edu.utfpr.pb.pw44s.server.dto.UserProfileDTO;
+import br.edu.utfpr.pb.pw44s.server.dto.UserConfirmationDTO;
 import br.edu.utfpr.pb.pw44s.server.model.User;
 import br.edu.utfpr.pb.pw44s.server.security.SecurityConstants;
 import br.edu.utfpr.pb.pw44s.server.security.TokenService;
@@ -85,9 +86,10 @@ public class UserController {
                 .build();
     }
 
-    @DeleteMapping("me")
-    public ResponseEntity<Void> deleteMyAccount(@AuthenticationPrincipal User user) {
-        userService.deleteById(user.getId());
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMe(@RequestBody @Valid UserConfirmationDTO confirmationDTO) {
+        // Passa a senha recebida para o serviço
+        userService.deleteMe(confirmationDTO.getPassword());
     }
 }

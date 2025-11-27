@@ -2,14 +2,14 @@ package br.edu.utfpr.pb.pw44s.server.service.impl;
 
 import br.edu.utfpr.pb.pw44s.server.model.Order;
 import br.edu.utfpr.pb.pw44s.server.model.User;
-import br.edu.utfpr.pb.pw44s.server.repository.CartRepository; // <--- Importar
+import br.edu.utfpr.pb.pw44s.server.repository.CartRepository;
 import br.edu.utfpr.pb.pw44s.server.repository.OrderRepository;
 import br.edu.utfpr.pb.pw44s.server.repository.UserRepository;
-import br.edu.utfpr.pb.pw44s.server.repository.WishlistRepository; // <--- Importar
+import br.edu.utfpr.pb.pw44s.server.repository.WishlistRepository;
 import br.edu.utfpr.pb.pw44s.server.service.IUserService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder; // <--- Importar Contexto
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,15 +23,14 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final OrderRepository orderRepository;
-    // Injetar repositórios dependentes
     private final WishlistRepository wishlistRepository;
     private final CartRepository cartRepository;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
                            OrderRepository orderRepository,
-                           WishlistRepository wishlistRepository, // <--- Injeção
-                           CartRepository cartRepository) {       // <--- Injeção
+                           WishlistRepository wishlistRepository,
+                           CartRepository cartRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.orderRepository = orderRepository;
@@ -46,7 +45,6 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
 
     @Override
     public User save(User user) {
-        // Só encripta se for novo usuário (evita re-hash em updates)
         if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
@@ -55,6 +53,7 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Correção: Usar o método existente no repositório que retorna User direto
         User user = userRepository.findUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("Usuário não encontrado!");
@@ -62,38 +61,50 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
         return user;
     }
 
+    // Método auxiliar privado para centralizar a validação de senha
+    private void validarSenha(User user, String password) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha incorreta.");
+        }
+    }
+
     @Override
     public void changePassword(User user, String currentPassword, String newPassword) {
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A senha atual está incorreta.");
-        }
+        validarSenha(user, currentPassword);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 
+    @Override
+    @Transactional
+    public void deleteMe(String password) {
 
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User user = userRepository.findById(principal.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha incorreta. Não foi possível excluir a conta.");
+        }
+
+        this.deleteById(user.getId());
+    }
 
     @Override
     @Transactional
     public void deleteById(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
-            // 1. Limpar Wishlist (Dependência direta que causa o erro 23503)
             wishlistRepository.deleteByUserId(user.getId());
-
-            // 2. Limpar Carrinho (Se existir)
             cartRepository.deleteByUserId(user.getId());
 
-            // 3. Desvincular Pedidos (Histórico deve ser mantido, mas sem o User)
-            // Isso evita erro se houver FK em TB_ORDER -> TB_USER
             if (user.getOrders() != null) {
                 for (Order order : user.getOrders()) {
                     order.setUser(null);
                     orderRepository.save(order);
                 }
             }
-
-            // 4. Finalmente, deletar o Usuário
             userRepository.delete(user);
         }
     }

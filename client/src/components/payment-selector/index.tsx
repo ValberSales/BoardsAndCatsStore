@@ -174,7 +174,7 @@ export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply, or
             {/* Seção de Cupom */}
             <div className="mt-5 pt-4 border-top-1 surface-border">
                 <h3 className="text-lg font-bold text-900 mb-3">Cupom de Desconto</h3>
-                <div className="flex gap-2 max-w-30rem">
+                <div className="flex gap-2">
                     <div className="p-inputgroup flex-1">
                         <span className="p-inputgroup-addon">
                             <i className="pi pi-ticket"></i>

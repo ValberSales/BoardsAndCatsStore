@@ -16,14 +16,12 @@ import { CartPage } from "@/pages/cart";
 import { CheckoutPage } from "@/pages/checkout";
 import { WishlistPage } from "@/pages/wishlist";
 import { SearchResultsPage } from "@/pages/search-results";
-
-// Importe o componente novo
 import { ScrollToTop } from "@/components/scroll-to-top";
 
 export function AppRoutes() {
   return (
     <>
-      {/* Coloque ele aqui, ANTES das rotas */}
+      
       <ScrollToTop />
 
       <Routes>

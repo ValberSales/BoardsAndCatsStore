@@ -1,4 +1,4 @@
-// Tipos de Resposta e Usuário
+
 export interface IResponse {
   status?: number;
   success?: boolean;
@@ -11,7 +11,7 @@ export interface IUserRegister {
   username: string;
   password: string;
   phone: string;
-  cpf: string; // Adicionado: Obrigatório no cadastro
+  cpf: string;
 }
 
 export interface IUserLogin {
@@ -27,7 +27,7 @@ export interface AuthenticatedUser {
   displayName: string;
   username: string;
   phone: string;
-  cpf: string; // Adicionado: Para exibição (read-only)
+  cpf: string;
   authorities: Authorities[];
 }
 
@@ -36,11 +36,11 @@ export interface AuthenticationResponse {
   user: AuthenticatedUser;
 }
 
-// Tipos para Atualização de Usuário
+
 export interface IUserProfileUpdate {
     displayName: string;
     phone: string;
-    username: string; // Adicionado: Para troca de e-mail
+    username: string;
 }
 
 export interface IUserPasswordUpdate {
@@ -48,7 +48,6 @@ export interface IUserPasswordUpdate {
     newPassword: string;
 }
 
-// Tipos de Entidade Básicos
 export interface ICategory {
   id?: number;
   name: string;
@@ -88,7 +87,6 @@ export interface IPaymentMethod {
     description: string;
 }
 
-// Tipos para Pedidos (Order)
 export interface IOrderAddress {
     street: string;
     city: string;

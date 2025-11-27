@@ -11,6 +11,9 @@ import UserService from "@/services/user-service";
 import type { IUserPasswordUpdate } from "@/commons/types";
 import { useAuth } from "@/context/hooks/use-auth";
 
+// Importação do CSS
+import "./ChangePasswordDialog.css";
+
 interface ChangePasswordDialogProps {
     visible: boolean;
     onHide: () => void;
@@ -70,7 +73,7 @@ export const ChangePasswordDialog = ({ visible, onHide }: ChangePasswordDialogPr
     };
 
     const renderRuleItem = (rule: { label: string; valid: boolean }, index: number) => {
-        const color = rule.valid ? '#22c55e' : '#ef4444'; // Verde : Vermelho
+        const color = rule.valid ? '#22c55e' : '#ef4444';
 
         return (
             <li key={index} 
@@ -91,7 +94,15 @@ export const ChangePasswordDialog = ({ visible, onHide }: ChangePasswordDialogPr
     };
 
     return (
-        <Dialog header="Alterar Senha de Acesso" visible={visible} style={{ width: '100%', maxWidth: '450px' }} onHide={onHide}>
+        <Dialog 
+            header="Alterar Senha de Acesso" 
+            visible={visible} 
+            className="change-password-dialog" // Classe CSS aplicada
+            onHide={onHide}
+            draggable={false} // Bloqueia mover
+            resizable={false} // Bloqueia redimensionar
+            modal // Garante o overlay escuro atrás
+        >
             <Toast ref={toast} />
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-column gap-3 mt-2">
                 

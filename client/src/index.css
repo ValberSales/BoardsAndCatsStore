@@ -22,3 +22,63 @@ body {
     border-color: var(--primary-color) !important;
 }
 
+.p-inputtext:enabled:focus {
+
+    box-shadow: 0 0 0 2px var(--primary-color, #3B82F6) !important;
+    border-color: var(--primary-color, #3B82F6) !important;
+}
+
+.p-inputtext.p-invalid:enabled:focus {
+
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 2px #ef4444 !important;
+}
+
+.p-inputtext.p-invalid {
+    border-color: #ef4444 !important;
+}
+
+.p-toast {
+    z-index: 99999 !important;
+}
+
+.p-dialog,
+.p-confirm-dialog {
+    border-radius: 16px !important;
+}
+
+.p-dialog .p-dialog-header,
+.p-confirm-dialog .p-dialog-header {
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    pointer-events: none;
+    cursor: default !important;
+}
+
+.p-dialog .p-dialog-footer,
+.p-confirm-dialog .p-dialog-footer {
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+}
+
+.p-confirm-dialog {
+    overflow: hidden; 
+    border: 1px solid var(--surface-border);
+}
+
+.p-confirm-dialog .p-dialog-content {
+    border-radius: 0 !important;
+}
+
+.p-confirm-dialog .p-dialog-footer {
+    padding: 1rem 1.5rem !important;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon {
+    pointer-events: auto;
+    cursor: pointer !important;
+}
+
+.p-dialog .p-resizable-handle {
+    display: none !important;
+}

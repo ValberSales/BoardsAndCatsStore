@@ -11,7 +11,7 @@ import 'primeflex/primeflex.css';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.tsx';
 import { CartProvider } from './context/CartContext.tsx';
-import { ToastProvider } from './context/ToastContext.tsx'; // <--- Importar
+import { ToastProvider } from './context/ToastContext.tsx';
 
 const themeId = "theme-link";
 const themeBase = "cyan"; 

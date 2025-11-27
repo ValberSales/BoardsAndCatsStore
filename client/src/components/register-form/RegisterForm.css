@@ -1,0 +1,62 @@
+/* client/src/components/register-form/RegisterForm.css */
+
+/* Cabeçalho do formulário */
+.register-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.register-title {
+    color: var(--surface-900);
+    font-size: 1.75rem; /* text-3xl approx */
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+/* Labels dos inputs */
+.input-label {
+    display: block;
+    color: var(--surface-900);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Placeholder fixo para mensagens de erro (Evita o glitch de layout) */
+.error-message-placeholder {
+    display: block;
+    margin-top: 0.25rem;
+    min-height: 1.25rem; /* Reserva o espaço vertical */
+    color: var(--red-500);
+    font-size: 0.875rem;
+}
+
+/* Container das regras de senha */
+.password-rules-box {
+    background-color: var(--surface-ground);
+    border-radius: var(--border-radius);
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Item individual da regra de senha */
+.password-rule-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    transition: color 0.3s ease, font-weight 0.3s ease;
+    color: var(--red-500); /* Padrão inválido (vermelho) */
+    font-weight: normal;
+}
+
+/* Estado válido da regra */
+.password-rule-item.rule-valid {
+    color: var(--green-500); /* Padrão válido (verde) */
+    font-weight: bold;
+}
+
+.password-rule-icon {
+    font-size: 0.9rem;
+}

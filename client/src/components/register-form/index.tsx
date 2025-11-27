@@ -12,6 +12,9 @@ import { classNames } from "primereact/utils";
 import type { IUserRegister } from "@/commons/types";
 import AuthService from "@/services/auth-service";
 
+// Importação do CSS extraído
+import "./RegisterForm.css";
+
 interface IUserRegisterForm extends IUserRegister {
     confirmPassword?: string;
 }
@@ -40,6 +43,8 @@ export function RegisterForm() {
     const toast = useRef<Toast>(null);
 
     const passwordValue = watch("password") || "";
+    
+    // Definição das regras de senha
     const passwordRules = [
         { label: "Mínimo 6 caracteres", valid: passwordValue.length >= 6 },
         { label: "Letra Maiúscula", valid: /[A-Z]/.test(passwordValue) },
@@ -47,19 +52,28 @@ export function RegisterForm() {
         { label: "Número", valid: /\d/.test(passwordValue) },
     ];
 
+    // Helper para renderizar cada item da lista de regras usando classes CSS
     const renderRuleItem = (rule: { label: string; valid: boolean }, index: number) => {
-        const color = rule.valid ? '#22c55e' : '#ef4444';
         return (
-            <li key={index}
-                className="flex align-items-center gap-2 text-sm transition-colors duration-300"
-                style={{ color: color, fontWeight: rule.valid ? 'bold' : 'normal' }}
+            <li 
+                key={index}
+                className={classNames("password-rule-item", { "rule-valid": rule.valid })}
             >
-                <i className={classNames("pi", {
+                <i className={classNames("pi password-rule-icon", {
                     "pi-check-circle": rule.valid,
                     "pi-times-circle": !rule.valid
-                })} style={{ fontSize: '0.9rem', color: color }}></i>
+                })}></i>
                 <span>{rule.label}</span>
             </li>
+        );
+    };
+
+    // Helper para renderizar erros com o espaço reservado via CSS (.error-message-placeholder)
+    const getFormErrorMessage = (name: keyof IUserRegisterForm) => {
+        return (
+            <small className="error-message-placeholder">
+                {errors[name]?.message || '\u00A0'}
+            </small>
         );
     };
 
@@ -103,23 +117,19 @@ export function RegisterForm() {
         <>
             <Toast ref={toast} />
             
-            <div className="text-center mb-5">
-                <div className="text-900 text-3xl font-medium mb-3">Criar Conta</div>
+            <div className="register-header">
+                <div className="register-title">Criar Conta</div>
                 <span className="text-600 font-medium line-height-3">Já faz parte da comunidade? </span>
                 <Link to="/login" className="font-medium no-underline ml-2 text-primary cursor-pointer">
                     Fazer Login
                 </Link>
             </div>
 
-            {/* ADICIONADO: 'p-fluid'
-                Essa classe mágica do PrimeReact força todos os inputs internos 
-                a ocuparem 100% da largura do container pai (a coluna do grid).
-            */}
-            <form onSubmit={handleSubmit(onSubmit)} className="p-fluid flex flex-column gap-3">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-fluid flex flex-column gap-2">
                 
                 {/* Nome */}
                 <div>
-                    <label htmlFor="displayName" className="block text-900 font-medium mb-2">Nome Completo</label>
+                    <label htmlFor="displayName" className="input-label">Nome Completo</label>
                     <Controller
                         name="displayName"
                         control={control}
@@ -128,12 +138,12 @@ export function RegisterForm() {
                             <InputText id="displayName" {...field} className={classNames({ "p-invalid": errors.displayName })} placeholder="Seu nome completo" />
                         )}
                     />
-                    {errors.displayName && <small className="p-error block mt-1">{errors.displayName.message}</small>}
+                    {getFormErrorMessage('displayName')}
                 </div>
 
                 {/* Email */}
                 <div>
-                    <label htmlFor="username" className="block text-900 font-medium mb-2">E-mail</label>
+                    <label htmlFor="username" className="input-label">E-mail</label>
                     <Controller
                         name="username"
                         control={control}
@@ -142,13 +152,13 @@ export function RegisterForm() {
                             <InputText id="username" {...field} className={classNames({ "p-invalid": errors.username })} placeholder="seu@email.com" />
                         )}
                     />
-                    {errors.username && <small className="p-error block mt-1">{errors.username.message}</small>}
+                    {getFormErrorMessage('username')}
                 </div>
 
                 {/* Grid CPF e Telefone */}
                 <div className="formgrid grid">
                     <div className="field col-12 md:col-6 mb-0">
-                        <label htmlFor="cpf" className="block text-900 font-medium mb-2">CPF</label>
+                        <label htmlFor="cpf" className="input-label">CPF</label>
                         <Controller
                             name="cpf"
                             control={control}
@@ -157,10 +167,10 @@ export function RegisterForm() {
                                 <InputMask id="cpf" mask="999.999.999-99" value={field.value} onChange={(e) => field.onChange(e.value)} className={classNames({ "p-invalid": errors.cpf })} placeholder="000.000.000-00" />
                             )}
                         />
-                        {errors.cpf && <small className="p-error block mt-1">{errors.cpf.message}</small>}
+                        {getFormErrorMessage('cpf')}
                     </div>
                     <div className="field col-12 md:col-6 mb-0">
-                        <label htmlFor="phone" className="block text-900 font-medium mb-2">Telefone</label>
+                        <label htmlFor="phone" className="input-label">Telefone</label>
                         <Controller
                             name="phone"
                             control={control}
@@ -169,7 +179,7 @@ export function RegisterForm() {
                                 <InputMask id="phone" mask="(99) 99999-9999" value={field.value} onChange={(e) => field.onChange(e.value)} className={classNames({ "p-invalid": errors.phone })} placeholder="(99) 99999-9999" />
                             )}
                         />
-                        {errors.phone && <small className="p-error block mt-1">{errors.phone.message}</small>}
+                        {getFormErrorMessage('phone')}
                     </div>
                 </div>
 
@@ -178,7 +188,7 @@ export function RegisterForm() {
                 {/* Grid Senhas */}
                 <div className="formgrid grid mb-0">
                     <div className="field col-12 md:col-6 mb-0">
-                        <label htmlFor="password" className="block text-900 font-medium mb-2">Senha</label>
+                        <label htmlFor="password" className="input-label">Senha</label>
                         <Controller
                             name="password"
                             control={control}
@@ -189,15 +199,15 @@ export function RegisterForm() {
                                     {...field} 
                                     toggleMask 
                                     feedback={false} 
-                                    // Com p-fluid, o 'w-full' aqui se torna redundante mas seguro manter
                                     className={classNames({ "p-invalid": errors.password })} 
                                     placeholder="Senha segura" 
                                 />
                             )}
                         />
+                        {getFormErrorMessage('password')}
                     </div>
                     <div className="field col-12 md:col-6 mb-0">
-                        <label htmlFor="confirmPassword" className="block text-900 font-medium mb-2">Confirmar</label>
+                        <label htmlFor="confirmPassword" className="input-label">Confirmar</label>
                         <Controller
                             name="confirmPassword"
                             control={control}
@@ -213,25 +223,25 @@ export function RegisterForm() {
                                 />
                             )}
                         />
+                        {getFormErrorMessage('confirmPassword')}
                     </div>
                 </div>
 
-                {(errors.password || errors.confirmPassword) && (
-                    <div className="text-center mb-2">
-                        {errors.password && <small className="p-error block">{errors.password.message}</small>}
-                        {errors.confirmPassword && <small className="p-error block">{errors.confirmPassword.message}</small>}
-                    </div>
-                )}
-
+                {/* Box de Regras de Senha */}
                 <div className="flex flex-column align-items-center justify-content-center w-full mt-1 mb-2">
-                    <div className="surface-ground border-round px-5 py-3">
-                        <ul className="list-none p-0 m-0 flex flex-column gap-2">
-                            {passwordRules.map(renderRuleItem)}
-                        </ul>
-                    </div>
+                    <ul className="list-none m-0 password-rules-box">
+                        {passwordRules.map(renderRuleItem)}
+                    </ul>
                 </div>
 
-                <Button type="submit" label="Criar Minha Conta" icon="pi pi-user-plus" loading={loading || isSubmitting} className="w-full py-3 font-bold text-lg" disabled={!passwordRules.every(r => r.valid) || loading} />
+                <Button 
+                    type="submit" 
+                    label="Criar Minha Conta" 
+                    icon="pi pi-user-plus" 
+                    loading={loading || isSubmitting} 
+                    className="w-full py-3 font-bold text-lg mt-2" 
+                    disabled={!passwordRules.every(r => r.valid) || loading} 
+                />
             </form>
         </>
     );

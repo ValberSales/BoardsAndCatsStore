@@ -1,8 +1,8 @@
 import { createContext, useContext, useRef } from "react";
+import { createPortal } from "react-dom"; // <--- Importação necessária
 import { Toast } from "primereact/toast";
 import type { ReactNode } from "react";
 
-// Define o formato da mensagem do Toast do PrimeReact
 interface ToastMessage {
     severity: "success" | "info" | "warn" | "error";
     summary: string;
@@ -25,8 +25,11 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <ToastContext.Provider value={{ showToast }}>
-            {/* Um único componente Toast para toda a aplicação */}
-            <Toast ref={toast} position="top-right" />
+            
+            {createPortal(
+                <Toast ref={toast} position="top-right" />, 
+                document.body
+            )}
             {children}
         </ToastContext.Provider>
     );

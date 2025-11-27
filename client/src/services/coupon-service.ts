@@ -3,7 +3,7 @@ import type { IResponse } from "@/commons/types";
 
 const validate = async (code: string): Promise<IResponse> => {
     try {
-        // Chamada para o backend. Espera-se que retorne { code: "ABC", percentage: 10 }
+      
         const response = await api.get(`/coupons/validate/${code}`);
         return { 
             status: 200, 

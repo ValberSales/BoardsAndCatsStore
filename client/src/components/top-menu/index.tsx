@@ -61,9 +61,9 @@ const TopMenu: React.FC = () => {
   // 2. Função para realizar a busca
   const handleSearch = () => {
     if (searchTerm.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchTerm)}`); // Redireciona
-      searchPanel.current?.hide(); // Fecha o overlay
-      setSearchTerm(""); // Limpa o campo (opcional, mas recomendado aqui)
+      navigate(`/search?q=${encodeURIComponent(searchTerm)}`); 
+      searchPanel.current?.hide();
+      setSearchTerm(""); 
     }
   };
 
@@ -91,7 +91,6 @@ const TopMenu: React.FC = () => {
     }
   ];
 
-  // ... (renderTabletPopupContent e renderNavLinks permanecem iguais)
   const renderTabletPopupContent = () => (
       <div className="flex flex-column gap-2">
           {authenticated ? (

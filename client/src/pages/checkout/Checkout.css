@@ -1,6 +1,7 @@
 .checkout-container {
     padding-top: 2rem;
     padding-bottom: 4rem;
+    max-width: 900px;
 }
 
 /* Ajuste fino no componente Steps do PrimeReact */
@@ -74,7 +75,7 @@
 }
 
 .success-message {
-    color: var(--text-color-secondary); /* text-gray-600 */
+    color: var(--text-color-secondary);
     line-height: 1.5;
     margin-bottom: 1.5rem;
 }
