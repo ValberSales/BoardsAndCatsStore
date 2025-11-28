@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
@@ -6,11 +6,11 @@ import { Password } from "primereact/password";
 import { Button } from "primereact/button";
 import { InputMask } from "primereact/inputmask";
 import { Divider } from "primereact/divider";
-import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
 
 import type { IUserRegister } from "@/commons/types";
 import AuthService from "@/services/auth-service";
+import { useToast } from "@/context/ToastContext"; // <--- 1. Importação do Hook
 
 // Importação do CSS extraído
 import "./RegisterForm.css";
@@ -38,9 +38,11 @@ export function RegisterForm() {
     });
 
     const { signup } = AuthService;
+    const { showToast } = useToast(); // <--- 2. Uso do Hook Global
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const toast = useRef<Toast>(null);
+    
+    // Removido: const toast = useRef<Toast>(null);
 
     const passwordValue = watch("password") || "";
     
@@ -68,7 +70,6 @@ export function RegisterForm() {
         );
     };
 
-    // Helper para renderizar erros com o espaço reservado via CSS (.error-message-placeholder)
     const getFormErrorMessage = (name: keyof IUserRegisterForm) => {
         return (
             <small className="error-message-placeholder">
@@ -91,7 +92,7 @@ export function RegisterForm() {
             const response = await signup(payload);
 
             if (response.status === 200 || response.status === 201) {
-                toast.current?.show({
+                showToast({
                     severity: "success",
                     summary: "Bem-vindo!",
                     detail: "Cadastro realizado com sucesso.",
@@ -99,7 +100,7 @@ export function RegisterForm() {
                 });
                 setTimeout(() => navigate("/login"), 2000);
             } else {
-                toast.current?.show({
+                showToast({
                     severity: "error",
                     summary: "Erro",
                     detail: response.message || "Verifique os dados.",
@@ -107,7 +108,7 @@ export function RegisterForm() {
                 });
             }
         } catch (err) {
-            toast.current?.show({ severity: "error", summary: "Erro", detail: "Falha na conexão.", life: 3000 });
+            showToast({ severity: "error", summary: "Erro", detail: "Falha na conexão.", life: 3000 });
         } finally {
             setLoading(false);
         }
@@ -115,7 +116,6 @@ export function RegisterForm() {
 
     return (
         <>
-            <Toast ref={toast} />
             
             <div className="register-header">
                 <div className="register-title">Criar Conta</div>
@@ -133,7 +133,7 @@ export function RegisterForm() {
                     <Controller
                         name="displayName"
                         control={control}
-                        rules={{ required: "Nome é obrigatório", minLength: { value: 3, message: "Mínimo 3 caracteres" } }}
+                        rules={{ required: "Nome é obrigatório", minLength: { value: 4, message: "Mínimo 4 caracteres" } }}
                         render={({ field }) => (
                             <InputText id="displayName" {...field} className={classNames({ "p-invalid": errors.displayName })} placeholder="Seu nome completo" />
                         )}
