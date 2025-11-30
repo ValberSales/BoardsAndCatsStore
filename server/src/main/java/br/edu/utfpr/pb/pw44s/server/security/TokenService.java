@@ -11,13 +11,11 @@ import java.util.Date;
 public class TokenService {
 
     public String generateToken(User user) {
-        // Usando as constantes que já devem existir no seu SecurityConstants
         return JWT.create()
-                .withSubject(user.getUsername()) // O email é o subject
+                .withSubject(user.getUsername())
                 .withClaim("id", user.getId())
                 .withClaim("displayName", user.getDisplayName())
-                // Adicione outras claims se necessário
                 .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
-                .sign(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()));
+                .sign(Algorithm.HMAC512(SecurityConstants.SECRET));
     }
 }

@@ -32,7 +32,6 @@ public class ShippingServiceImpl implements IShippingService {
     private String originCep;
 
     public ShippingServiceImpl(RestTemplateBuilder restTemplateBuilder) {
-
         this.restTemplate = restTemplateBuilder
                 .requestFactory(() -> {
                     SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
@@ -49,7 +48,6 @@ public class ShippingServiceImpl implements IShippingService {
             return BigDecimal.ZERO;
         }
 
-        // Garante peso mínimo de 300g (0.3kg)
         double finalWeight = (weight == null || weight < 0.3) ? 0.3 : weight;
 
         try {
@@ -67,7 +65,7 @@ public class ShippingServiceImpl implements IShippingService {
                     baseUrl + "/me/shipment/calculate",
                     HttpMethod.POST,
                     entity,
-                    new ParameterizedTypeReference<List<MelhorEnvioDTO.ShipmentOption>>() {}
+                    new ParameterizedTypeReference<>() {}
             );
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
@@ -75,9 +73,8 @@ public class ShippingServiceImpl implements IShippingService {
             }
 
         } catch (Exception e) {
+            // Em produção
             System.err.println("Erro na API de Frete: " + e.getMessage());
-
-            return BigDecimal.ZERO;
         }
 
         return BigDecimal.ZERO;
@@ -85,9 +82,7 @@ public class ShippingServiceImpl implements IShippingService {
 
     private BigDecimal findCheapestOption(List<MelhorEnvioDTO.ShipmentOption> options) {
         return options.stream()
-
                 .filter(opt -> opt.getPrice() != null && opt.getError() == null)
-
                 .min(Comparator.comparing(MelhorEnvioDTO.ShipmentOption::getPrice))
                 .map(MelhorEnvioDTO.ShipmentOption::getPrice)
                 .orElse(BigDecimal.ZERO);

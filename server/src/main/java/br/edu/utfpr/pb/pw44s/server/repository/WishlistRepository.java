@@ -15,7 +15,6 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
 
     Optional<Wishlist> findByUserAndProduct(User user, Product product);
 
-    // Deleta a wishlist associada ao ID do usuário
     void deleteByUserId(Long userId);
 
     @Query("SELECT w.product FROM Wishlist w WHERE w.user = :user")

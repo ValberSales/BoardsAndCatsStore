@@ -16,7 +16,6 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //A lógica de busca foi movida para o UserService, onde deveria estar.
         return userService.loadUserByUsername(username);
     }
 }

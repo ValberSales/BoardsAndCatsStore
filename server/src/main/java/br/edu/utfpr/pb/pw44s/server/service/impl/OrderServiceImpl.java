@@ -1,5 +1,6 @@
 package br.edu.utfpr.pb.pw44s.server.service.impl;
 
+import br.edu.utfpr.pb.pw44s.server.dto.CartItemResponseDTO;
 import br.edu.utfpr.pb.pw44s.server.dto.CartResponseDTO;
 import br.edu.utfpr.pb.pw44s.server.dto.CheckoutDTO;
 import br.edu.utfpr.pb.pw44s.server.model.*;
@@ -16,12 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList; // Importante para inicializar a lista
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
-        implements IOrderService {
+public class OrderServiceImpl extends CrudServiceImpl<Order, Long> implements IOrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
@@ -46,119 +46,48 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
 
     @Override
     protected JpaRepository<Order, Long> getRepository() {
-        return this.orderRepository;
+        return orderRepository;
     }
 
     @Override
     @Transactional
     public Order checkoutFromCart(CheckoutDTO checkoutDTO, User user) {
-        // 1. Pega o carrinho e valida
-        CartResponseDTO cartDTO = cartService.getAndValidateCart(user);
-        if (cartDTO == null || cartDTO.getItems().isEmpty()) {
-            throw new RuntimeException("Carrinho está vazio.");
-        }
+        // 1. Busca e Valida Carrinho
+        CartResponseDTO cartDTO = buscarCarrinhoValidado(user);
 
-        // 2. Valida Endereço e Pagamento
-        Address address = addressRepository.findById(checkoutDTO.getAddressId())
-                .orElseThrow(() -> new RuntimeException("Endereço não encontrado!"));
-        PaymentMethod paymentMethod = paymentMethodRepository.findById(checkoutDTO.getPaymentMethodId())
-                .orElseThrow(() -> new RuntimeException("Método de Pagamento não encontrado!"));
+        // 2. Busca e Valida Endereço e Pagamento
+        Address address = buscarEndereco(checkoutDTO.getAddressId(), user);
+        PaymentMethod paymentMethod = buscarMetodoPagamento(checkoutDTO.getPaymentMethodId(), user);
 
-        // Segurança: Garante que o endereço e o pagamento pertencem ao usuário logado
-        if (!address.getUser().getId().equals(user.getId()) || !paymentMethod.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Endereço ou Método de Pagamento inválido.");
-        }
+        // 3. Inicializa o Pedido Básico
+        Order order = criarPedidoBasico(user);
 
-        // 3. Cria a nova entidade Order
-        Order order = new Order();
-        order.setUser(user);
-        order.setDate(LocalDate.now());
-        order.setStatus(OrderStatus.PENDING);
-        order.setItems(new ArrayList<>()); // Inicializa a lista de itens
+        // 4. Cria Snapshots (Cópias estáticas dos dados)
+        preencherSnapshots(order, user, address, paymentMethod);
 
-        // 3.1 APLICANDO O SNAPSHOT DO CLIENTE (Integridade Histórica)
-        OrderUserEmbeddable clientDetails = new OrderUserEmbeddable();
-        clientDetails.setName(user.getDisplayName());
-        clientDetails.setCpf(user.getCpf());
-        clientDetails.setPhone(user.getPhone());
-        clientDetails.setEmail(user.getUsername());
-        order.setClientDetails(clientDetails);
+        // 5. Processa Itens (Baixa Estoque + Cria OrderItems)
+        BigDecimal totalItens = processarItensDoPedido(order, cartDTO.getItems());
 
-        // 3.2 APLICANDO SNAPSHOT DO ENDEREÇO
-        OrderAddressEmbeddable embeddableAddress = new OrderAddressEmbeddable();
-        embeddableAddress.setStreet(address.getStreet());
-        embeddableAddress.setNumber(address.getNumber()); // Incluído Número
-        embeddableAddress.setNeighborhood(address.getNeighborhood()); // Incluído Bairro
-        embeddableAddress.setCity(address.getCity());
-        embeddableAddress.setState(address.getState());
-        embeddableAddress.setZip(address.getZip());
-        order.setShippingAddress(embeddableAddress);
+        // 6. Calcula Totais Finais (Frete e Desconto)
+        calcularTotalFinal(order, totalItens, checkoutDTO);
 
-        // 3.3 APLICANDO SNAPSHOT DO PAGAMENTO
-        OrderPaymentEmbeddable embeddablePayment = new OrderPaymentEmbeddable();
-        embeddablePayment.setDescription(String.format("%s - %s", paymentMethod.getType(), paymentMethod.getDescription()));
-        order.setPaymentMethod(embeddablePayment);
-
-        // 4. Converte os Itens e Calcula Subtotal
-        BigDecimal itemsTotal = BigDecimal.ZERO;
-
-        for (var cartItemDTO : cartDTO.getItems()) {
-            Product product = productRepository.findById(cartItemDTO.getProduct().getId())
-                    .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + cartItemDTO.getProduct().getName()));
-
-            // Baixa no Estoque
-            if (product.getStock() < cartItemDTO.getQuantity()) {
-                throw new RuntimeException("Estoque insuficiente para o produto: " + product.getName());
-            }
-            product.setStock(product.getStock() - cartItemDTO.getQuantity());
-            productRepository.save(product);
-
-            // Cria Item do Pedido
-            OrderItems orderItem = new OrderItems();
-            orderItem.setOrder(order);
-            orderItem.setProduct(product);
-            orderItem.setQuantity(cartItemDTO.getQuantity());
-            orderItem.setUnitPrice(cartItemDTO.getPriceAtSave()); // Preço congelado do momento da compra
-            orderItem.setSubtotal(cartItemDTO.getPriceAtSave().multiply(new BigDecimal(cartItemDTO.getQuantity())));
-
-            order.getItems().add(orderItem);
-            itemsTotal = itemsTotal.add(orderItem.getSubtotal());
-        }
-
-        // 5. Aplica Frete e Desconto vindos do CheckoutDTO (Frontend)
-        BigDecimal shipping = checkoutDTO.getShipping() != null ? checkoutDTO.getShipping() : BigDecimal.ZERO;
-        BigDecimal discount = checkoutDTO.getDiscount() != null ? checkoutDTO.getDiscount() : BigDecimal.ZERO;
-
-        order.setShipping(shipping);
-        order.setDiscount(discount);
-
-        // 6. Calcula o Total Final
-        // Fórmula: (Soma dos Itens) + Frete - Desconto
-        BigDecimal finalTotal = itemsTotal.add(shipping).subtract(discount);
-
-        // Proteção para não gerar valor negativo
-        if (finalTotal.compareTo(BigDecimal.ZERO) < 0) {
-            finalTotal = BigDecimal.ZERO;
-        }
-        order.setTotal(finalTotal);
-
-        // 7. Salva o Pedido
+        // 7. Salva o pedido e limpa o carrinho
         Order savedOrder = orderRepository.save(order);
-
-        // 8. Limpa o carrinho
         cartRepository.deleteById(cartDTO.getId());
 
         return savedOrder;
     }
 
-    // #############################################
-    // LÓGICA DE PEDIDOS FINALIZADOS E GESTÃO
-    // #############################################
-
     @Override
     @Transactional(readOnly = true)
     public List<Order> findFinalizedByUserId(Long userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Order> findByStatus(OrderStatus status) {
+        return orderRepository.findByStatus(status);
     }
 
     @Override
@@ -170,12 +99,8 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
             throw new RuntimeException("Não é possível cancelar um pedido com status " + order.getStatus());
         }
 
-        // Restaura o estoque ao cancelar
-        for (var item : order.getItems()) {
-            Product product = item.getProduct();
-            product.setStock(product.getStock() + item.getQuantity());
-            productRepository.save(product);
-        }
+        // Devolve itens ao estoque
+        restaurarEstoque(order.getItems());
 
         order.setStatus(OrderStatus.CANCELED);
         return super.save(order);
@@ -215,18 +140,121 @@ public class OrderServiceImpl extends CrudServiceImpl<Order, Long>
         return super.save(order);
     }
 
-    // #############################################
-    // MÉTODOS DE APOIO
-    // #############################################
+    // ===================================================================================
+    // MÉTODOS AUXILIARES
+    // ===================================================================================
 
-    private Order findByIdOrThrow(Long invoiceId) {
-        return orderRepository.findById(invoiceId)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado!"));
+    private CartResponseDTO buscarCarrinhoValidado(User user) {
+        CartResponseDTO cartDTO = cartService.getAndValidateCart(user);
+        if (cartDTO == null || cartDTO.getItems().isEmpty()) {
+            throw new RuntimeException("Carrinho está vazio.");
+        }
+        return cartDTO;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Order> findByStatus(OrderStatus status) {
-        return orderRepository.findByStatus(status);
+    private Address buscarEndereco(Long addressId, User user) {
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new RuntimeException("Endereço não encontrado!"));
+
+        if (!address.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Endereço inválido para este usuário.");
+        }
+        return address;
+    }
+
+    private PaymentMethod buscarMetodoPagamento(Long paymentId, User user) {
+        PaymentMethod payment = paymentMethodRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Método de Pagamento não encontrado!"));
+
+        if (!payment.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Método de Pagamento inválido para este usuário.");
+        }
+        return payment;
+    }
+
+    private Order criarPedidoBasico(User user) {
+        Order order = new Order();
+        order.setUser(user);
+        order.setDate(LocalDate.now());
+        order.setStatus(OrderStatus.PENDING);
+        order.setItems(new ArrayList<>());
+        return order;
+    }
+
+    private void preencherSnapshots(Order order, User user, Address address, PaymentMethod payment) {
+        // Snapshot Cliente
+        OrderUserEmbeddable client = new OrderUserEmbeddable();
+        client.setName(user.getDisplayName());
+        client.setCpf(user.getCpf());
+        client.setPhone(user.getPhone());
+        client.setEmail(user.getUsername());
+        order.setClientDetails(client);
+
+        // Snapshot Endereço
+        OrderAddressEmbeddable addrEmbed = new OrderAddressEmbeddable();
+        addrEmbed.setStreet(address.getStreet());
+        addrEmbed.setNumber(address.getNumber());
+        addrEmbed.setNeighborhood(address.getNeighborhood());
+        addrEmbed.setCity(address.getCity());
+        addrEmbed.setState(address.getState());
+        addrEmbed.setZip(address.getZip());
+        order.setShippingAddress(addrEmbed);
+
+        // Snapshot Pagamento
+        OrderPaymentEmbeddable payEmbed = new OrderPaymentEmbeddable();
+        payEmbed.setDescription(String.format("%s - %s", payment.getType(), payment.getDescription()));
+        order.setPaymentMethod(payEmbed);
+    }
+
+    private BigDecimal processarItensDoPedido(Order order, List<CartItemResponseDTO> cartItems) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (var cartItemDTO : cartItems) {
+            Product product = productRepository.findById(cartItemDTO.getProduct().getId())
+                    .orElseThrow(() -> new RuntimeException("Produto não encontrado ID: " + cartItemDTO.getProduct().getId()));
+
+            // Baixa de Estoque
+            if (product.getStock() < cartItemDTO.getQuantity()) {
+                throw new RuntimeException("Estoque insuficiente para: " + product.getName());
+            }
+            product.setStock(product.getStock() - cartItemDTO.getQuantity());
+            productRepository.save(product);
+
+            // Criação do Item do Pedido
+            OrderItems orderItem = new OrderItems();
+            orderItem.setOrder(order);
+            orderItem.setProduct(product);
+            orderItem.setQuantity(cartItemDTO.getQuantity());
+            orderItem.setUnitPrice(cartItemDTO.getPriceAtSave());
+            orderItem.setSubtotal(cartItemDTO.getPriceAtSave().multiply(new BigDecimal(cartItemDTO.getQuantity())));
+
+            order.getItems().add(orderItem);
+            total = total.add(orderItem.getSubtotal());
+        }
+        return total;
+    }
+
+    private void calcularTotalFinal(Order order, BigDecimal totalItens, CheckoutDTO checkoutDTO) {
+        BigDecimal shipping = checkoutDTO.getShipping() != null ? checkoutDTO.getShipping() : BigDecimal.ZERO;
+        BigDecimal discount = checkoutDTO.getDiscount() != null ? checkoutDTO.getDiscount() : BigDecimal.ZERO;
+
+        order.setShipping(shipping);
+        order.setDiscount(discount);
+
+        BigDecimal finalTotal = totalItens.add(shipping).subtract(discount);
+        // Garante que não fique negativo
+        order.setTotal(finalTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : finalTotal);
+    }
+
+    private void restaurarEstoque(List<OrderItems> items) {
+        for (var item : items) {
+            Product product = item.getProduct();
+            product.setStock(product.getStock() + item.getQuantity());
+            productRepository.save(product);
+        }
+    }
+
+    private Order findByIdOrThrow(Long id) {
+        return orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Pedido não encontrado!"));
     }
 }

@@ -40,7 +40,7 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
 
     @Override
     protected JpaRepository<User, Long> getRepository() {
-        return this.userRepository;
+        return userRepository;
     }
 
     @Override
@@ -53,7 +53,6 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Correção: Usar o método existente no repositório que retorna User direto
         User user = userRepository.findUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("Usuário não encontrado!");
@@ -61,7 +60,6 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
         return user;
     }
 
-    // Método auxiliar privado para centralizar a validação de senha
     private void validarSenha(User user, String password) {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha incorreta.");
@@ -78,16 +76,13 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements IUse
     @Override
     @Transactional
     public void deleteMe(String password) {
-
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         User user = userRepository.findById(principal.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha incorreta. Não foi possível excluir a conta.");
         }
-
         this.deleteById(user.getId());
     }
 

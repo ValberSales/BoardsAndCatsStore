@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PaymentMethodServiceImpl extends CrudServiceImpl<PaymentMethod, Long>
-        implements IPaymentMethodService {
+public class PaymentMethodServiceImpl extends CrudServiceImpl<PaymentMethod, Long> implements IPaymentMethodService {
 
     private final PaymentMethodRepository paymentMethodRepository;
 
@@ -20,11 +19,11 @@ public class PaymentMethodServiceImpl extends CrudServiceImpl<PaymentMethod, Lon
 
     @Override
     protected JpaRepository<PaymentMethod, Long> getRepository() {
-        return this.paymentMethodRepository;
+        return paymentMethodRepository;
     }
 
     @Override
     public List<PaymentMethod> findByUserId(Long userId) {
-        return this.paymentMethodRepository.findByUserId(userId);
+        return paymentMethodRepository.findByUserId(userId);
     }
 }

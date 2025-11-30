@@ -6,7 +6,6 @@ import br.edu.utfpr.pb.pw44s.server.service.ICategoryService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class CategoryServiceImpl extends CrudServiceImpl<Category, Long> implements ICategoryService {
 

@@ -33,21 +33,17 @@ public class WishlistServiceImpl implements IWishlistService {
 
         if (existingEntry.isPresent()) {
             wishlistRepository.delete(existingEntry.get());
-            return false; // Removeu
+            return false;
         } else {
             wishlistRepository.save(new Wishlist(user, product));
-            return true; // Adicionou
+            return true;
         }
     }
 
     @Override
     public boolean isProductInWishlist(User user, Long productId) {
-        // Cria um objeto produto apenas com ID para evitar consulta desnecessária ao banco
-        // se o JPA/Hibernate estiver configurado para aceitar referência por ID.
-        // Caso contrário, podemos usar productRepository.findById(productId) se necessário.
         Product product = new Product();
         product.setId(productId);
-
         return wishlistRepository.findByUserAndProduct(user, product).isPresent();
     }
 

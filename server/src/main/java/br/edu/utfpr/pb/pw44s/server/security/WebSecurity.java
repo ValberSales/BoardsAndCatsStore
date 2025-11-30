@@ -1,7 +1,6 @@
 package br.edu.utfpr.pb.pw44s.server.security;
 
 import br.edu.utfpr.pb.pw44s.server.service.AuthService;
-import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -38,8 +37,7 @@ public class WebSecurity {
     }
 
     @Bean
-    @SneakyThrows
-    public SecurityFilterChain filterChain(HttpSecurity http, PasswordEncoder passwordEncoder) {
+    public SecurityFilterChain filterChain(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(authService)
@@ -49,49 +47,59 @@ public class WebSecurity {
 
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         http.csrf(AbstractHttpConfigurer::disable);
-        http.cors(cors -> corsConfigurationSource());
+
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         http.exceptionHandling(exceptionHandling ->
                 exceptionHandling.authenticationEntryPoint(authenticationEntryPoint));
 
         http.authorizeHttpRequests((authorize) -> authorize
+                // --- ROTAS PÚBLICAS (Abertas para todos) ---
+                // Cadastros e utilitários
                 .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
-                .requestMatchers("/error/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/error/**", "/h2-console/**").permitAll()
 
-                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
+                // Leitura de catálogo (Produtos, Categorias, Imagens)
+                .requestMatchers(HttpMethod.GET, "/products/**", "/categories/**", "/images/**").permitAll()
 
+                // --- ROTAS PRIVADAS (Requerem Token JWT) ---
+                // Carrinho e Checkout
                 .requestMatchers(HttpMethod.GET, "/cart").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/cart").authenticated()
                 .requestMatchers(HttpMethod.POST, "/orders/checkout").authenticated()
 
+                // Regra padrão: Qualquer outra rota não listada acima exige autenticação
                 .anyRequest().authenticated()
         );
 
         http.authenticationManager(authenticationManager)
                 .addFilter(new JWTAuthenticationFilter(authenticationManager, authService, tokenService))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager, authService))
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
+
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
+        // Define quais origens (frontends) podem acessar a API. "*" permite todas.
         configuration.setAllowedOrigins(List.of("*"));
 
-        // ADICIONADO "PATCH" AQUI NA LISTA ABAIXO
+        // Métodos HTTP permitidos
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD", "TRACE", "CONNECT"));
 
-        configuration.setAllowedHeaders(List.of("Authorization","x-xsrf-token",
+        // Headers permitidos na requisição
+        configuration.setAllowedHeaders(List.of("Authorization", "x-xsrf-token",
                 "Access-Control-Allow-Headers", "Origin",
                 "Accept", "X-Requested-With", "Content-Type",
                 "Access-Control-Request-Method",
                 "Access-Control-Request-Headers", "Auth-Id-Token"));
 
+        // Headers que o frontend pode ler na resposta
         configuration.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

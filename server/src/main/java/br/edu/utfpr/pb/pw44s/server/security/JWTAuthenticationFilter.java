@@ -4,8 +4,6 @@ import br.edu.utfpr.pb.pw44s.server.dto.UserDTO;
 import br.edu.utfpr.pb.pw44s.server.model.User;
 import br.edu.utfpr.pb.pw44s.server.security.dto.AuthenticationResponse;
 import br.edu.utfpr.pb.pw44s.server.service.AuthService;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,16 +17,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 
-// Removido @NoArgsConstructor pois agora exige o TokenService no construtor
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final AuthService authService;
-    private final TokenService tokenService; // Nova dependência
+    private final TokenService tokenService;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager,
                                    AuthService authService,
-                                   TokenService tokenService) { // Injetando aqui
+                                   TokenService tokenService) {
         this.authenticationManager = authenticationManager;
         this.authService = authService;
         this.tokenService = tokenService;
@@ -37,14 +34,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            User credentials = new User();
-            User user = new User();
-
-            if (request.getInputStream() != null || request.getInputStream().available() > 0) {
-                credentials = new ObjectMapper().readValue(request.getInputStream(), User.class);
-                // Aqui carrega o usuário completo do banco para garantir que as roles/senha estejam corretas
-                user = (User) authService.loadUserByUsername(credentials.getUsername());
-            }
+            User credentials = new ObjectMapper().readValue(request.getInputStream(), User.class);
+            User user = (User) authService.loadUserByUsername(credentials.getUsername());
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -54,8 +45,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     )
             );
 
-        } catch (StreamReadException | DatabindException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -68,8 +57,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             Authentication authResult) throws IOException, ServletException {
 
         User user = (User) authResult.getPrincipal();
-
-        // AGORA USA O SERVICE CENTRALIZADO!
         String token = tokenService.generateToken(user);
 
         response.setContentType("application/json");

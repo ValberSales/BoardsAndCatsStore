@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AddressServiceImpl extends CrudServiceImpl<Address, Long>
-        implements IAddressService {
+public class AddressServiceImpl extends CrudServiceImpl<Address, Long> implements IAddressService {
 
     private final AddressRepository addressRepository;
 
@@ -20,11 +19,11 @@ public class AddressServiceImpl extends CrudServiceImpl<Address, Long>
 
     @Override
     protected JpaRepository<Address, Long> getRepository() {
-        return this.addressRepository;
+        return addressRepository;
     }
 
     @Override
     public List<Address> findByUserId(Long userId) {
-        return this.addressRepository.findByUserId(userId);
+        return addressRepository.findByUserId(userId);
     }
 }

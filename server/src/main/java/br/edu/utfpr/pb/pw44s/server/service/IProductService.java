@@ -7,5 +7,5 @@ public interface IProductService extends ICrudService<Product, Long> {
 
     List<Product> findAllByCategoryId(Long categoryId);
 
-    List<Product> search(String term); // Novo método
+    List<Product> search(String term);
 }

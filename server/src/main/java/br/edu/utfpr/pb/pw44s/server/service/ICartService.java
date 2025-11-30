@@ -7,17 +7,12 @@ import br.edu.utfpr.pb.pw44s.server.model.User;
 public interface ICartService {
 
     /**
-     * Busca o carrinho salvo do usuário e o valida contra o estoque/preço atual.
-     * @param user O usuário autenticado.
-     * @return Um DTO com o carrinho validado, ou null se não houver carrinho.
+     * Busca o carrinho salvo, valida estoque/preço e atualiza se necessário.
      */
     CartResponseDTO getAndValidateCart(User user);
 
     /**
-     * Salva (sobrescreve) o carrinho inteiro do usuário.
-     * @param user O usuário autenticado.
-     * @param cartSyncDTO O DTO contendo a lista de itens do frontend.
-     * @return Um DTO com o carrinho salvo e validado.
+     * Sobrescreve o carrinho do usuário com os itens fornecidos.
      */
     CartResponseDTO saveCart(User user, CartSyncDTO cartSyncDTO);
 }

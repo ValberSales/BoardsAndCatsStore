@@ -6,9 +6,7 @@ import java.util.Optional;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
-    //Encontra o carrinho de um usuário pelo seu ID.
     Optional<Cart> findByUserId(Long userId);
 
-    // Deleta o carrinho associado ao ID do usuário
     void deleteByUserId(Long userId);
 }
