@@ -23,7 +23,7 @@ public class UserController {
 
     private final IUserService userService;
     private final ModelMapper modelMapper;
-    private final TokenService tokenService; // Injeção do serviço de token
+    private final TokenService tokenService;
 
     public UserController(IUserService userService,
                           ModelMapper modelMapper,
@@ -48,22 +48,16 @@ public class UserController {
     @PutMapping("me")
     public ResponseEntity<UserDTO> updateMyProfile(@AuthenticationPrincipal User user,
                                                    @RequestBody @Valid UserProfileDTO userProfileDTO) {
-        // Atualiza os dados do objeto User
         user.setDisplayName(userProfileDTO.getDisplayName());
         user.setPhone(userProfileDTO.getPhone());
         user.setUsername(userProfileDTO.getUsername());
 
-        // Salva no banco
         User updatedUser = userService.save(user);
-
-        // Gera um novo token (necessário caso o email/username tenha mudado)
         String newToken = tokenService.generateToken(updatedUser);
 
-        // Cria o cabeçalho com o novo token
         HttpHeaders headers = new HttpHeaders();
         headers.add(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + newToken);
 
-        // Retorna o usuário atualizado E o header Authorization
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(modelMapper.map(updatedUser, UserDTO.class));
@@ -72,10 +66,7 @@ public class UserController {
     @PatchMapping("me/password")
     public ResponseEntity<Void> changePassword(@AuthenticationPrincipal User user,
                                                @RequestBody @Valid UserPasswordDTO passwordDTO) {
-        // Altera a senha
         userService.changePassword(user, passwordDTO.getCurrentPassword(), passwordDTO.getNewPassword());
-
-        // Gera novo token (boa prática de segurança ao mudar senha)
         String newToken = tokenService.generateToken(user);
 
         HttpHeaders headers = new HttpHeaders();
@@ -89,7 +80,6 @@ public class UserController {
     @DeleteMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMe(@RequestBody @Valid UserConfirmationDTO confirmationDTO) {
-        // Passa a senha recebida para o serviço
         userService.deleteMe(confirmationDTO.getPassword());
     }
 }

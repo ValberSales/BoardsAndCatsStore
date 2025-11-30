@@ -5,6 +5,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+/**
+ * DTO para alteração de senha.
+ * Exige a senha atual para validação e a nova senha com regras de força.
+ */
 @Data
 public class UserPasswordDTO {
 

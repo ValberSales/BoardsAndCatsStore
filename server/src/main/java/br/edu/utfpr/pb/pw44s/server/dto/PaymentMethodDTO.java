@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO para cadastro e listagem de Métodos de Pagamento do usuário.
+ */
 @Data
 @NoArgsConstructor
 public class PaymentMethodDTO {

@@ -3,7 +3,7 @@ package br.edu.utfpr.pb.pw44s.server.controller;
 import br.edu.utfpr.pb.pw44s.server.dto.ProductDTO;
 import br.edu.utfpr.pb.pw44s.server.model.Product;
 import br.edu.utfpr.pb.pw44s.server.model.User;
-import br.edu.utfpr.pb.pw44s.server.service.IWishlistService; // Import da Interface
+import br.edu.utfpr.pb.pw44s.server.service.IWishlistService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequestMapping("wishlist")
 public class WishlistController {
 
-    private final IWishlistService wishlistService; // Usando a Interface
+    private final IWishlistService wishlistService;
     private final ModelMapper modelMapper;
 
     public WishlistController(IWishlistService wishlistService, ModelMapper modelMapper) {

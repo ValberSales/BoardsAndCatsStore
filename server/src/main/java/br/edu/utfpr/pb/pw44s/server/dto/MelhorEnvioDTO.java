@@ -1,13 +1,15 @@
 package br.edu.utfpr.pb.pw44s.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.Builder;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 
+/**
+ * DTOs auxiliares para integração com a API externa do Melhor Envio (Cálculo de Frete).
+ */
 public class MelhorEnvioDTO {
 
     @Data

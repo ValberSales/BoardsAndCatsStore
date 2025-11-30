@@ -14,7 +14,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// T = class type, D = dto type, ID = attribute related to primary key type  
 public abstract class CrudController<T, D, ID extends Serializable> {
 
     protected abstract ICrudService<T, ID> getService();
@@ -36,12 +35,14 @@ public abstract class CrudController<T, D, ID extends Serializable> {
         return getModelMapper().map(entityDto, this.typeClass);
     }
 
-    @GetMapping //http://ip-api:port/request-mapping  
+    @GetMapping
     public ResponseEntity<List<D>> findAll() {
-        return ResponseEntity.ok(getService().findAll().stream().map(this::convertToDto).collect(Collectors.toList()));
+        return ResponseEntity.ok(getService().findAll().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList()));
     }
 
-    @GetMapping("page") //http://ip-api:port/request-mapping/page?page=1&size=5  
+    @GetMapping("page")
     public ResponseEntity<Page<D>> findAll(@RequestParam int page,
                                            @RequestParam int size,
                                            @RequestParam(required = false) String order,
@@ -65,13 +66,14 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 
     @PostMapping
     public ResponseEntity<D> create(@RequestBody @Valid D entity) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(getService().save(convertToEntity(entity))));
-
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(convertToDto(getService().save(convertToEntity(entity))));
     }
 
     @PutMapping("{id}")
     public ResponseEntity<D> update(@PathVariable ID id, @RequestBody @Valid D entity) {
-        return ResponseEntity.status(HttpStatus.OK).body(convertToDto(getService().save(convertToEntity(entity))));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(convertToDto(getService().save(convertToEntity(entity))));
     }
 
     @GetMapping("exists/{id}")
@@ -89,5 +91,4 @@ public abstract class CrudController<T, D, ID extends Serializable> {
         getService().deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
-} 
+}

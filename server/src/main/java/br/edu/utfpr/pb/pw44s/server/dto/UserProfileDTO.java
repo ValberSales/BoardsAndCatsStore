@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+/**
+ * DTO para atualização de dados básicos do perfil do usuário.
+ */
 @Data
 public class UserProfileDTO {
 

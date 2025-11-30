@@ -9,9 +9,8 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication; // Voltamos a usar
-import org.springframework.security.core.context.SecurityContextHolder; // Voltamos a usar
-// import org.springframework.security.core.annotation.AuthenticationPrincipal; // Não mais usado nos parâmetros
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,17 +40,17 @@ public class AddressController extends CrudController<Address, AddressDTO, Long>
         return this.modelMapper;
     }
 
-    @Override // Re-adicionado
+    @Override
     @PostMapping
     public ResponseEntity<AddressDTO> create(@RequestBody @Valid AddressDTO dto) {
-        User user = getAuthenticatedUser(); // Lógica volta para dentro
+        User user = getAuthenticatedUser();
         Address address = modelMapper.map(dto, Address.class);
         address.setUser(user);
         Address savedAddress = addressService.save(address);
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(savedAddress, AddressDTO.class));
     }
 
-    @Override // Re-adicionado
+    @Override
     @GetMapping("{id}")
     public ResponseEntity<AddressDTO> findOne(@PathVariable Long id) {
         User user = getAuthenticatedUser();
@@ -59,7 +58,7 @@ public class AddressController extends CrudController<Address, AddressDTO, Long>
         return ResponseEntity.ok(modelMapper.map(address, AddressDTO.class));
     }
 
-    @Override // Re-adicionado
+    @Override
     @PutMapping("{id}")
     public ResponseEntity<AddressDTO> update(@PathVariable Long id, @RequestBody @Valid AddressDTO dto) {
         User user = getAuthenticatedUser();
@@ -73,7 +72,7 @@ public class AddressController extends CrudController<Address, AddressDTO, Long>
         return ResponseEntity.ok(modelMapper.map(updatedAddress, AddressDTO.class));
     }
 
-    @Override // Re-adicionado
+    @Override
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         User user = getAuthenticatedUser();
@@ -82,7 +81,7 @@ public class AddressController extends CrudController<Address, AddressDTO, Long>
         return ResponseEntity.noContent().build();
     }
 
-    @Override // Re-adicionado
+    @Override
     @GetMapping
     public ResponseEntity<List<AddressDTO>> findAll() {
         User user = getAuthenticatedUser();
@@ -93,7 +92,6 @@ public class AddressController extends CrudController<Address, AddressDTO, Long>
         return ResponseEntity.ok(dtos);
     }
 
-    // Método de apoio RE-ADICIONADO
     private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (User) authentication.getPrincipal();
@@ -104,8 +102,6 @@ public class AddressController extends CrudController<Address, AddressDTO, Long>
         if (address == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Endereço não encontrado.");
         }
-        // ERRO CORRIGIDO: A lógica estava invertida.
-        // Deve ser if (!address.getUser().getId().equals(loggedUser.getId()))
         if (!address.getUser().getId().equals(loggedUser.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado.");
         }

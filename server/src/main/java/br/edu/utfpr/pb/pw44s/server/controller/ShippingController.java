@@ -22,7 +22,6 @@ public class ShippingController {
             @RequestParam String cep,
             @RequestParam(required = false, defaultValue = "1.0") Double weight
     ) {
-
         BigDecimal value = shippingService.calculateShipping(cep, weight);
         return ResponseEntity.ok(Map.of("value", value));
     }

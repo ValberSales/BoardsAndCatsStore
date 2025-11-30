@@ -5,6 +5,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO para transferência de dados de Endereço.
+ * Utilizado tanto na criação quanto na atualização de endereços do usuário.
+ */
 @Data
 @NoArgsConstructor
 public class AddressDTO {
@@ -35,5 +39,4 @@ public class AddressDTO {
 
     @Size(max = 255)
     private String complement;
-
 }

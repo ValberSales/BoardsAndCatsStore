@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO para representar uma Categoria de produtos.
+ */
 @Data
 @NoArgsConstructor
 public class CategoryDTO {

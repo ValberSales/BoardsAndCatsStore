@@ -1,6 +1,7 @@
 package br.edu.utfpr.pb.pw44s.server.controller;
 
-import br.edu.utfpr.pb.pw44s.server.dto.*;
+import br.edu.utfpr.pb.pw44s.server.dto.CheckoutDTO;
+import br.edu.utfpr.pb.pw44s.server.dto.OrderDTO;
 import br.edu.utfpr.pb.pw44s.server.model.Order;
 import br.edu.utfpr.pb.pw44s.server.model.User;
 import br.edu.utfpr.pb.pw44s.server.service.IOrderService;
@@ -8,7 +9,7 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal; // Import limpo
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,11 +28,6 @@ public class OrderController {
         this.modelMapper = modelMapper;
     }
 
-    /**
-     * MODIFICADO: Este é o novo endpoint de checkout.
-     * Ele chama o IOrderService para converter o Carrinho (Cart) salvo
-     * em um Pedido (Order) finalizado.
-     */
     @PostMapping("checkout")
     public ResponseEntity<OrderDTO> checkout(@RequestBody @Valid CheckoutDTO checkoutDTO,
                                              @AuthenticationPrincipal User user) {
@@ -39,13 +35,9 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(finalizedOrder, OrderDTO.class));
     }
 
-    // ##### Endpoints de Pedidos Finalizados #####
-
     @GetMapping
     public ResponseEntity<List<OrderDTO>> findMyOrders(@AuthenticationPrincipal User user) {
-
         List<Order> orders = orderService.findFinalizedByUserId(user.getId());
-
         List<OrderDTO> dtos = orders.stream()
                 .map(order -> modelMapper.map(order, OrderDTO.class))
                 .collect(Collectors.toList());
@@ -67,8 +59,6 @@ public class OrderController {
         return ResponseEntity.ok(modelMapper.map(canceledOrder, OrderDTO.class));
     }
 
-    // ##### Métodos de Apoio #####
-
     private Order findOrderAndCheckOwner(Long orderId, User loggedUser) {
         Order order = orderService.findById(orderId);
         if (order == null) {
@@ -77,7 +67,6 @@ public class OrderController {
         if (!order.getUser().getId().equals(loggedUser.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado.");
         }
-
         return order;
     }
 }

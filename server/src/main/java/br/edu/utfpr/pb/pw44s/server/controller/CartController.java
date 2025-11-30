@@ -19,11 +19,6 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    /**
-     * Endpoint para buscar o carrinho salvo e validado do usuário.
-     * @param user O usuário autenticado injetado pelo Spring Security.
-     * @return 200 OK com o carrinho validado, ou 204 No Content se não houver carrinho.
-     */
     @GetMapping
     public ResponseEntity<CartResponseDTO> getCart(@AuthenticationPrincipal User user) {
         CartResponseDTO cartDTO = cartService.getAndValidateCart(user);
@@ -33,12 +28,6 @@ public class CartController {
         return ResponseEntity.ok(cartDTO);
     }
 
-    /**
-     * Endpoint para salvar (sobrescrever) o carrinho inteiro do usuário.
-     * @param user O usuário autenticado.
-     * @param cartSyncDTO O DTO com a lista de itens vinda do frontend.
-     * @return 200 OK com o carrinho salvo e validado.
-     */
     @PutMapping
     public ResponseEntity<CartResponseDTO> saveCart(@AuthenticationPrincipal User user,
                                                     @RequestBody @Valid CartSyncDTO cartSyncDTO) {

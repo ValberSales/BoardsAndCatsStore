@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * DTO principal para exibição de detalhes do Produto no catálogo.
+ */
 @Data
 @NoArgsConstructor
 public class ProductDTO {
@@ -20,8 +23,6 @@ public class ProductDTO {
     private CategoryDTO category;
     private String imageUrl;
     private List<String> otherImages;
-
-    // ##### NOVOS CAMPOS #####
     private String duracao;
     private String idadeRecomendada;
 }

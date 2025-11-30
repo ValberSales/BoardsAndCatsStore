@@ -33,7 +33,7 @@ public class CouponController {
 
         return ResponseEntity.ok(Map.of(
                 "code", coupon.getCode(),
-                "percentage", coupon.getDiscountValue() // <--- O Front espera "percentage"
+                "percentage", coupon.getDiscountValue()
         ));
     }
 }

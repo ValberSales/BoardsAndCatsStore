@@ -9,9 +9,8 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication; // Voltamos a usar
-import org.springframework.security.core.context.SecurityContextHolder; // Voltamos a usar
-// import org.springframework.security.core.annotation.AuthenticationPrincipal; // Não mais usado
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,7 +40,7 @@ public class PaymentMethodController extends CrudController<PaymentMethod, Payme
         return this.modelMapper;
     }
 
-    @Override // Re-adicionado
+    @Override
     @GetMapping
     public ResponseEntity<List<PaymentMethodDTO>> findAll() {
         User user = getAuthenticatedUser();
@@ -51,7 +50,7 @@ public class PaymentMethodController extends CrudController<PaymentMethod, Payme
                 .collect(Collectors.toList()));
     }
 
-    @Override // Re-adicionado
+    @Override
     @PostMapping
     public ResponseEntity<PaymentMethodDTO> create(@RequestBody @Valid PaymentMethodDTO dto) {
         User user = getAuthenticatedUser();
@@ -61,7 +60,7 @@ public class PaymentMethodController extends CrudController<PaymentMethod, Payme
         return ResponseEntity.status(HttpStatus.CREATED).body(modelMapper.map(savedEntity, PaymentMethodDTO.class));
     }
 
-    @Override // Re-adicionado
+    @Override
     @GetMapping("{id}")
     public ResponseEntity<PaymentMethodDTO> findOne(@PathVariable Long id) {
         User user = getAuthenticatedUser();
@@ -69,7 +68,7 @@ public class PaymentMethodController extends CrudController<PaymentMethod, Payme
         return ResponseEntity.ok(modelMapper.map(entity, PaymentMethodDTO.class));
     }
 
-    @Override // Re-adicionado
+    @Override
     @PutMapping("{id}")
     public ResponseEntity<PaymentMethodDTO> update(@PathVariable Long id, @RequestBody @Valid PaymentMethodDTO dto) {
         User user = getAuthenticatedUser();
@@ -83,7 +82,7 @@ public class PaymentMethodController extends CrudController<PaymentMethod, Payme
         return ResponseEntity.ok(modelMapper.map(updatedEntity, PaymentMethodDTO.class));
     }
 
-    @Override // Re-adicionado
+    @Override
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         User user = getAuthenticatedUser();
@@ -92,7 +91,6 @@ public class PaymentMethodController extends CrudController<PaymentMethod, Payme
         return ResponseEntity.noContent().build();
     }
 
-    // Método de apoio RE-ADICIONADO
     private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (User) authentication.getPrincipal();
