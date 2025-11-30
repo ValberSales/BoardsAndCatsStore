@@ -8,7 +8,7 @@ import { InputMask } from "primereact/inputmask";
 import { Divider } from "primereact/divider";
 import { classNames } from "primereact/utils";
 
-import type { IUserRegister } from "@/commons/types";
+import type { IUserRegister } from "@/types/user";
 import AuthService from "@/services/auth-service";
 import { useToast } from "@/context/ToastContext"; // <--- 1. Importação do Hook
 

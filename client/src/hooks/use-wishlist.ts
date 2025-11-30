@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import WishlistService from '@/services/wishlist-service';
-import type { IProduct } from '@/commons/types';
+import type { IProduct } from '@/types/product'
 
 export function useWishlist(product: IProduct | null) {
     const navigate = useNavigate();

@@ -1,5 +1,6 @@
 import { api } from "@/lib/axios";
-import type { IAddress, IResponse } from "@/commons/types";
+import type { IAddress } from "@/types/address";
+import type { IResponse } from "@/types/api";
 
 const BASE_URL = "/addresses";
 

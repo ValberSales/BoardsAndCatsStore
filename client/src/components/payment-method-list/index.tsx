@@ -7,7 +7,7 @@ import { confirmDialog } from 'primereact/confirmdialog';
 
 import PaymentMethodService from "@/services/payment-method-service";
 import { PaymentMethodForm } from "@/components/payment-method-form"; 
-import type { IPaymentMethod } from "@/commons/types";
+import type { IPaymentMethod } from "@/types/payment";
 
 // Importa o CSS externo
 import "./PaymentMethodList.css";

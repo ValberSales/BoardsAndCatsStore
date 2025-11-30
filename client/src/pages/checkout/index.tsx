@@ -7,7 +7,6 @@ import { Message } from "primereact/message";
 import { Toast } from "primereact/toast";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Divider } from "primereact/divider";
-
 import { CartContext } from "@/context/CartContext";
 import { CheckoutSummary } from "@/components/checkout-summary";
 import { CartReviewList } from "@/components/cart-review-list";
@@ -15,7 +14,8 @@ import { AddressSelector } from "@/components/address-selector";
 import { PaymentSelector } from "@/components/payment-selector"; 
 import { api } from "@/lib/axios";
 
-import type { IAddress, IPaymentMethod } from "@/commons/types";
+import type { IAddress } from "@/types/address";
+import type { IPaymentMethod } from "@/types/payment"; 
 import "./Checkout.css";
 
 export const CheckoutPage = () => {

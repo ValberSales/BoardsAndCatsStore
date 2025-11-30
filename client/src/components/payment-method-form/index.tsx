@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
-import type { IPaymentMethod } from "@/commons/types";
+import type { IPaymentMethod } from "@/types/payment";
 
 // Importa o CSS externo
 import "./PaymentMethodForm.css";

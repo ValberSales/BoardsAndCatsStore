@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataView, type DataViewPageEvent } from 'primereact/dataview'; // Importar tipo do evento se quiser, ou usar any
-import type { IProduct } from '@/commons/types';
+import type { IProduct } from '@/types/product';
 import { ProductCard } from '@/components/product-card';
 import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 

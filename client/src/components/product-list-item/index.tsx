@@ -4,7 +4,7 @@ import { Tag } from 'primereact/tag';
 import { Divider } from 'primereact/divider';
 
 import { API_BASE_URL } from "@/lib/axios";
-import type { IProduct } from '@/commons/types';
+import type { IProduct } from '@/types/product';
 import { useWishlist } from '@/hooks/use-wishlist'; // Importando o novo hook
 
 import './ProductListItem.css';

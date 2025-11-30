@@ -7,7 +7,7 @@ import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { API_BASE_URL } from "@/lib/axios";
-import type { IOrder, IOrderItem } from "@/commons/types";
+import type { IOrder, IOrderItem } from "@/types/order";
 
 import "./OrderDetailDialog.css";
 

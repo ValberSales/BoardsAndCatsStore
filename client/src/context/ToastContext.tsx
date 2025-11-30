@@ -1,5 +1,5 @@
 import { createContext, useContext, useRef } from "react";
-import { createPortal } from "react-dom"; // <--- Importação necessária
+import { createPortal } from "react-dom";
 import { Toast } from "primereact/toast";
 import type { ReactNode } from "react";
 

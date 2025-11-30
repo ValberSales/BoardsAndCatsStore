@@ -2,7 +2,6 @@ import { Carousel } from 'primereact/carousel';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '@/lib/axios';
 
-// Importa o CSS customizado
 import './BannerCarousel.css';
 
 interface Banner {

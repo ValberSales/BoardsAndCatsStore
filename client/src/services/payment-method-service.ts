@@ -1,5 +1,6 @@
 import { api } from "@/lib/axios";
-import type { IResponse, IPaymentMethod } from "@/commons/types";
+import type { IPaymentMethod } from "@/types/payment";
+import type { IResponse } from "@/types/api";
 
 const BASE_URL = "/payment-methods";
 

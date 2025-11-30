@@ -1,5 +1,5 @@
 import { Badge } from 'primereact/badge';
-import type { ICategory, IProduct } from '@/commons/types';
+import type { ICategory, IProduct } from '@/types/product';
 import './SearchFilterSidebar.css';
 
 interface SearchFilterSidebarProps {

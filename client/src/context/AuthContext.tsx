@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import type { AuthenticatedUser, AuthenticationResponse } from "@/commons/types";
+import type { AuthenticatedUser, AuthenticationResponse } from "@/types/user";
 import { api } from "@/lib/axios";
 
 interface AuthContextType {

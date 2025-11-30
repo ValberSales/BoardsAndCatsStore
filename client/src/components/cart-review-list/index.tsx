@@ -1,7 +1,7 @@
 import { DataView } from "primereact/dataview";
 import { Tag } from "primereact/tag";
 import { API_BASE_URL } from "@/lib/axios";
-import type { ICartItem } from "@/commons/types";
+import type { ICartItem } from "@/types/cart";
 import "./CartReviewList.css";
 
 interface CartReviewListProps {

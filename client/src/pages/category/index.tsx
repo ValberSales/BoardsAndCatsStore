@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import type { IProduct, ICategory } from "@/commons/types";
+import type { IProduct, ICategory } from '@/types/product';
 import ProductService from "@/services/product-service";
 import CategoryService from "@/services/category-service";
 import { Toast } from "primereact/toast";

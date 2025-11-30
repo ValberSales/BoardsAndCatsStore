@@ -9,7 +9,7 @@ import { classNames } from "primereact/utils";
 
 import AuthService from "@/services/auth-service";
 import { useAuth } from "@/context/hooks/use-auth";
-import type { IUserLogin, AuthenticationResponse } from "@/commons/types";
+import type { IUserLogin, AuthenticationResponse } from "@/types/user";
 
 // Importação do CSS extraído
 import "./LoginForm.css";

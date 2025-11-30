@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 import type { ReactNode } from "react";
-import type { IProduct, ICartItemResponse, ICartSyncPayload, ICartItem } from "@/commons/types";
+import type { ICartItem, ICartItemResponse, ICartSyncPayload } from "@/types/cart";
+import type { IProduct } from "@/types/product";
 import CartService from "@/services/cart-service";
 import { AuthContext } from "./AuthContext";
 

@@ -2,10 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { RadioButton } from "primereact/radiobutton";
 import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
-
 import AddressService from "@/services/address-service";
 import { AddressForm } from "@/components/address-form";
-import type { IAddress } from "@/commons/types";
+import type { IAddress } from "@/types/address";
 import "./AddressSelector.css";
 
 interface AddressSelectorProps {

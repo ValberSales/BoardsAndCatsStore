@@ -4,7 +4,7 @@ import { DataView, type DataViewPageEvent } from 'primereact/dataview'; // Impor
 import { Sidebar } from 'primereact/sidebar'; 
 import { Button } from 'primereact/button';
 
-import type { IProduct, ICategory } from '@/commons/types';
+import type { IProduct, ICategory } from '@/types/product';
 import ProductService from '@/services/product-service';
 import CategoryService from '@/services/category-service';
 import { CartContext } from '@/context/CartContext';

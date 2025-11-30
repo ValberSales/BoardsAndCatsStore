@@ -1,12 +1,15 @@
+/* client/src/components/address-form/index.tsx */
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
+
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { InputMask } from "primereact/inputmask";
 import { classNames } from "primereact/utils";
-import type { IAddress } from "@/commons/types";
-import axios from "axios";
+
+import type { IAddress } from "@/types/address";
 
 import "./AddressForm.css";
 
@@ -19,27 +22,31 @@ interface AddressFormProps {
 }
 
 export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }: AddressFormProps) => {
-    const { control, handleSubmit, reset, setValue, setFocus, setError, clearErrors, formState: { errors } } = useForm<IAddress>();
+    const { 
+        control, 
+        handleSubmit, 
+        reset, 
+        setValue, 
+        setFocus, 
+        setError, 
+        clearErrors, 
+        formState: { errors } 
+    } = useForm<IAddress>();
     
     const [loadingCep, setLoadingCep] = useState(false);
 
     useEffect(() => {
         if (visible) {
-            if (addressToEdit) {
-                reset(addressToEdit);
-            } else {
-                // Inicializa com string vazia para evitar warning de uncontrolled component
-                reset({ street: '', number: '', neighborhood: '', city: '', state: '', zip: '', complement: '' } as IAddress);
-            }
+            reset(addressToEdit || { 
+                street: '', number: '', neighborhood: '', 
+                city: '', state: '', zip: '', complement: '' 
+            } as IAddress);
         }
     }, [visible, addressToEdit, reset]);
 
     const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
         const cep = e.target.value.replace(/\D/g, '');
-
-        if (cep.length !== 8) {
-            return;
-        }
+        if (cep.length !== 8) return;
 
         setLoadingCep(true);
         clearErrors("zip");
@@ -49,20 +56,16 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
 
             if (data.erro) {
                 setError("zip", { type: "manual", message: "CEP não encontrado." });
-                return;
+            } else {
+                setValue('street', data.logradouro);
+                setValue('neighborhood', data.bairro);
+                setValue('city', data.localidade);
+                setValue('state', data.uf);
+                setFocus('number');
             }
-
-            setValue('street', data.logradouro);
-            setValue('neighborhood', data.bairro);
-            setValue('city', data.localidade);
-            setValue('state', data.uf);
-            
-            // Foca no campo Número após carregar os dados
-            setFocus('number');
-
         } catch (error) {
             console.error("Erro ao buscar CEP", error);
-            setError("zip", { type: "manual", message: "Erro ao conectar com ViaCEP." });
+            setError("zip", { type: "manual", message: "Erro de conexão com ViaCEP." });
         } finally {
             setLoadingCep(false);
         }
@@ -79,15 +82,14 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                 icon="pi pi-times" 
                 outlined 
                 onClick={onHide} 
-                className="p-button-text btn-cancel" 
+                className="btn-rounded-custom p-button-secondary" 
             />
             <Button 
                 label="Salvar" 
                 icon="pi pi-check" 
                 onClick={handleSubmit(submitForm)} 
                 loading={loading || loadingCep} 
-                autoFocus 
-                className="btn-save"
+                className="btn-rounded-custom"
             />
         </div>
     );
@@ -100,9 +102,12 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
             modal 
             footer={dialogFooter} 
             onHide={onHide}
+            draggable={false}
+            resizable={false}
         >
-            <div className="address-form-grid mb-3">
-                <div className="field mb-0">
+            {/* LINHA 1: CEP e ESTADO */}
+            <div className="formgrid grid">
+                <div className="field col-8 mb-3">
                     <label htmlFor="zip" className="address-label">CEP</label>
                     <Controller
                         name="zip"
@@ -125,27 +130,29 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                             </span>
                         )}
                     />
-                    {errors.zip && <small className="error-msg">{errors.zip.message}</small>}
+                    {errors.zip && <small className="p-error block text-xs mt-1">{errors.zip.message}</small>}
                 </div>
-                <div className="field mb-0">
+
+                <div className="field col-4 mb-3">
                     <label htmlFor="state" className="address-label">Estado</label>
                     <Controller
                         name="state"
                         control={control}
-                        rules={{ required: "UF obrigatória" }}
+                        rules={{ required: "UF" }}
                         render={({ field }) => (
                             <InputText 
                                 id="state" 
                                 maxLength={2} 
                                 {...field} 
-                                className={classNames("address-input", { 'p-invalid': errors.state })} 
+                                className={classNames("address-input uppercase", { 'p-invalid': errors.state })} 
                             />
                         )}
                     />
-                    {errors.state && <small className="error-msg">{errors.state.message}</small>}
+                    {errors.state && <small className="p-error block text-xs mt-1">{errors.state.message}</small>}
                 </div>
             </div>
 
+            {/* LINHA 2: CIDADE */}
             <div className="field mb-3">
                 <label htmlFor="city" className="address-label">Cidade</label>
                 <Controller
@@ -160,9 +167,10 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                         />
                     )}
                 />
-                {errors.city && <small className="error-msg">{errors.city.message}</small>}
+                {errors.city && <small className="p-error block text-xs mt-1">{errors.city.message}</small>}
             </div>
 
+            {/* LINHA 3: BAIRRO */}
             <div className="field mb-3">
                 <label htmlFor="neighborhood" className="address-label">Bairro</label>
                 <Controller
@@ -177,13 +185,12 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                         />
                     )}
                 />
-                {errors.neighborhood && <small className="error-msg">{errors.neighborhood.message}</small>}
+                {errors.neighborhood && <small className="p-error block text-xs mt-1">{errors.neighborhood.message}</small>}
             </div>
 
-            {/* LINHA DA RUA E NÚMERO */}
-            <div className="formgrid grid mb-3">
-                {/* Campo Rua (9 colunas - 75% do espaço) */}
-                <div className="field col-12 md:col-9 mb-0">
+            {/* LINHA 4: RUA e NÚMERO */}
+            <div className="formgrid grid">
+                <div className="field col-9 mb-3">
                     <label htmlFor="street" className="address-label">Rua / Logradouro</label>
                     <Controller
                         name="street"
@@ -197,16 +204,15 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                             />
                         )}
                     />
-                    {errors.street && <small className="error-msg">{errors.street.message}</small>}
+                    {errors.street && <small className="p-error block text-xs mt-1">{errors.street.message}</small>}
                 </div>
 
-                {/* Campo Número (3 colunas - 25% do espaço, ou 1/3 da rua) */}
-                <div className="field col-12 md:col-3 mb-0">
+                <div className="field col-3 mb-3">
                     <label htmlFor="number" className="address-label">Número</label>
                     <Controller
                         name="number"
                         control={control}
-                        rules={{ required: "Obrigatório" }}
+                        rules={{ required: "Nº" }}
                         render={({ field }) => (
                             <InputText 
                                 id="number" 
@@ -215,11 +221,12 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                             />
                         )}
                     />
-                    {errors.number && <small className="error-msg">{errors.number.message}</small>}
+                    {errors.number && <small className="p-error block text-xs mt-1">{errors.number.message}</small>}
                 </div>
             </div>
 
-            <div className="field">
+            {/* LINHA 5: COMPLEMENTO */}
+            <div className="field mb-0">
                 <label htmlFor="complement" className="address-label">Complemento</label>
                 <Controller
                     name="complement"

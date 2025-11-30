@@ -5,9 +5,8 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Tag } from "primereact/tag";
 import { Divider } from "primereact/divider";
 import { classNames } from "primereact/utils";
-
 import ProductService from "@/services/product-service";
-import type { IProduct } from "@/commons/types";
+import type { IProduct } from "@/types/product";
 import { ProductGallery } from "@/components/product-gallery";
 import { CartContext } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext"; // Usando o contexto global

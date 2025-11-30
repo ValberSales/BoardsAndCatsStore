@@ -4,7 +4,6 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Tooltip } from "primereact/tooltip";
-
 import { CartContext } from "@/context/CartContext";
 import { CartItemList } from "@/components/cart-item-list";
 import { CartSummary } from "@/components/cart-summary";

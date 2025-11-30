@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from 'react';
-import type { IProduct } from '@/commons/types';
+import type { IProduct } from '@/types/product';
 import { ProductCard } from '@/components/product-card';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';

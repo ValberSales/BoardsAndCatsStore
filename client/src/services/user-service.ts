@@ -1,5 +1,6 @@
 import { api } from "@/lib/axios";
-import type { IResponse, IUserProfileUpdate, IUserPasswordUpdate } from "@/commons/types";
+import type { IUserProfileUpdate, IUserPasswordUpdate } from "@/types/user";
+import type { IResponse } from "@/types/api";
 
 // Função auxiliar para extrair o token limpo dos headers
 const extractToken = (headers: any): string | undefined => {

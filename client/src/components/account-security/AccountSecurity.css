@@ -12,55 +12,36 @@
     margin-bottom: 0.5rem;
 }
 
-/* Container principal do card */
-.security-card {
-    height: 100%;
-}
-
-.danger-zone-label {
-    color: var(--red-500);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    display: block;
-}
-
-
-/* 1. Container do Dialog e Arredondamento */
+/* Dialog Personalizado */
 .delete-account-dialog {
     width: 450px;
     border-radius: 16px !important;
-    overflow: hidden; /* Garante que o conteúdo respeite a borda arredondada */
+    overflow: hidden;
 }
 
-/* Arredonda o topo do header */
 .delete-account-dialog .p-dialog-header {
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
 }
 
-/* Arredonda o fundo do footer */
 .delete-account-dialog .p-dialog-footer {
     border-bottom-left-radius: 16px !important;
     border-bottom-right-radius: 16px !important;
-    padding: 1.5rem; /* Mais espaçamento para os botões */
+    padding: 1.5rem;
 }
 
-/* 2. Ícone de Perigo */
-.danger-icon {
-    font-size: 3rem; /* Equivalente ao text-5xl */
+.delete-account-dialog .danger-icon {
+    font-size: 3rem;
     color: var(--red-500);
     margin-bottom: 1.5rem;
 }
 
-/* 3. Input de Senha Expandido */
-.full-width-password {
-    width: 100%;
-}
+/* Ajustes de Input e Botões */
+.full-width-password,
 .full-width-password .p-inputtext {
     width: 100%;
 }
 
-/* 4. Footer com botões lado a lado */
 .dialog-footer-row {
     display: flex;
     gap: 1rem;
@@ -68,6 +49,6 @@
 }
 
 .dialog-btn {
-    flex: 1; /* Faz os botões dividirem o espaço igualmente */
+    flex: 1;
     justify-content: center;
 }

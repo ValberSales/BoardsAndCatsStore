@@ -4,11 +4,11 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
-
 import PaymentMethodService from "@/services/payment-method-service";
 import CouponService from "@/services/coupon-service"; // <--- Novo Serviço
 import { PaymentMethodForm } from "@/components/payment-method-form";
-import type { IPaymentMethod, ICoupon } from "@/commons/types"; // <--- Novo Tipo
+import type { IPaymentMethod } from "@/types/payment";
+import type { ICoupon } from "@/types/cart";
 import "./PaymentSelector.css";
 
 interface PaymentSelectorProps {

@@ -5,10 +5,9 @@ import { Toast } from "primereact/toast";
 import { confirmDialog } from 'primereact/confirmdialog';
 import { DataView } from 'primereact/dataview';
 import { Tag } from 'primereact/tag';
-
 import AddressService from "@/services/address-service";
 import { AddressForm } from "@/components/address-form";
-import type { IAddress } from "@/commons/types";
+import type { IAddress } from "@/types/address";
 
 import "./AddressList.css";
 

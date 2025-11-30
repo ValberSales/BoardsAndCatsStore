@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import type { IProduct } from "@/commons/types";
+import type { IProduct } from  "@/types/product";
 import ProductService from "@/services/product-service";
 import { Toast } from "primereact/toast";
 import { CategoryShelf } from "@/components/category-shelf";

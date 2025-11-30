@@ -6,9 +6,8 @@ import { useForm, Controller } from "react-hook-form";
 import { classNames } from "primereact/utils";
 import { Toast } from "primereact/toast";
 import { Divider } from "primereact/divider";
-
 import UserService from "@/services/user-service";
-import type { IUserPasswordUpdate } from "@/commons/types";
+import type { IUserPasswordUpdate } from "@/types/user";
 import { useAuth } from "@/context/hooks/use-auth";
 
 // Importação do CSS

@@ -6,7 +6,7 @@ import { Tag } from "primereact/tag";
 import { CartContext } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext"; 
 import { API_BASE_URL } from "@/lib/axios";
-import type { IProduct } from "@/commons/types";
+import type { IProduct } from "@/types/product";
 import { useWishlist } from "@/hooks/use-wishlist"; // <--- Hook
 
 import "./ProductCard.css"; 

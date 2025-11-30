@@ -1,4 +1,4 @@
-import type { IResponse } from "@/commons/types";
+import type { IResponse } from "@/types/api";
 import { api } from "@/lib/axios";
 
 const productURL = "/products";

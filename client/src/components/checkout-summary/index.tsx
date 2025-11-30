@@ -1,5 +1,6 @@
 import { Card } from "primereact/card";
-import type { IAddress, IPaymentMethod } from "@/commons/types";
+import type { IAddress } from "@/types/address";
+import type { IPaymentMethod } from "@/types/payment";
 import "./CheckoutSummary.css";
 
 interface CheckoutSummaryProps {

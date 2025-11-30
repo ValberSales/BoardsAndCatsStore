@@ -1,5 +1,6 @@
 import { api } from "@/lib/axios";
-import type { IResponse, ICartSyncPayload, ICartResponse } from "@/commons/types";
+import type { IResponse } from "@/types/api";
+import type { ICartResponse, ICartSyncPayload } from "@/types/cart";
 
 const BASE_URL = "/cart";
 

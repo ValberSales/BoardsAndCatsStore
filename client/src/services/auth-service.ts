@@ -1,4 +1,5 @@
-import type { IUserRegister, IUserLogin, IResponse } from "@/commons/types";
+import type { IUserRegister, IUserLogin } from "@/types/user";
+import type { IResponse } from "@/types/api";
 import { api } from "@/lib/axios";
 
 const signup = async (user: IUserRegister): Promise<IResponse> => {

@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import type { IResponse } from "@/commons/types";
+import type { IResponse } from "@/types/api";
 
 const getMyOrders = async (): Promise<IResponse> => {
     try {

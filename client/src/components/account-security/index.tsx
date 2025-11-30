@@ -1,10 +1,11 @@
+/* client/src/components/account-security/index.tsx */
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Dialog } from "primereact/dialog";
 import { Password } from "primereact/password";
 import { Divider } from "primereact/divider";
-import { useNavigate } from "react-router-dom";
 
 import UserService from "@/services/user-service";
 import { useAuth } from "@/context/hooks/use-auth";
@@ -14,8 +15,8 @@ import { ChangePasswordDialog } from "@/components/change-password-dialog";
 import "./AccountSecurity.css";
 
 export const AccountSecurity = () => {
-    const { handleLogout } = useAuth();
     const navigate = useNavigate();
+    const { handleLogout } = useAuth();
     const { showToast } = useToast();
     
     const [showPasswordDialog, setShowPasswordDialog] = useState(false);
@@ -25,51 +26,32 @@ export const AccountSecurity = () => {
 
     const handleDeleteAccount = async () => {
         if (!passwordConfirm) {
-            showToast({ 
-                severity: 'warn', 
-                summary: 'Atenção', 
-                detail: 'Digite sua senha para confirmar a exclusão.' 
-            });
+            showToast({ severity: 'warn', summary: 'Atenção', detail: 'Digite sua senha para confirmar.' });
             return;
         }
 
         setLoadingDelete(true);
-
         try {
             const response = await UserService.deleteMe(passwordConfirm);
             
             if (response.success) {
-                showToast({ 
-                    severity: 'success', 
-                    summary: 'Conta Excluída', 
-                    detail: 'Sua conta foi removida com sucesso. Redirecionando...' 
-                });
+                showToast({ severity: 'success', summary: 'Conta Excluída', detail: 'Redirecionando...' });
                 setShowDeleteDialog(false);
-                
                 setTimeout(() => {
                     handleLogout();
                     navigate('/');
                 }, 2000);
             } else {
-                showToast({ 
-                    severity: 'error', 
-                    summary: 'Erro', 
-                    detail: response.message || 'Erro ao excluir conta.' 
-                });
+                showToast({ severity: 'error', summary: 'Erro', detail: response.message || 'Erro ao excluir conta.' });
             }
-
         } catch (e) {
-            showToast({ 
-                severity: 'error', 
-                summary: 'Erro', 
-                detail: 'Ocorreu um erro inesperado ao processar a solicitação.' 
-            });
+            showToast({ severity: 'error', summary: 'Erro', detail: 'Erro inesperado ao excluir conta.' });
         } finally {
             setLoadingDelete(false);
         }
     };
 
-    const footerDeleteDialog = (
+    const renderDeleteFooter = () => (
         <div className="dialog-footer-row">
             <Button 
                 label="Cancelar" 
@@ -92,26 +74,28 @@ export const AccountSecurity = () => {
 
     return (
         <Card title="Segurança" className="shadow-2 security-card">
+            {/* Modal de Alterar Senha */}
             <ChangePasswordDialog 
                 visible={showPasswordDialog} 
                 onHide={() => setShowPasswordDialog(false)} 
             />
 
+            {/* Modal de Excluir Conta */}
             <Dialog 
                 header="Zona de Perigo" 
                 visible={showDeleteDialog} 
                 className="delete-account-dialog" 
-                footer={footerDeleteDialog} 
+                footer={renderDeleteFooter()} 
                 onHide={() => setShowDeleteDialog(false)}
                 modal
                 draggable={false}
                 resizable={false}
             >
                 <div className="flex flex-column align-items-center justify-content-center pt-2">
-                    <i className="pi pi-exclamation-triangle danger-icon"></i>
+                    <i className="pi pi-exclamation-triangle danger-icon" />
                     <span className="font-bold text-xl mb-3 block text-900">Tem certeza?</span>
                     <p className="mb-4 text-center line-height-3 text-700 m-0">
-                        Esta ação é <b>irreversível</b>. Todos os seus dados, histórico de pedidos e informações serão apagados permanentemente.
+                        Esta ação é <b>irreversível</b>. Todos os seus dados serão apagados.
                     </p>
                     
                     <div className="w-full">
@@ -132,6 +116,7 @@ export const AccountSecurity = () => {
                 </div>
             </Dialog>
 
+            {/* Conteúdo do Card */}
             <div className="flex flex-column gap-3">
                 <p className="text-sm text-gray-600 m-0">Gerencie sua senha e acesso.</p>
                 
@@ -148,7 +133,6 @@ export const AccountSecurity = () => {
                 
                 <div className="flex flex-column">
                     <span className="danger-zone-label">Zona de Perigo</span>
-                    
                     <Button 
                         label="Excluir Conta" 
                         icon="pi pi-trash" 

@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
 import { useNavigate } from 'react-router-dom';
-import type { IProduct } from '@/commons/types';
+import type { IProduct } from '@/types/product';
 import WishlistService from '@/services/wishlist-service';
 import { CartContext } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
