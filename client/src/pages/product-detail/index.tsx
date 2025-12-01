@@ -65,7 +65,7 @@ export const ProductDetailPage = () => {
 
     const formattedPrice = product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     const isOutOfStock = product.stock === 0;
-
+    const isLowOnStock = product.stock <= 10 && product.stock !== 0;
     return (
         <div className="container container-pdetail">
             
@@ -91,8 +91,9 @@ export const ProductDetailPage = () => {
                         
                         <div className="flex align-items-center gap-3 mb-4">
                             <span className="text-4xl font-bold text-primary">{formattedPrice}</span>
-                            {product.promo && <Tag value="OFERTA" severity="danger" rounded></Tag>}
-                            {isOutOfStock && <Tag value="ESGOTADO" severity="warning" icon="pi pi-exclamation-triangle" rounded></Tag>}
+                            {product.promo && <Tag value="OFERTA" severity="success" rounded></Tag>}
+                            {isOutOfStock && <Tag value="ESGOTADO" severity="danger" icon="pi pi-ban" rounded></Tag>}
+                            {isLowOnStock && <Tag value={"RESTAM "+product.stock+" UN"} severity="warning" icon="pi pi-exclamation-triangle" rounded></Tag>}
                         </div>
 
                         {/* Ações */}

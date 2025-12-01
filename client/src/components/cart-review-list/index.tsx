@@ -10,6 +10,8 @@ interface CartReviewListProps {
 
 export const CartReviewList = ({ items }: CartReviewListProps) => {
 
+    const totalCount = items.reduce((acc, item) => acc + item.quantity, 0);
+    
     const getStockStatus = (item: ICartItem) => {
         if (item.product.stock === 0) return 'OUTOFSTOCK';
         if (item.quantity > item.product.stock) return 'LOWSTOCK'; 
@@ -31,11 +33,6 @@ export const CartReviewList = ({ items }: CartReviewListProps) => {
                             src={`${API_BASE_URL}${item.product.imageUrl}`} 
                             alt={item.product.name} 
                         />
-                        {item.quantity > 1 && (
-                            <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold w-1.5rem h-1.5rem border-circle flex align-items-center justify-content-center shadow-1">
-                                {item.quantity}
-                            </span>
-                        )}
                     </div>
 
                     <div className="flex-1">
@@ -70,7 +67,7 @@ export const CartReviewList = ({ items }: CartReviewListProps) => {
         <div className="surface-0">
              <div className="flex align-items-center justify-content-between mb-3">
                 <h3 className="text-lg font-bold text-900 m-0">Revisão do Carrinho</h3>
-                <Tag value={`${items.length} itens`} severity="info" rounded></Tag>
+                <Tag value={`${totalCount} itens`} severity="info" rounded></Tag>
             </div>
             <DataView value={items} itemTemplate={itemTemplate} className="border-none" />
         </div>

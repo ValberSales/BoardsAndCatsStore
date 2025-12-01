@@ -20,7 +20,7 @@ import "./Checkout.css";
 
 export const CheckoutPage = () => {
     const navigate = useNavigate();
-    const { items, total, clearCart } = useContext(CartContext);
+    const { items, total, clearCart, count } = useContext(CartContext);
     const toast = useRef<Toast>(null);
 
     const [activeIndex, setActiveIndex] = useState(0);
@@ -226,7 +226,7 @@ export const CheckoutPage = () => {
 
                     <div className="col-12 lg:col-4">
                         <CheckoutSummary
-                            itemCount={items.length}
+                            itemCount={count}
                             subTotal={total}
                             shippingCost={shippingCost}
                             discount={discount}

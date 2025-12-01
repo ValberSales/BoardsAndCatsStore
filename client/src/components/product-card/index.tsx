@@ -45,6 +45,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const isOutOfStock = product.stock === 0;
+  const isLowOnStock = product.stock <= 10 && product.stock !== 0;
 
   const productHeader = (
     <div className="product-card-image-container relative">
@@ -56,16 +57,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {product.promo && (
         <Tag
           value="PROMO"
-          severity="danger"
+          severity="success"
           className="absolute"
+          rounded
           style={{ top: "10px", left: "10px" }}
         />
       )}
       {isOutOfStock && (
          <Tag 
             value="ESGOTADO" 
+            severity="danger" 
+            className="absolute"
+            rounded 
+            style={{ top: "10px", right: "10px" }} 
+         />
+      )}
+      {isLowOnStock && (
+         <Tag 
+            value={"RESTAM "+product.stock+" UN"}
             severity="warning" 
             className="absolute" 
+            rounded
             style={{ top: "10px", right: "10px" }} 
          />
       )}
