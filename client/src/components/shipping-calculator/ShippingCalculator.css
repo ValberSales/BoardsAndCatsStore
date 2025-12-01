@@ -1,0 +1,81 @@
+.shipping-calculator-container {
+    background-color: var(--surface-hover);
+    padding: 1.25rem; 
+    border-radius: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    box-shadow: 1px 1px 8px rgba(0,0,0,0.2);
+}
+
+.shipping-title {
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.shipping-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.shipping-input-container {
+    flex: 1;
+}
+
+.shipping-input-group {
+    display: flex;
+}
+
+.shipping-input-field {
+    width: 100%;
+}
+
+/* Área de Resultado */
+.shipping-result-card {
+    margin-top: 1rem;
+    border-radius: 6px;
+    padding: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadein 0.5s forwards;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.shipping-method-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.shipping-icon {
+    color: var(--primary-color);
+    font-size: 1.25rem; 
+}
+
+.shipping-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.shipping-method-name {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.shipping-method-desc {
+    font-size: 0.875rem; 
+    color: var(--text-color-secondary);
+}
+
+.shipping-price {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary-color);
+}

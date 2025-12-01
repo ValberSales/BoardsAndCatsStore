@@ -5,16 +5,17 @@
     justify-content: center;
     padding: 3rem;
     text-align: center;
+    background-color: var(--surface-card);
 }
 
 .empty-icon {
-    font-size: 4rem; /* Equivalente ao text-6xl */
+    font-size: 4rem; 
     color: var(--text-color-secondary);
     margin-bottom: 1rem;
 }
 
 .empty-text {
-    font-size: 1.25rem; /* Equivalente ao text-xl */
+    font-size: 1.25rem; 
     color: var(--text-color);
     margin-bottom: 1rem;
 }

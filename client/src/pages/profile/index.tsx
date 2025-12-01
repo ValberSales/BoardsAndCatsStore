@@ -11,15 +11,13 @@ import "./Profile.css";
 
 export const ProfilePage = () => {
     return (
-        // pb-8 adiciona um padding generoso no fundo para o conteúdo não colar no footer
         <div className="profile-container surface-ground pb-8"> 
             <ConfirmDialog />
             <Toast /> 
 
-            {/* CONTAINER FLEX: Cria o layout [MENU] --- [CONTEÚDO] */}
             <div className="profile-layout-flex">
                 
-                {/* TRILHO DO MENU: Fica na esquerda e tem a altura do conteúdo */}
+                {/* TRILHO DO MENU */}
                 <div className="profile-nav-rail">
                     <ProfileNavigation />
                 </div>
@@ -54,7 +52,6 @@ export const ProfilePage = () => {
                         {/* COLUNA DIREITA (Segurança) */}
                         <div className="col-12 lg:col-4 right-column">
                             <div className="security-column-wrapper">
-                                {/* Sticky também vai parar quando a coluna acabar */}
                                 <div id="security" className="security-card-sticky">
                                     <AccountSecurity />
                                 </div>

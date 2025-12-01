@@ -45,11 +45,9 @@ const findById = async (id: number): Promise<IResponse> => {
   return response;
 };
 
-// ##### ADIÇÃO: Buscar por Categoria #####
 const findByCategoryId = async (categoryId: number): Promise<IResponse> => {
   let response = {} as IResponse;
   try {
-    // Endpoint que já existe no seu backend
     const data = await api.get(`${productURL}/category/${categoryId}`);
     response = {
       status: 200,
@@ -68,12 +66,9 @@ const findByCategoryId = async (categoryId: number): Promise<IResponse> => {
   return response;
 };
 
-
-// ##### NOVA FUNÇÃO DE BUSCA #####
 const search = async (query: string): Promise<IResponse> => {
   let response = {} as IResponse;
   try {
-    // Chama /products/search?query=O_QUE_O_USUARIO_DIGITOU
     const data = await api.get(`${productURL}/search`, {
       params: { query: query }
     });
@@ -99,7 +94,7 @@ const ProductService = {
   findAll,
   findById,
   findByCategoryId,
-  search, // Não esqueça de exportar
+  search,
 };
 
 export default ProductService;

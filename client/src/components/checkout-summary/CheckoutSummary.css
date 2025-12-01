@@ -1,7 +1,7 @@
 .checkout-summary-card {
     background-color: var(--surface-card);
     position: sticky;
-    top: 100px; /* Faz o card flutuar ao rolar */
+    top: 100px;
     border: 1px solid var(--surface-border);
 }
 

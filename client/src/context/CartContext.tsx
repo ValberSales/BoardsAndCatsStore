@@ -24,7 +24,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<ICartItem[]>([]);
   const [isLoadingCart, setIsLoadingCart] = useState(true);
   const isInitialSyncDone = useRef(false);
-  // Ref para rastrear o estado anterior da autenticação
   const prevAuthenticated = useRef(authenticated);
   
   const debounceTimeout = useRef<number | null>(null);
@@ -55,21 +54,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // 3. Lógica de Sincronização e Logout
   useEffect(() => {
-    // Detecta Logout (Estava logado e agora não está)
     if (prevAuthenticated.current && !authenticated) {
-        setItems([]); // Limpa visualmente o carrinho
+        setItems([]);
         isInitialSyncDone.current = false;
     }
 
-    // Detecta Login (Não estava logado e agora está)
+    // Detecta Login
     if (!prevAuthenticated.current && authenticated) {
         syncOnLogin();
     }
 
     // Atualiza a ref para o próximo ciclo
     prevAuthenticated.current = authenticated;
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [authenticated]);
 
   const syncOnLogin = async () => {
@@ -114,7 +111,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
 };
 
-  // 4. Auto-Save Debounced
+  // 4. Auto-Save
   useEffect(() => {
     if (authenticated && isInitialSyncDone.current) {
       if (debounceTimeout.current) {

@@ -17,12 +17,10 @@ export const PromotionsPage = () => {
   const loadPromotions = async () => {
     setLoading(true);
     try {
-      // Busca todos e filtra (ou crie um endpoint /products/promo no back)
       const response = await ProductService.findAll();
       
       if (response.status === 200 && Array.isArray(response.data)) {
         const allProducts = response.data as IProduct[];
-        // Filtra apenas promoções
         const promoProducts = allProducts.filter(p => p.promo === true);
         setProducts(promoProducts);
       }

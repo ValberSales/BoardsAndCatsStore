@@ -63,15 +63,15 @@ export const Footer = () => {
                                 </a>
                             </div>
 
-                            {/* Seção de Pagamento Atualizada */}
+                            {/* Seção de Pagamento */}
                             <div>
                                 <h4 className="font-bold text-lg mb-2 mt-4">Formas de Pagamento</h4>
                                 <div className="flex gap-3 align-items-center text-gray-600" style={{ fontSize: '2rem' }}>
-                                    <FaCcVisa className="hover:text-blue-800 transition-colors cursor-pointer" title="Visa" />
-                                    <FaCcMastercard className="hover:text-orange-600 transition-colors cursor-pointer" title="Mastercard" />
-                                    <FaCcAmex className="hover:text-blue-500 transition-colors cursor-pointer" title="American Express" />
-                                    <FaPix className="hover:text-teal-500 transition-colors cursor-pointer" title="Pix" />
-                                    <FaBarcode className="hover:text-gray-900 transition-colors cursor-pointer" title="Boleto Bancário" />
+                                    <FaCcVisa title="Visa" />
+                                    <FaCcMastercard title="Mastercard" />
+                                    <FaCcAmex title="American Express" />
+                                    <FaPix title="Pix" />
+                                    <FaBarcode title="Boleto Bancário" />
                                 </div>
                             </div>
                         </div>

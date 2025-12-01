@@ -3,8 +3,8 @@
    ============================================================ */
 .wishlist-container {
     width: 100%;
-    max-width: 960px; /* Largura máxima "encolhida" para desktop */
-    margin: 3rem auto; /* Centraliza horizontalmente e dá espaço vertical */
+    max-width: 960px;
+    margin: 3rem auto; 
 }
 
 .wishlist-container .p-dataview .p-dataview-content {
@@ -22,15 +22,13 @@
 }
 
 /* ============================================================
-   LAYOUT CUSTOMIZADO (Breakpoint 886px)
+   LAYOUT CUSTOMIZADO
    ============================================================ */
 
-/* 1. COMPORTAMENTO PADRÃO (DESKTOP >= 886px) 
-   Define o layout como LINHA (horizontal)
-*/
+
 .wishlist-responsive-container {
     display: flex;
-    flex-direction: row; /* Horizontal por padrão */
+    flex-direction: row; 
     align-items: center;
     gap: 1.5rem;
     padding: 1.5rem;
@@ -48,7 +46,7 @@
 .wishlist-item-details {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Alinhado à esquerda */
+    align-items: flex-start; 
     gap: 1rem;
     flex: 1;
 }
@@ -57,7 +55,7 @@
 .wishlist-item-actions {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* Alinhado à direita */
+    align-items: flex-end; 
     gap: 0.5rem;
 }
 
@@ -66,7 +64,7 @@
 }
 
 .wishlist-price-mobile {
-    display: none; /* Escondido no desktop */
+    display: none; 
 }
 
 /* Imagem base */
@@ -138,7 +136,7 @@
 @media (max-width: 885px) {
     
     .wishlist-responsive-container {
-        flex-direction: column !important; /* Vira coluna */
+        flex-direction: column !important; 
         align-items: center !important;
         text-align: center;
     }
@@ -149,12 +147,12 @@
     }
 
     .wishlist-item-details {
-        align-items: center !important; /* Centraliza textos */
+        align-items: center !important; 
         width: 100%;
     }
 
     .wishlist-item-actions {
-        flex-direction: row; /* Botões lado a lado no mobile */
+        flex-direction: row; 
         align-items: center !important;
         justify-content: center;
         width: 100%;
@@ -164,4 +162,60 @@
     /* Troca a visibilidade do preço */
     .wishlist-price-desktop { display: none !important; }
     .wishlist-price-mobile { display: block !important; margin-top: 0.5rem; }
+}
+
+/* ============================================================
+   ESTILOS PARA ESTADO VAZIO
+   ============================================================ */
+
+   /* Container do Empty State */
+.wishlist-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+    width: 100%;
+    min-height: 400px; 
+    background-color: var(--surface-card, #ffffff);
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03), 0 0 2px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.12);
+}
+
+/* Círculo do Ícone */
+.wishlist-empty-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    background-color: var(--surface-100, #f5f9ff);
+    margin-bottom: 1.5rem;
+}
+
+.wishlist-empty-icon {
+    font-size: 2.5rem;
+    color: var(--text-color-secondary, #6c757d);
+}
+
+/* Textos */
+.wishlist-empty-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color, #212529);
+    margin-bottom: 1rem;
+}
+
+.wishlist-empty-description {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--text-color-secondary, #6c757d);
+    margin-bottom: 2rem;
+    max-width: 450px;
+}
+
+.wishlist-empty-state .p-button {
+    font-weight: 600;
 }

@@ -30,7 +30,7 @@
 .nav-icon-svg { margin-bottom: 4px; }
 .logo-img { height: 50px; width: auto; border-radius: 8px; }
 
-/* Sidebar Styling */
+/* Sidebar */
 .p-sidebar .nav-link-item {
     flex-direction: row;
     justify-content: flex-start;
@@ -41,9 +41,6 @@
 }
 .p-sidebar .nav-icon-svg { margin-bottom: 0; width: 24px; height: 24px; }
 
-/* ESTILO UNIFICADO PARA LINKS DO USUÁRIO (Tablet/Mobile)
-   Força os botões "link" do PrimeReact a parecerem com itens de navegação padrão (Cinza)
-*/
 .p-sidebar .p-button.p-button-link,
 .p-overlaypanel .p-button.p-button-link {
     color: var(--text-color-secondary) !important;
@@ -78,16 +75,16 @@
 
 
 /* ==========================================================================
-   SISTEMA DE RESPONSIVIDADE PERSONALIZADO
+   Responsividade
    ========================================================================== */
 
-/* Classes padrão ocultas, mostradas apenas nas media queries corretas */
+/* Classes padrão ocultas */
 .d-mobile, .d-tablet, .d-desktop, .d-tablet-desktop {
     display: none !important;
 }
 
 
-@media (max-width: 885px) {
+@media (max-width: 922px) {
     .d-mobile { display: flex !important; }
     
     /* Centralização absoluta do logo no mobile */
@@ -99,13 +96,13 @@
 }
 
 
-@media (min-width: 886px) and (max-width: 1100px) {
+@media (min-width: 923px) and (max-width: 1119px) {
     .d-tablet { display: flex !important; }
     .d-tablet-desktop { display: flex !important; } 
 }
 
 
-@media (min-width: 1101px) {
+@media (min-width: 1120px) {
     .d-desktop { display: flex !important; }
     .d-tablet-desktop { display: flex !important; }
 }

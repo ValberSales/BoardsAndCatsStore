@@ -5,21 +5,20 @@
     align-items: center;
     min-height: 80vh;
     background-color: var(--surface-ground);
-    padding-left: 1rem;  /* equivalente a px-4 */
+    padding-left: 1rem; 
     padding-right: 1rem;
 }
 
 /* Estilização do Card de Login */
 .login-card {
     max-width: 380px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* shadow-4 aproximado */
-    border-radius: 16px !important; /* Requisito solicitado */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+    border-radius: 16px !important; 
     background-color: var(--surface-card);
     border: 1px solid var(--surface-border);
-    overflow: hidden; /* Garante que o conteúdo não vaze as bordas arredondadas */
+    overflow: hidden; 
 }
 
-/* Responsividade para telas grandes (lg:w-4) */
 @media (min-width: 992px) {
     .login-card {
         width: 40%;
@@ -29,20 +28,20 @@
 /* Estilização do Header do Card */
 .login-header {
     text-align: center;
-    padding-top: 2rem; /* pt-5 */
-    padding-left: 1.5rem; /* px-4 */
+    padding-top: 2rem; 
+    padding-left: 1.5rem;
     padding-right: 1.5rem;
 }
 
 .login-title {
-    color: var(--text-color); /* text-900 */
-    font-size: 1.75rem; /* text-3xl */
-    font-weight: 500; /* font-medium */
-    margin-bottom: 1rem; /* mb-3 */
+    color: var(--text-color); 
+    font-size: 1.75rem; 
+    font-weight: 500; 
+    margin-bottom: 1rem; 
 }
 
 .login-subtitle {
-    color: var(--text-color-secondary); /* text-600 */
+    color: var(--text-color-secondary); 
     font-weight: 500;
     line-height: 1.5;
 }
@@ -51,17 +50,17 @@
     font-weight: 500;
     text-decoration: none;
     margin-left: 0.5rem;
-    color: var(--blue-500);
+    color: var(--primary-color);
     cursor: pointer;
     transition: color 0.2s;
 }
 
 .login-link:hover {
-    color: var(--blue-700);
+    color: var(--primary-color);
     text-decoration: underline;
 }
 
 /* Conteúdo do formulário */
 .login-content {
-    margin-top: 0.5rem; /* mt-2 */
+    margin-top: 0.5rem; 
 }

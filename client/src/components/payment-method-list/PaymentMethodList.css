@@ -5,7 +5,7 @@
     overflow: hidden;
 }
 
-/* Container do Botão "Novo Método" */
+/* Container do Botão */
 .new-payment-container {
     display: flex;
     justify-content: flex-end;
@@ -14,10 +14,10 @@
 
 /* Item da Lista */
 .payment-list-item {
-    padding: 1.5rem; /* Padding generoso para dar ar */
+    padding: 1.5rem; 
     border-bottom: 1px solid var(--surface-border);
     transition: background-color 0.2s;
-    /* Importante: Sem margin-bottom para que a borda fique centralizada entre os itens */
+    
 }
 
 .col-12:last-child .payment-list-item {
@@ -106,7 +106,7 @@
     }
 }
 
-/* Botões de Ação Circulares (Copiado do AddressList para consistência) */
+/* Botões de Ação Circulares */
 .btn-circle-action {
     width: 2.5rem !important;
     height: 2.5rem !important;

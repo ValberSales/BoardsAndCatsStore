@@ -3,7 +3,6 @@ import { API_BASE_URL } from "@/lib/axios";
 import type { IProduct } from "@/types/product";
 import { classNames } from "primereact/utils";
 
-// Importa o novo CSS
 import "./ProductGallery.css";
 
 interface ProductGalleryProps {

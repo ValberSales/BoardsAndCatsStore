@@ -1,30 +1,89 @@
+/* Layout do Cabeçalho */
+.address-selector-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.address-selector-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+/* Card de Endereço */
 .address-card {
     border: 1px solid var(--surface-border);
     background-color: var(--surface-card);
-    transition: all 0.2s;
+    border-radius: 16px;
+    padding: 1rem;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
     position: relative;
 }
 
 .address-card:hover {
     border-color: var(--primary-color);
     background-color: var(--surface-hover);
+    transform: translateY(-2px);
 }
 
 .address-card.selected {
     border-color: var(--primary-color);
-    background-color: var(--surface-hover);
+    background-color: var(--surface-50);
     box-shadow: 0 0 0 1px var(--primary-color);
 }
 
-.address-radio {
+/* Conteúdo Interno do Card */
+.address-radio-wrapper {
+    margin-top: 0.25rem;
     pointer-events: none;
 }
 
+.address-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.address-street {
+    font-weight: 700;
+    color: var(--text-color);
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.address-meta {
+    color: var(--text-color-secondary);
+    font-size: 0.875rem;
+    display: block;
+    line-height: 1.4;
+}
+
+.address-tag {
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+    background-color: var(--surface-100);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 0.5rem;
+    width: fit-content;
+}
+
+/* Botão "Novo Endereço" */
 .new-address-btn {
     height: 100%;
-    min-height: 120px;
+    min-height: 140px;
     border: 2px dashed var(--surface-border);
+    border-radius: 12px;
     background-color: transparent;
     color: var(--text-color-secondary);
     display: flex;
@@ -32,13 +91,28 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    transition: all 0.2s;
     cursor: pointer;
-    border-radius: 12px;
+    transition: all 0.2s;
 }
 
 .new-address-btn:hover {
     border-color: var(--primary-color);
     color: var(--primary-color);
     background-color: var(--surface-hover);
+}
+
+.new-address-icon-wrapper {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background-color: var(--surface-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.address-loading {
+    padding: 2rem;
+    text-align: center;
 }

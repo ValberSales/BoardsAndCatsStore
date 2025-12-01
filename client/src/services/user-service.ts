@@ -89,7 +89,6 @@ const changePassword = async (data: IUserPasswordUpdate): Promise<IResponse> => 
 const deleteMe = async (password: string): Promise<IResponse> => {
     let response = {} as IResponse;
     try {
-        // Agora enviamos apenas a password, combinando com o UserConfirmationDTO
         await api.delete("/users/me", {
             data: { password: password } 
         });

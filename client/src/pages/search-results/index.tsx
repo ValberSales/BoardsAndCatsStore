@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { DataView, type DataViewPageEvent } from 'primereact/dataview'; // Importe DataViewPageEvent
+import { DataView, type DataViewPageEvent } from 'primereact/dataview'; 
 import { Sidebar } from 'primereact/sidebar'; 
 import { Button } from 'primereact/button';
 
@@ -13,7 +13,7 @@ import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
 import { SearchFilterSidebar } from '@/components/search-filter-sidebar';
 import { ProductListItem } from '@/components/product-list-item';
-import { EmptyResults } from '@/components/empty-results';
+import { EmptyResults } from '@/components/empty-results'; // Componente restaurado
 
 import './SearchResults.css';
 
@@ -27,22 +27,18 @@ export function SearchResultsPage() {
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     
-    // Estado para paginação controlada
     const [first, setFirst] = useState(0);
-    
     const [mobileFilterVisible, setMobileFilterVisible] = useState(false); 
 
     const { addToCart } = useContext(CartContext);
     const { showToast } = useToast();
     const { scrollToTop } = useScrollToTop(); 
 
-    // Carregar dados (Reseta paginação se mudar a query)
     useEffect(() => {
         setFirst(0); 
         loadData();
     }, [query]);
 
-    // Filtrar dados (Reseta paginação se mudar o filtro)
     useEffect(() => {
         setFirst(0);
         if (selectedCategory === null) {
@@ -94,7 +90,6 @@ export function SearchResultsPage() {
         }
     };
 
-    // Handler da paginação
     const onPageChange = (event: DataViewPageEvent) => {
         setFirst(event.first);
         scrollToTop();
@@ -102,21 +97,22 @@ export function SearchResultsPage() {
 
     const itemTemplate = (product: IProduct, index: number) => {
         return (
-            <ProductListItem
-                key={product.id}
-                product={product}
-                showDivider={index !== 0}
-                onAddToCart={handleAddToCart}
-            />
+            <div className="col-12 w-full" key={product.id}>
+                <ProductListItem
+                    product={product}
+                    showDivider={index !== 0}
+                    onAddToCart={handleAddToCart}
+                />
+            </div>
         );
     };
 
     const listTemplate = (items: IProduct[]) => {
-        if (!items || items.length === 0) {
-            return <EmptyResults query={query} />;
-        }
-        return <div className="grid grid-nogutter">{items.map((item, index) => itemTemplate(item, index))}</div>;
+        if (!items || items.length === 0) return null;
+        return <div className="grid grid-nogutter w-full">{items.map((item, index) => itemTemplate(item, index))}</div>;
     };
+
+    const showEmptyState = !loading && filteredProducts.length === 0;
 
     return (
         <div className="search-results-layout">
@@ -156,24 +152,29 @@ export function SearchResultsPage() {
                 </div>
 
                 <div className="surface-card shadow-2 border-round-2xl overflow-hidden">
-                    <div className="p-4 surface-border results-card flex align-items-center justify-content-between flex-wrap gap-2">
-                        <span className="text-xl font-bold text-900">
-                            Resultados para: <span className="text-primary">"{query}"</span>
-                        </span>
-                        <span className="text-sm text-500">{filteredProducts.length} produtos encontrados</span>
-                    </div>
+                    {!showEmptyState && (
+                        <div className="p-4 surface-border results-card flex align-items-center justify-content-between flex-wrap gap-2">
+                            <span className="text-xl font-bold text-900">
+                                Resultados para: <span className="text-primary">"{query}"</span>
+                            </span>
+                            <span className="text-sm text-500">{filteredProducts.length} produtos encontrados</span>
+                        </div>
+                    )}
 
-                    <DataView 
-                        value={filteredProducts} 
-                        listTemplate={listTemplate} 
-                        paginator 
-                        rows={5} 
-                        loading={loading}
-                        // Controle da Paginação
-                        first={first}
-                        onPage={onPageChange}
-                        
-                    />
+                    {showEmptyState ? (
+                        <EmptyResults query={query} />
+                    ) : (
+                        <DataView 
+                            value={filteredProducts} 
+                            listTemplate={listTemplate} 
+                            paginator={filteredProducts.length > 0} 
+                            rows={5} 
+                            loading={loading}
+                            first={first}
+                            onPage={onPageChange}
+                            className="w-full"
+                        />
+                    )}
                 </div>
             </main>
         </div>

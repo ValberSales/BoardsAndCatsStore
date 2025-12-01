@@ -23,10 +23,9 @@ export const CategoryPage = () => {
   const loadData = async (categoryId: number) => {
     setLoading(true);
     try {
-      // Busca Produtos e Detalhes da Categoria em paralelo
       const [productRes, catRes] = await Promise.all([
         ProductService.findByCategoryId(categoryId),
-        CategoryService.findById(categoryId) // Requer o findById que criamos anteriormente
+        CategoryService.findById(categoryId)
       ]);
 
       if (productRes.status === 200 && Array.isArray(productRes.data)) {

@@ -5,9 +5,8 @@ export function ScrollToTop() {
     const { pathname } = useLocation();
 
     useEffect(() => {
-        // Usa rolagem instantânea ao trocar de página inteira
         window.scrollTo(0, 0);
     }, [pathname]);
 
-    return null; // Não renderiza nada visualmente
+    return null; 
 }

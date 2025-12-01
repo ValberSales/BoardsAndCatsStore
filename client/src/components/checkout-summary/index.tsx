@@ -35,7 +35,7 @@ export const CheckoutSummary = ({
         <Card className="checkout-summary-card shadow-2 border-round-2xl">
             <h3 className="text-xl font-bold m-0 mb-4 text-900">Resumo do Pedido</h3>
 
-            {/* Valores Financeiros */}
+            {/* Valores */}
             <div className="flex flex-column">
                 <div className="summary-row">
                     <span>Itens ({itemCount})</span>

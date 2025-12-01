@@ -33,7 +33,7 @@ const TopMenu: React.FC = () => {
   const userMenu = useRef<Menu>(null);
   
   const [visibleSidebar, setVisibleSidebar] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // 1. Estado para a busca
+  const [searchTerm, setSearchTerm] = useState(""); 
 
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     return localStorage.getItem("theme") === "dark";
@@ -153,14 +153,13 @@ const TopMenu: React.FC = () => {
   return (
     <nav className="top-menu-container px-4 py-2 flex align-items-center justify-content-between relative">
       
-      {/* --- 1. SIDEBAR (MOBILE ONLY - < 885px) --- */}
+      {/* --- 1. SIDEBAR (Celular) --- */}
       <Sidebar 
         visible={visibleSidebar} 
         onHide={() => setVisibleSidebar(false)} 
         className="w-20rem"
         showCloseIcon={false} 
       >
-        {/* ... conteúdo da sidebar permanece igual ... */}
           <div className="flex flex-column h-full">
               <div className="flex align-items-center justify-content-between mb-2">
                   <Button 
@@ -260,7 +259,6 @@ const TopMenu: React.FC = () => {
             icon="pi pi-search" rounded text severity="secondary" aria-label="Buscar" 
             onClick={(e) => {
               searchPanel.current?.toggle(e);
-              // Pequeno hack para focar no input ao abrir, se necessário (opcional)
               setTimeout(() => {
                 const input = document.getElementById('search-input');
                 if (input) input.focus();
@@ -272,11 +270,11 @@ const TopMenu: React.FC = () => {
                 <InputText 
                   id="search-input"
                   placeholder="Buscar produtos..." 
-                  value={searchTerm} // 4. Conectando ao estado
-                  onChange={(e) => setSearchTerm(e.target.value)} // 4. Atualizando estado
-                  onKeyDown={handleKeyDown} // 5. Ouvindo Enter
+                  value={searchTerm} 
+                  onChange={(e) => setSearchTerm(e.target.value)} 
+                  onKeyDown={handleKeyDown} 
                 />
-                <Button icon="pi pi-search" onClick={handleSearch} /> {/* 6. Botão também dispara busca */}
+                <Button icon="pi pi-search" onClick={handleSearch} /> 
             </div>
         </OverlayPanel>
 

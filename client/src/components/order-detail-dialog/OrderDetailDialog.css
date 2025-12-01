@@ -45,26 +45,25 @@
     display: block;
 }
 
-/* --- TIMELINE AJUSTADA --- */
 .custom-timeline .p-timeline-event-opposite {
-    display: none; /* Remove o espaço vazio do lado esquerdo */
+    display: none; 
 }
 
 .custom-timeline .p-timeline-event-content {
-    padding-bottom: 2rem; /* Espaçamento vertical generoso entre items */
-    padding-left: 1.5rem; /* Espaçamento horizontal generoso do marcador */
+    padding-bottom: 2rem; 
+    padding-left: 1.5rem; 
 }
 
 .custom-marker {
     display: flex;
-    width: 2.5rem; /* Marcador um pouco maior */
+    width: 2.5rem; 
     height: 2.5rem;
     align-items: center;
     justify-content: center;
     color: #ffffff;
     border-radius: 50%;
     z-index: 1;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* Sombra mais destacada */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
 }
 
 /* Rastreio */

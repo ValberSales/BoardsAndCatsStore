@@ -36,30 +36,28 @@
     flex-direction: column;
 }
 
-/* --- RESPONSIVIDADE (Breakpoint: 871px) --- */
+/* --- RESPONSIVIDADE --- */
 
-/* MOBILE (< 871px) */
+/* MOBILE */
 @media (max-width: 871px) {
     .product-detail-container {
-        flex-direction: column; /* Empilha */
+        flex-direction: column; 
     }
 
     .detail-right-col {
-        width: 100%; /* Ocupa tudo */
+        width: 100%; 
     }
-
-    /* Esconde a coluna da esquerda inteira no mobile */
+ 
     .desktop-only {
         display: none !important;
     }
 
-    /* Mostra a galeria interna no mobile */
     .mobile-only {
         display: block !important;
     }
 }
 
-/* DESKTOP (>= 872px) */
+/* DESKTOP */
 @media (min-width: 872px) {
     .product-detail-container {
         flex-direction: row;
@@ -76,18 +74,15 @@
         position: relative;
     }
 
-    /* Truque do Layout Absoluto para altura sincronizada */
     .gallery-wrapper-desktop {
         position: absolute;
         top: 0; bottom: 0; left: 0; right: 0;
     }
 
-    /* Esconde a galeria interna no desktop */
     .mobile-only {
         display: none !important;
     }
 
-    /* Mostra a coluna da esquerda no desktop */
     .desktop-only {
         display: flex !important;
     }

@@ -14,10 +14,9 @@ interface CartSummaryProps {
 }
 
 export const CartSummary = ({ subTotal, onCheckout, loading, disableCheckout }: CartSummaryProps) => {
-    // Estado para armazenar o frete calculado vindo do filho
+  
     const [shippingCost, setShippingCost] = useState(0);
 
-    // Total dinâmico
     const finalTotal = subTotal + shippingCost;
 
     return (
@@ -32,8 +31,7 @@ export const CartSummary = ({ subTotal, onCheckout, loading, disableCheckout }: 
                             {subTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         </span>
                     </div>
-                    
-                    {/* Calculadora injeta o valor no estado shippingCost */}
+
                     <ShippingCalculator onCalculate={setShippingCost} />
                     
                     <Divider />

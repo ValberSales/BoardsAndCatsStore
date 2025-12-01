@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { RadioButton } from "primereact/radiobutton";
 import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
+
 import AddressService from "@/services/address-service";
 import { AddressForm } from "@/components/address-form";
 import type { IAddress } from "@/types/address";
+
 import "./AddressSelector.css";
 
 interface AddressSelectorProps {
@@ -13,11 +15,11 @@ interface AddressSelectorProps {
 }
 
 export const AddressSelector = ({ selectedAddressId, onSelect }: AddressSelectorProps) => {
+    const toast = useRef<Toast>(null);
     const [addresses, setAddresses] = useState<IAddress[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [formLoading, setFormLoading] = useState(false);
-    const toast = useRef<Toast>(null);
 
     useEffect(() => {
         loadAddresses();
@@ -31,7 +33,7 @@ export const AddressSelector = ({ selectedAddressId, onSelect }: AddressSelector
                 setAddresses(response.data);
             }
         } catch (error) {
-            console.error("Erro ao carregar endereços");
+            console.error("Erro ao carregar endereços", error);
         } finally {
             setLoading(false);
         }
@@ -43,13 +45,11 @@ export const AddressSelector = ({ selectedAddressId, onSelect }: AddressSelector
             const response = await AddressService.save(data);
             if (response.success) {
                 toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Endereço cadastrado!' });
-                await loadAddresses(); // Recarrega a lista
-                
-                // Seleciona automaticamente o novo endereço criado
-                if (response.data && response.data.id) {
+                await loadAddresses(); 
+ 
+                if (response.data?.id) {
                     onSelect(response.data);
                 }
-                
                 setShowForm(false);
             } else {
                 toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Falha ao salvar endereço.' });
@@ -62,39 +62,55 @@ export const AddressSelector = ({ selectedAddressId, onSelect }: AddressSelector
     };
 
     if (loading) {
-        return <div className="p-4 text-center"><i className="pi pi-spin pi-spinner text-2xl text-primary"></i></div>;
+        return (
+            <div className="address-loading">
+                <i className="pi pi-spin pi-spinner text-2xl text-primary" />
+            </div>
+        );
     }
 
     return (
         <div className="fadein animation-duration-500">
             <Toast ref={toast} />
             
-            <div className="flex align-items-center justify-content-between mb-4">
-                <h2 className="text-2xl font-bold text-900 m-0">Onde vamos entregar?</h2>
+            <div className="address-selector-header">
+                <h2 className="address-selector-title">Onde vamos entregar?</h2>
             </div>
 
             <div className="grid">
                 {addresses.map((addr) => {
                     const isSelected = selectedAddressId === addr.id;
+                    
                     return (
                         <div className="col-12 md:col-6" key={addr.id}>
                             <div 
-                                className={classNames("address-card p-3 border-round-xl h-full flex align-items-start gap-3", { 'selected': isSelected })}
+                                className={classNames("address-card", { 'selected': isSelected })}
                                 onClick={() => onSelect(addr)}
                             >
-                                <div className="mt-1">
+                                <div className="address-radio-wrapper">
                                     <RadioButton 
                                         checked={isSelected} 
-                                        className="address-radio" 
-                                        onChange={() => {}} // Controlado pelo clique do card
+                                        inputId={`addr-${addr.id}`}
+                                        onChange={() => {}} 
+                                        className="pointer-events-none"
                                     />
                                 </div>
-                                <div className="flex-1">
-                                    <span className="font-bold text-900 block mb-1">{addr.street}</span>
-                                    <span className="text-600 text-sm block">{addr.city} - {addr.state}</span>
-                                    <span className="text-500 text-sm block mt-1">CEP: {addr.zip}</span>
+                                
+                                <div className="address-details">
+                                    <span className="address-street">
+                                        {addr.street}, {addr.number || 'S/N'}
+                                    </span>
+                                    
+                                    <span className="address-meta">
+                                        {addr.neighborhood} - {addr.city}/{addr.state}
+                                    </span>
+                                    
+                                    <span className="address-meta">
+                                        CEP: {addr.zip}
+                                    </span>
+                                    
                                     {addr.complement && (
-                                        <span className="text-500 text-xs block mt-1 bg-surface-100 inline-block px-2 py-1 border-round">
+                                        <span className="address-tag">
                                             {addr.complement}
                                         </span>
                                     )}
@@ -104,11 +120,10 @@ export const AddressSelector = ({ selectedAddressId, onSelect }: AddressSelector
                     );
                 })}
 
-                {/* Botão de Adicionar Novo */}
                 <div className="col-12 md:col-6">
                     <div className="new-address-btn" onClick={() => setShowForm(true)}>
-                        <div className="bg-primary-50 border-circle w-3rem h-3rem flex align-items-center justify-content-center mb-2">
-                            <i className="pi pi-plus text-primary text-xl"></i>
+                        <div className="new-address-icon-wrapper">
+                            <i className="pi pi-plus text-primary text-xl" />
                         </div>
                         <span className="font-semibold text-primary">Adicionar Novo Endereço</span>
                     </div>

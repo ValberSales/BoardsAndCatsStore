@@ -1,31 +1,28 @@
 import { useEffect, useState, useContext } from 'react';
-import { DataView, type DataViewPageEvent } from 'primereact/dataview'; // Importe DataViewPageEvent
+import { DataView, type DataViewPageEvent } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
 import { useNavigate } from 'react-router-dom';
+import { Divider } from 'primereact/divider';
+
 import type { IProduct } from '@/types/product';
 import WishlistService from '@/services/wishlist-service';
 import { CartContext } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
 import { API_BASE_URL } from "@/lib/axios";
-import { Divider } from 'primereact/divider';
-import { useScrollToTop } from '@/hooks/use-scroll-to-top'; // Importe o hook
+import { useScrollToTop } from '@/hooks/use-scroll-to-top';
 
 import './Wishlist.css';
 
 export function WishlistPage() {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [loading, setLoading] = useState(true);
-    
-    // Estado para controlar a paginação
     const [first, setFirst] = useState(0); 
 
     const navigate = useNavigate();
     const { addToCart } = useContext(CartContext);
     const { showToast } = useToast();
-    
-    // Inicializa o hook de scroll
     const { scrollToTop } = useScrollToTop(); 
 
     useEffect(() => {
@@ -53,7 +50,6 @@ export function WishlistPage() {
         }
     };
 
-    // Handler para mudança de página
     const onPageChange = (event: DataViewPageEvent) => {
         setFirst(event.first);
         scrollToTop();
@@ -70,17 +66,13 @@ export function WishlistPage() {
         try {
             const response = await WishlistService.toggle(productId);
             if (response.success) {
-                // Atualiza a lista local removendo o item
                 setProducts(prev => {
                     const updated = prev.filter(p => p.id !== productId);
-                    
-                    // Correção opcional: Se a página atual ficar vazia após excluir, voltar uma página
                     if (first >= updated.length && first > 0) {
-                        setFirst(Math.max(0, first - 5)); // 5 é o número de rows
+                        setFirst(Math.max(0, first - 5));
                     }
                     return updated;
                 });
-
                 showToast({ severity: 'info', summary: 'Removido', detail: 'Produto removido da lista.', life: 2000 });
             } else {
                 showToast({ severity: 'error', summary: 'Erro', detail: 'Falha ao atualizar a lista.', life: 2000 });
@@ -108,9 +100,7 @@ export function WishlistPage() {
                 {index !== 0 && <Divider className="m-0" />}
 
                 <div 
-                    className={classNames(
-                        'wishlist-responsive-container cursor-pointer wishlist-item-hover'
-                    )}
+                    className={classNames('wishlist-responsive-container cursor-pointer wishlist-item-hover')}
                     onClick={() => navigate(`/products/${product.id}`)}
                 >
                     <div className="list-image-wrapper">
@@ -169,29 +159,53 @@ export function WishlistPage() {
     };
 
     const listTemplate = (items: IProduct[]) => {
-        if (!items || items.length === 0) return <div className="p-4 text-center text-700">Sua lista de desejos está vazia.</div>;
+        if (!items) return null;
         const list = items.map((product, index) => itemTemplate(product, index));
         return <div className="grid grid-nogutter">{list}</div>;
     };
+
+    const emptyContent = (
+        <div className="wishlist-empty-state">
+            <div className="wishlist-empty-icon-wrapper">
+                <i className="pi pi-heart wishlist-empty-icon"></i>
+            </div>
+            
+            <div className="wishlist-empty-title">Sua lista de desejos está vazia</div>
+            
+            <span className="wishlist-empty-description">
+                Parece que você ainda não favoritou nenhum jogo. Explore nossa loja e guarde aqui os que você mais gostou!
+            </span>
+            
+            <Button 
+                label="Explorar Jogos" 
+                icon="pi pi-search" 
+                onClick={() => navigate('/')} 
+                className="p-button-outlined"
+            />
+        </div>
+    );
+
+    const showEmptyState = !loading && products.length === 0;
 
     return (
         <div className="wishlist-container flex flex-column align-items-center px-4">
             <h2 className="text-900 font-bold mb-4 align-self-start">Minha Lista de Desejos</h2>
             
-            <div className="surface-card shadow-2 wishlist-card w-full">
-                <DataView 
-                    value={products} 
-                    listTemplate={listTemplate} 
-                    paginator 
-                    rows={5} 
-                    emptyMessage="Nenhum item na lista."
-                    loading={loading}
-                    
-                    // Propriedades Adicionadas
-                    first={first}
-                    onPage={onPageChange}
-                />
-            </div>
+            {showEmptyState ? (
+                emptyContent
+            ) : (
+                <div className="surface-card shadow-2 wishlist-card w-full">
+                    <DataView 
+                        value={products} 
+                        listTemplate={listTemplate} 
+                        paginator={products.length > 0} 
+                        rows={5} 
+                        loading={loading}
+                        first={first}
+                        onPage={onPageChange}
+                    />
+                </div>
+            )}
         </div>
     );
 }

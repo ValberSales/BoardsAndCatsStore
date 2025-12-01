@@ -61,7 +61,7 @@
 
 /* --- ESTILOS MOBILE (Lista de Cards) --- */
 .orders-mobile-list {
-    display: none; /* Oculto por padrão */
+    display: none;
     flex-direction: column;
     gap: 1rem;
 }
@@ -99,7 +99,7 @@
     color: var(--text-color);
 }
 
-/* Responsividade: Troca Tabela por Lista */
+/* Responsividade */
 @media (max-width: 768px) {
     .orders-container {
         padding-left: 1rem;

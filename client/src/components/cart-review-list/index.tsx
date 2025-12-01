@@ -25,7 +25,6 @@ export const CartReviewList = ({ items }: CartReviewListProps) => {
             <div className="col-12 review-item-row" key={item.product.id}>
                 <div className="flex align-items-center gap-3">
                     
-                    {/* Imagem Menor com Badge de Qtd */}
                     <div className="relative flex-shrink-0">
                         <img 
                             className="review-item-img" 
@@ -39,13 +38,11 @@ export const CartReviewList = ({ items }: CartReviewListProps) => {
                         )}
                     </div>
 
-                    {/* Detalhes Concisos */}
                     <div className="flex-1">
                         <span className="text-900 font-semibold block mb-1">{item.product.name}</span>
                         <div className="flex align-items-center gap-2 flex-wrap">
                             <span className="text-500 text-sm">{item.product.category?.name}</span>
-                            
-                            {/* Avisos de Estoque na Revisão */}
+
                             {(isLowStock || isOutOfStock) && (
                                 <Tag 
                                     severity={isOutOfStock ? "danger" : "warning"} 
@@ -56,7 +53,6 @@ export const CartReviewList = ({ items }: CartReviewListProps) => {
                         </div>
                     </div>
 
-                    {/* Preço Total do Item */}
                     <div className="text-right">
                         <span className="font-bold text-900">
                             {(item.product.price * item.quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}

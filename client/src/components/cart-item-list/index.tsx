@@ -1,3 +1,4 @@
+/* client/src/components/cart-item-list/index.tsx */
 import { DataView } from "primereact/dataview";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
@@ -47,11 +48,9 @@ export const CartItemList = ({ items, onUpdateQuantity, onRemove }: CartItemList
 
         return (
             <div className="col-12 px-0" key={item.product.id}>
-                {/* Container Principal Semântico */}
                 <div className="cart-item-container p-3">
                     <div className="cart-item-inner">
                         
-                        {/* 1. Imagem */}
                         <div className="cart-image-wrapper">
                             <img 
                                 className="cart-item-img" 
@@ -63,13 +62,10 @@ export const CartItemList = ({ items, onUpdateQuantity, onRemove }: CartItemList
                             )}
                         </div>
 
-                        {/* 2. Detalhes */}
                         <div className="cart-item-details">
-                            
-                            {/* Cabeçalho: Título e Info */}
                             <div className="cart-item-header">
                                 <span className="cart-item-title">{item.product.name}</span>
-                                <span className="cart-item-category"><i className="pi pi-tag"></i> {item.product.category?.name} </span>
+                                <span className="cart-item-category"><i className="pi pi-tag" /> {item.product.category?.name} </span>
                                 
                                 {(isLowStock || isOutOfStock) && (
                                     <div className="mt-1">
@@ -82,14 +78,12 @@ export const CartItemList = ({ items, onUpdateQuantity, onRemove }: CartItemList
                                 )}
                             </div>
 
-                            {/* Rodapé: Preço e Ações (Qty + Trash) */}
                             <div className="cart-item-footer">
                                 <span className="cart-item-price">
                                     {(item.product.price * item.quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                 </span>
 
                                 <div className="cart-item-actions">
-                                    {/* Controles de Qtd */}
                                     <div className="qty-pill">
                                         <Button 
                                             icon="pi pi-minus" 
@@ -110,7 +104,6 @@ export const CartItemList = ({ items, onUpdateQuantity, onRemove }: CartItemList
                                         />
                                     </div>
 
-                                    {/* Lixeira (agora junto com os controles) */}
                                     <Button 
                                         icon="pi pi-trash" 
                                         rounded 

@@ -32,7 +32,6 @@ export function useWishlist(product: IProduct | null) {
         if (e) e.stopPropagation();
 
         if (!authenticated) {
-            // Opcional: mostrar aviso antes de redirecionar ou apenas redirecionar
             showToast({
                 severity: 'info',
                 summary: 'Login necessário',

@@ -9,7 +9,6 @@ import PaymentMethodService from "@/services/payment-method-service";
 import { PaymentMethodForm } from "@/components/payment-method-form"; 
 import type { IPaymentMethod } from "@/types/payment";
 
-// Importa o CSS externo
 import "./PaymentMethodList.css";
 
 export const PaymentMethodList = () => {
@@ -78,7 +77,6 @@ export const PaymentMethodList = () => {
         }
     };
 
-    // Função auxiliar para renderizar ícones baseados no tipo
     const getTypeInfo = (type: string) => {
         switch (type) {
             case 'CREDIT_CARD': return { icon: 'pi pi-credit-card', severity: 'info', label: 'Crédito' };
@@ -92,9 +90,6 @@ export const PaymentMethodList = () => {
         const { icon, severity, label } = getTypeInfo(payment.type);
 
         return (
-            // CORREÇÃO: Separamos a estrutura. 
-            // col-12 cuida do layout na grid. 
-            // payment-list-item cuida do estilo visual (bordas/padding)
             <div className="col-12 p-0"> 
                 <div className="payment-list-item">
                     <div className="flex flex-column sm:flex-row align-items-center gap-4 payment-list-item-content">
@@ -117,7 +112,7 @@ export const PaymentMethodList = () => {
                                 icon="pi pi-pencil" 
                                 rounded 
                                 text 
-                                className="btn-circle-action edit" // <--- Classe Adicionada
+                                className="btn-circle-action edit" 
                                 tooltip="Editar" 
                                 tooltipOptions={{ position: 'bottom' }}
                                 onClick={() => openEdit(payment)} 
@@ -126,7 +121,7 @@ export const PaymentMethodList = () => {
                                 icon="pi pi-trash" 
                                 rounded 
                                 text 
-                                className="btn-circle-action delete" // <--- Classe Adicionada
+                                className="btn-circle-action delete"
                                 tooltip="Remover" 
                                 tooltipOptions={{ position: 'bottom' }}
                                 onClick={() => confirmDelete(payment)} 

@@ -76,24 +76,22 @@
 .product-card-content-wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Título no topo, Preço embaixo */
+  justify-content: space-between; 
   height: 100%;
-  min-height: 5rem; /* Altura mínima para garantir alinhamento */
+  min-height: 5rem; 
 }
 
-/* Título do Produto (Sem Webkit) */
+/* Título do Produto */
 .product-card-title {
   font-size: 1rem;
   font-weight: 600;
   color: var(--text-color);
   margin-bottom: 0.5rem;
 
-  /* Lógica para limitar a 2 linhas (Padrão CSS) */
-  line-height: 1.25;      /* Altura de cada linha */
-  height: 2.5em;          /* 1.25 * 2 linhas = 2.5em */
-  overflow: hidden;       /* Corta o excedente */
-  
-  /* Opcional: Quebra de palavra se for muito longa */
+  /* Lógica para limitar a 2 linhas */
+  line-height: 1.25;
+  height: 2.5em;
+  overflow: hidden;       
   word-wrap: break-word;
 }
 
@@ -101,8 +99,8 @@
 .product-card-bottom-row {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Preço na esq, Botão na dir */
-  margin-top: auto; /* Garante que fique no fundo se o título for curto */
+  justify-content: space-between; 
+  margin-top: auto; 
 }
 
 .product-card-price {

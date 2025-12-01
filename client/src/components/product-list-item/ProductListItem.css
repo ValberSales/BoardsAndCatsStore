@@ -1,3 +1,4 @@
+/* Container do Item */
 .search-responsive-container {
     display: flex;
     flex-direction: row;
@@ -5,12 +6,14 @@
     gap: 1.5rem;
     padding: 1.5rem;
     transition: background-color 0.2s;
+    width: 100%; 
 }
 
 .search-responsive-container:hover {
     background-color: var(--surface-hover);
 }
 
+/* Imagem */
 .search-image-wrapper {
     position: relative;
     width: 100px;
@@ -19,7 +22,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
+    background: white;
     border-radius: 8px;
     border: 1px solid var(--surface-border);
     padding: 0.5rem;
@@ -29,8 +32,10 @@
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
+    
 }
 
+/* Detalhes (Centro) */
 .search-item-details {
     flex: 1;
     display: flex;
@@ -53,6 +58,7 @@
     gap: 0.5rem;
 }
 
+/* Ações (Direita) */
 .search-item-actions {
     display: flex;
     flex-direction: column;
@@ -60,18 +66,26 @@
     gap: 0.75rem;
 }
 
-.search-price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-color);
-}
-
 .action-buttons-wrapper {
     display: flex;
     gap: 0.5rem;
 }
 
-/* Botões de Ação Circulares */
+.search-price-desktop {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    display: block; 
+}
+
+.search-price-mobile {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-top: 0.5rem;
+    display: none; 
+}
+
 .btn-circle-action {
     width: 2.5rem !important;
     height: 2.5rem !important;
@@ -85,7 +99,6 @@
     box-shadow: 0 1px 5px rgba(0,0,0,0.2);
 }
 
-/* Estilo Editar (Cinza) */
 .btn-circle-action.cart {
     background-color: var(--surface-100) !important;
     color: var(--text-color-secondary) !important;
@@ -97,7 +110,6 @@
     transform: scale(1.05);
 }
 
-/* Estilo Wishlist (Vermelho) */
 .btn-circle-action.heart {
     background-color: var(--red-50) !important;
     color: var(--red-500) !important;
@@ -108,16 +120,15 @@
     color: var(--red-700) !important;
 }
 
-
-
 .btn-circle-action.heart:hover {
     background-color: var(--red-100) !important;
     color: var(--red-700) !important;
     transform: scale(1.05);
 }
 
-/* Responsividade Específica do Item */
-@media (max-width: 900px) {
+/* --- RESPONSIVIDADE (600px) --- */
+
+@media (max-width: 600px) {
     .search-responsive-container {
         flex-direction: column;
         text-align: center;
@@ -125,13 +136,22 @@
 
     .search-item-details {
         align-items: center;
+        width: 100%;
     }
 
     .search-item-actions {
         align-items: center;
         flex-direction: row;
         width: 100%;
-        justify-content: center; /* Centraliza os botões */
+        justify-content: center;
         margin-top: 1rem;
+    }
+
+    .search-price-desktop {
+        display: none;
+    }
+
+    .search-price-mobile {
+        display: block;
     }
 }

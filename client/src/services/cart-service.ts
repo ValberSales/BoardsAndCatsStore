@@ -15,7 +15,7 @@ const getCart = async (): Promise<IResponse> => {
 
 const syncCart = async (payload: ICartSyncPayload): Promise<IResponse> => {
     try {
-        // CORREÇÃO: O backend espera PUT para atualização completa do carrinho
+        // O backend espera PUT para atualização completa do carrinho
         const response = await api.put(BASE_URL, payload);
         return { status: 200, success: true, message: "Carrinho sincronizado", data: response.data as ICartResponse };
     } catch (err: any) {

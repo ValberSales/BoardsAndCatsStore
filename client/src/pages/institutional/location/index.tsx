@@ -5,7 +5,6 @@ import "./Location.css";
 export const LocationPage = () => {
     const address = "Rua Aimoré, 983 - Centro, Pato Branco - PR, 85501-296";
     
-    // URL corrigida para busca no Google Maps
     const handleOpenMaps = () => {
         const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
         window.open(mapsUrl, '_blank');
@@ -21,7 +20,6 @@ export const LocationPage = () => {
                 </div>
 
                 <div className="grid">
-                    {/* Informações de Contato */}
                     <div className="col-12 md:col-5 mb-4">
                         <Card title="Boards & Cats (Sede)" className="shadow-2 location-info-card">
                             <div className="flex flex-column gap-4 mt-2">
@@ -74,14 +72,12 @@ export const LocationPage = () => {
                     <div className="col-12 md:col-7 mb-4">
                         <div className="shadow-2 location-map-wrapper">
                             
-                            {/* Placeholder (aparece enquanto carrega ou se falhar) */}
                             <div className="text-center p-4">
                                 <i className="pi pi-map text-6xl text-gray-400 mb-3"></i>
                                 <p className="text-gray-600 font-semibold">Carregando Mapa...</p>
                                 <p className="text-sm text-gray-500">Rua Aimoré, 983 - Pato Branco</p>
                             </div>
                             
-                            {/* Iframe Real */}
                              <iframe 
                                 className="location-map-iframe"
                                 loading="lazy" 

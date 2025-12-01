@@ -31,7 +31,7 @@ export const CheckoutPage = () => {
     const [selectedAddress, setSelectedAddress] = useState<IAddress | null>(null);
     const [selectedPayment, setSelectedPayment] = useState<IPaymentMethod | null>(null);
     const [shippingCost, setShippingCost] = useState(0);
-    const [discount, setDiscount] = useState(0); // Armazena o valor em R$ (ex: 50.00)
+    const [discount, setDiscount] = useState(0);
 
     const stepsItems = [
         { label: 'Revisão' },
@@ -158,8 +158,8 @@ export const CheckoutPage = () => {
                         <PaymentSelector
                             selectedPaymentId={selectedPayment?.id}
                             onSelect={setSelectedPayment}
-                            onCouponApply={setDiscount} // Recebe o valor já calculado em R$
-                            orderTotal={total} // Passa o total para o cálculo da % no filho
+                            onCouponApply={setDiscount} 
+                            orderTotal={total}
                         />
                     </div>
                 );

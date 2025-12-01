@@ -1,4 +1,3 @@
-/* Container Geral */
 .cart-item-container {
     transition: background-color 0.2s;
 }
@@ -13,7 +12,6 @@
     align-items: flex-start;
 }
 
-/* Imagem */
 .cart-image-wrapper {
     position: relative;
     flex-shrink: 0;
@@ -44,13 +42,12 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Detalhes */
 .cart-item-details {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 100px; /* Altura mínima para alinhar com imagem */
+    min-height: 100px;
 }
 
 .cart-item-title {
@@ -60,32 +57,27 @@
     line-height: 1.3;
     margin-bottom: 0.25rem;
     display: block;
-    /* Sem webkit estranho */
 }
 
 .cart-item-category {
     font-size: 0.875rem;
     color: var(--text-color-secondary);
-    /* Mudança aqui: Usar Flexbox para alinhar ícone e texto */
     display: flex; 
     align-items: center;
-    gap: 0.4rem; /* Espaço entre o ícone e o texto */
+    gap: 0.4rem;
     margin-bottom: 0.5rem;
 }
 
-/* Controle específico para o ícone dentro da categoria */
 .cart-item-category i {
-    font-size: 0.875rem; /* Garante que o ícone tenha o mesmo tamanho da fonte */
-    /* Opcional: reduzir um pouco a opacidade para não chamar tanta atenção */
+    font-size: 0.875rem;
     opacity: 0.8; 
 }
 
-/* Rodapé do Item (Preço e Ações) */
 .cart-item-footer {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-top: auto; /* Empurra para o fundo se houver altura */
+    margin-top: auto;
 }
 
 .cart-item-price {
@@ -100,7 +92,6 @@
     gap: 1rem;
 }
 
-/* Controles de Quantidade */
 .qty-pill {
     display: flex;
     align-items: center;
@@ -126,7 +117,6 @@
     padding: 0 !important;
 }
 
-/* Lixeira (Estilo consistente com AddressList) */
 .btn-circle-action {
     width: 2.5rem !important;
     height: 2.5rem !important;
@@ -146,19 +136,16 @@
     transform: scale(1.05);
 }
 
-/* --- RESPONSIVIDADE --- */
-
-/* 1. Quebra intermediária (690px) */
 @media screen and (max-width: 690px) {
     .cart-item-footer {
         flex-direction: column;
-        align-items: flex-start; /* Preço na esquerda */
+        align-items: flex-start;
         gap: 1rem;
     }
 
     .cart-item-actions {
         width: 100%;
-        justify-content: flex-end; /* Ações na direita */
+        justify-content: flex-end;
     }
     
     .cart-item-img {
@@ -167,16 +154,15 @@
     }
 }
 
-/* 2. Quebra Mobile (576px) - Display Block */
 @media screen and (max-width: 576px) {
     .cart-item-inner {
-        display: block; /* Stack Image on top of content */
+        display: block;
     }
 
     .cart-image-wrapper {
         margin-bottom: 1rem;
         display: flex;
-        justify-content: center; /* Centraliza a imagem se estiver sozinha */
+        justify-content: center;
     }
     
     .cart-item-img {
@@ -185,12 +171,11 @@
     }
 
     .cart-item-header {
-        text-align: center; /* Centraliza título no mobile */
+        text-align: center;
     }
     
-    /* Mantém a lógica de 690px para o footer (preço esq, ações dir) ou ajusta */
     .cart-item-footer {
-        flex-direction: row; /* Volta para linha para economizar altura */
+        flex-direction: row;
         align-items: center;
         margin-top: 1rem;
     }

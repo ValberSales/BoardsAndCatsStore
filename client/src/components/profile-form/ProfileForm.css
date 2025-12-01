@@ -1,14 +1,14 @@
 /* Card Principal */
 .profile-card {
-    border-radius: 16px !important; /* border-round-xl */
+    border-radius: 16px !important;
     border: 1px solid var(--surface-border);
     overflow: hidden;
 }
 
 /* Títulos e Labels */
 .profile-label {
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 700; /* font-bold */
+    font-size: 0.875rem;
+    font-weight: 700;
     color: var(--text-color);
     margin-bottom: 0.5rem;
     display: block;

@@ -53,15 +53,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    // ADIÇÃO: Limpa o carrinho ao deslogar para evitar mistura de dados entre usuários
     localStorage.removeItem("boardsandcats_cart");
     
     api.defaults.headers.common["Authorization"] = "";
     setAuthenticated(false);
     setAuthenticatedUser(undefined);
-    
-    // Opcional: Recarregar a página para limpar estados em memória de outros contextos
-    // window.location.reload(); 
+    window.location.reload(); 
   };
 
   const updateUser = (user: AuthenticatedUser) => {

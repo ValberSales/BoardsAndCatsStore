@@ -1,4 +1,3 @@
-/* Container Geral */
 .product-gallery-container {
     display: flex;
     flex-direction: column;
@@ -7,27 +6,21 @@
     gap: 1rem;
 }
 
-/* Container da Imagem Principal */
 .gallery-main-image-container {
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     width: 100%;
-    
-    /* Comportamento Flexível (Cresce/Encolhe) */
     flex-grow: 1;
     min-height: 0;
     overflow: hidden;
-    
-    /* Estilização Visual (Consistente com ProductCard) */
-    background-color: #ffffff; /* Fundo branco fixo */
-    border: 1px solid var(--surface-border); /* Borda suave do tema */
-    border-radius: 16px; /* border-round-xl */
-    box-shadow: 0 3px 5px rgba(0,0,0,0.02), 0 0 2px rgba(0,0,0,0.05); /* shadow-2 */
+    background-color: #ffffff;
+    border: 1px solid var(--surface-border);
+    border-radius: 16px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.02), 0 0 2px rgba(0,0,0,0.05);
 }
 
-/* A Imagem Grande */
 .gallery-main-image {
     max-width: 100%;
     max-height: 100%;
@@ -37,16 +30,14 @@
     display: block;
 }
 
-/* Container das Miniaturas */
 .gallery-thumbnails-container {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
-    flex-shrink: 0; /* Não encolhe */
+    flex-shrink: 0;
 }
 
-/* O Card da Miniatura */
 .gallery-thumbnail {
     width: 80px;
     height: 80px;
@@ -56,23 +47,18 @@
     position: relative;
     cursor: pointer;
     overflow: hidden;
-    
     background-color: #ffffff;
-    border-radius: 16px; /* border-round-lg */
+    border-radius: 16px;
     transition: all 0.2s ease;
-    
-    /* Borda padrão */
     border: 1px solid var(--surface-border);
 }
 
-/* Miniatura Selecionada */
 .gallery-thumbnail.selected {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px var(--primary-color), 0 4px 6px -1px rgba(0,0,0,0.1);
     opacity: 1;
 }
 
-/* Miniatura Não Selecionada */
 .gallery-thumbnail:not(.selected) {
     opacity: 0.7;
     box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
@@ -84,7 +70,6 @@
     transform: translateY(-2px);
 }
 
-/* Imagem da Miniatura */
 .gallery-thumbnail-image {
     width: 100%;
     height: 100%;

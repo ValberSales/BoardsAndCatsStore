@@ -21,7 +21,6 @@ export const ProfileNavigation = () => {
         <>
             <Tooltip target=".nav-btn" position="right" />
             
-            {/* O wrapper agora é controlado pelo CSS da classe .profile-nav-wrapper */}
             <div className="profile-nav-wrapper fadeinleft animation-duration-500">
                 <div className="profile-nav-card">
                     {items.map((item) => (

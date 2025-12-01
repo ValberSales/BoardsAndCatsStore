@@ -1,8 +1,6 @@
 .footer-main {
-    /* Usa a cor primária do tema (Roxo). 
-       Ela muda levemente de tom entre os temas Light e Dark automaticamente. */
     background-color: var(--primary-color); 
-    color: var(--primary-color-text); /* Garante que o texto seja legível (Geralmente branco) */
+    color: var(--primary-color-text);
 }
 
 .footer-main a {
@@ -32,8 +30,4 @@
     background-color: #1a0b2e; 
     color: #ffffff;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.payment-methods-image{
-    background-color: #ffffff;
 }

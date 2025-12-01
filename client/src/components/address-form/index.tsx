@@ -1,4 +1,3 @@
-/* client/src/components/address-form/index.tsx */
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
@@ -105,7 +104,6 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
             draggable={false}
             resizable={false}
         >
-            {/* LINHA 1: CEP e ESTADO */}
             <div className="formgrid grid">
                 <div className="field col-8 mb-3">
                     <label htmlFor="zip" className="address-label">CEP</label>
@@ -152,7 +150,6 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                 </div>
             </div>
 
-            {/* LINHA 2: CIDADE */}
             <div className="field mb-3">
                 <label htmlFor="city" className="address-label">Cidade</label>
                 <Controller
@@ -170,7 +167,6 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                 {errors.city && <small className="p-error block text-xs mt-1">{errors.city.message}</small>}
             </div>
 
-            {/* LINHA 3: BAIRRO */}
             <div className="field mb-3">
                 <label htmlFor="neighborhood" className="address-label">Bairro</label>
                 <Controller
@@ -188,7 +184,6 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                 {errors.neighborhood && <small className="p-error block text-xs mt-1">{errors.neighborhood.message}</small>}
             </div>
 
-            {/* LINHA 4: RUA e NÚMERO */}
             <div className="formgrid grid">
                 <div className="field col-9 mb-3">
                     <label htmlFor="street" className="address-label">Rua / Logradouro</label>
@@ -225,7 +220,6 @@ export const AddressForm = ({ visible, onHide, onSave, addressToEdit, loading }:
                 </div>
             </div>
 
-            {/* LINHA 5: COMPLEMENTO */}
             <div className="field mb-0">
                 <label htmlFor="complement" className="address-label">Complemento</label>
                 <Controller

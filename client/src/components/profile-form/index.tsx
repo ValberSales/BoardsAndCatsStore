@@ -12,7 +12,6 @@ import UserService from "@/services/user-service";
 import type { AuthenticatedUser, IUserProfileUpdate } from "@/types/user";
 import { useAuth } from "@/context/hooks/use-auth";
 
-// Importa o CSS externo
 import "./ProfileForm.css";
 
 export const ProfileForm = () => {

@@ -8,7 +8,6 @@ import { CartContext } from "@/context/CartContext";
 import { CartItemList } from "@/components/cart-item-list";
 import { CartSummary } from "@/components/cart-summary";
 
-// CSS Geral da Página
 import "./Cart.css";
 
 export const CartPage = () => {

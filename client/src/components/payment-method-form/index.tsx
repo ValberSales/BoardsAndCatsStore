@@ -7,7 +7,6 @@ import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
 import type { IPaymentMethod } from "@/types/payment";
 
-// Importa o CSS externo
 import "./PaymentMethodForm.css";
 
 interface PaymentMethodFormProps {

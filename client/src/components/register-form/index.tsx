@@ -10,9 +10,8 @@ import { classNames } from "primereact/utils";
 
 import type { IUserRegister } from "@/types/user";
 import AuthService from "@/services/auth-service";
-import { useToast } from "@/context/ToastContext"; // <--- 1. Importação do Hook
+import { useToast } from "@/context/ToastContext";
 
-// Importação do CSS extraído
 import "./RegisterForm.css";
 
 interface IUserRegisterForm extends IUserRegister {
@@ -38,15 +37,13 @@ export function RegisterForm() {
     });
 
     const { signup } = AuthService;
-    const { showToast } = useToast(); // <--- 2. Uso do Hook Global
+    const { showToast } = useToast(); 
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     
-    // Removido: const toast = useRef<Toast>(null);
 
     const passwordValue = watch("password") || "";
     
-    // Definição das regras de senha
     const passwordRules = [
         { label: "Mínimo 6 caracteres", valid: passwordValue.length >= 6 },
         { label: "Letra Maiúscula", valid: /[A-Z]/.test(passwordValue) },
@@ -54,7 +51,6 @@ export function RegisterForm() {
         { label: "Número", valid: /\d/.test(passwordValue) },
     ];
 
-    // Helper para renderizar cada item da lista de regras usando classes CSS
     const renderRuleItem = (rule: { label: string; valid: boolean }, index: number) => {
         return (
             <li 
@@ -119,8 +115,8 @@ export function RegisterForm() {
             
             <div className="register-header">
                 <div className="register-title">Criar Conta</div>
-                <span className="text-600 font-medium line-height-3">Já faz parte da comunidade? </span>
-                <Link to="/login" className="font-medium no-underline ml-2 text-primary cursor-pointer">
+                <span className="font-medium line-height-3">Já faz parte da comunidade? </span>
+                <Link to="/login" className="text-primary cursor-pointer font-bold hover:underline">
                     Fazer Login
                 </Link>
             </div>

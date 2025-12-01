@@ -7,7 +7,7 @@ import { CartContext } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext"; 
 import { API_BASE_URL } from "@/lib/axios";
 import type { IProduct } from "@/types/product";
-import { useWishlist } from "@/hooks/use-wishlist"; // <--- Hook
+import { useWishlist } from "@/hooks/use-wishlist";
 
 import "./ProductCard.css"; 
 
@@ -27,7 +27,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useContext(CartContext);
   const { showToast } = useToast();
   
-  // Hook substitui useState, useEffect e handleWishlistClick manual
   const { inWishlist, toggleWishlist } = useWishlist(product);
 
   const handleCardClick = () => {

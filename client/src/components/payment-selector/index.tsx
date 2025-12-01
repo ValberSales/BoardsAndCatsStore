@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { RadioButton } from "primereact/radiobutton";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
 import PaymentMethodService from "@/services/payment-method-service";
-import CouponService from "@/services/coupon-service"; // <--- Novo Serviço
+import CouponService from "@/services/coupon-service"; 
 import { PaymentMethodForm } from "@/components/payment-method-form";
+import { useToast } from "@/context/ToastContext";
 import type { IPaymentMethod } from "@/types/payment";
 import type { ICoupon } from "@/types/cart";
 import "./PaymentSelector.css";
@@ -15,7 +15,7 @@ interface PaymentSelectorProps {
     selectedPaymentId?: number;
     onSelect: (payment: IPaymentMethod) => void;
     onCouponApply: (discount: number) => void;
-    orderTotal: number; // <--- Nova prop necessária para cálculo de %
+    orderTotal: number; 
 }
 
 export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply, orderTotal }: PaymentSelectorProps) => {
@@ -29,7 +29,7 @@ export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply, or
     const [couponApplied, setCouponApplied] = useState(false);
     const [couponLoading, setCouponLoading] = useState(false);
 
-    const toast = useRef<Toast>(null);
+    const { showToast } = useToast();
 
     useEffect(() => {
         loadMethods();
@@ -54,57 +54,60 @@ export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply, or
         try {
             const response = await PaymentMethodService.save(data);
             if (response.success) {
-                toast.current?.show({ severity: 'success', summary: 'Sucesso', detail: 'Método salvo!' });
+                showToast({ severity: 'success', summary: 'Sucesso', detail: 'Método salvo!' });
                 await loadMethods();
                 if (response.data?.id) onSelect(response.data);
                 setShowForm(false);
             } else {
-                toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Falha ao salvar.' });
+                showToast({ severity: 'error', summary: 'Erro', detail: 'Falha ao salvar.' });
             }
         } catch (error) {
-            toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Erro de conexão.' });
+            showToast({ severity: 'error', summary: 'Erro', detail: 'Erro de conexão.' });
         } finally {
             setFormLoading(false);
         }
     };
 
-    // --- LÓGICA DO CUPOM ATUALIZADA ---
+    // --- LÓGICA DO CUPOM  ---
     const applyCoupon = async () => {
         if (!couponCode) return;
         setCouponLoading(true);
 
-        const response = await CouponService.validate(couponCode);
+        try {
+            const response = await CouponService.validate(couponCode);
 
-        if (response.success) {
-            const coupon: ICoupon = response.data;
+            if (response.success) {
+                const coupon: ICoupon = response.data;
+                const percent = Number(coupon.percentage);
+                
+                if (isNaN(percent)) {
+                     showToast({ severity: 'error', summary: 'Erro', detail: 'Erro ao ler porcentagem do cupom.' });
+                     setCouponLoading(false);
+                     return;
+                }
 
-            // 1. Converter para garantir que é número
-            const percent = Number(coupon.percentage);
-            
-            // 2. Cálculo de segurança
-            if (isNaN(percent)) {
-                 toast.current?.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao ler porcentagem do cupom.' });
-                 setCouponLoading(false);
-                 return;
+                const discountCalculated = (orderTotal * percent) / 100;
+                
+                onCouponApply(discountCalculated); 
+                setCouponApplied(true);
+                
+                showToast({ 
+                    severity: 'success', 
+                    summary: 'Cupom Aplicado', 
+                    detail: `Desconto de ${percent}% (R$ ${discountCalculated.toFixed(2)}) aplicado!` 
+                });
+            } else {
+                showToast({ severity: 'warn', summary: 'Atenção', detail: 'Cupom inválido.' });
             }
-
-            // 3. Calcular valor absoluto (R$) baseando-se no total do pedido
-            // orderTotal vem das props
-            const discountCalculated = (orderTotal * percent) / 100;
-            
-            // 4. Passar o valor em REAIS para o pai (CheckoutPage)
-            onCouponApply(discountCalculated); 
-            setCouponApplied(true);
-            
-            toast.current?.show({ 
-                severity: 'success', 
-                summary: 'Cupom Aplicado', 
-                detail: `Desconto de ${percent}% (R$ ${discountCalculated.toFixed(2)}) aplicado!` 
-            });
-        } else {
-            // ... erro
+        } catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                showToast({ severity: 'error', summary: 'Inválido', detail: 'Cupom inválido ou expirado.' });
+            } else {
+                showToast({ severity: 'error', summary: 'Erro', detail: 'Erro ao validar cupom.' });
+            }
+        } finally {
+            setCouponLoading(false);
         }
-        setCouponLoading(false);
     };
 
     const handleRemoveCoupon = () => {
@@ -130,9 +133,8 @@ export const PaymentSelector = ({ selectedPaymentId, onSelect, onCouponApply, or
     if (loading) return <div className="text-center p-4"><i className="pi pi-spin pi-spinner text-2xl"></i></div>;
 
     return (
-        <div className="fadein animation-duration-500">
-            <Toast ref={toast} />
-            
+        <div className="fadein paymentselector-container animation-duration-500">
+           
             <h2 className="text-2xl font-bold text-900 m-0 mb-4">Como você prefere pagar?</h2>
             
             <div className="grid">

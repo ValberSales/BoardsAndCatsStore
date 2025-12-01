@@ -36,7 +36,6 @@ export const ContactPage = () => {
                     <p className="text-xl text-600">Dúvidas, sugestões ou reclamações? Mande um oi!</p>
                 </div>
 
-                {/* ADICIONADO: classe 'contact-card' */}
                 <Card className="shadow-2 contact-card">
                     <form onSubmit={handleSubmit} className="p-fluid">
                         <div className="field mb-4">

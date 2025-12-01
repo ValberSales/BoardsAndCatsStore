@@ -1,4 +1,3 @@
-/* client/src/components/account-security/index.tsx */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
@@ -37,6 +36,8 @@ export const AccountSecurity = () => {
             if (response.success) {
                 showToast({ severity: 'success', summary: 'Conta Excluída', detail: 'Redirecionando...' });
                 setShowDeleteDialog(false);
+                
+                // Aguarda o toast ser visualizado antes de deslogar
                 setTimeout(() => {
                     handleLogout();
                     navigate('/');
@@ -74,13 +75,11 @@ export const AccountSecurity = () => {
 
     return (
         <Card title="Segurança" className="shadow-2 security-card">
-            {/* Modal de Alterar Senha */}
             <ChangePasswordDialog 
                 visible={showPasswordDialog} 
                 onHide={() => setShowPasswordDialog(false)} 
             />
 
-            {/* Modal de Excluir Conta */}
             <Dialog 
                 header="Zona de Perigo" 
                 visible={showDeleteDialog} 
@@ -116,7 +115,6 @@ export const AccountSecurity = () => {
                 </div>
             </Dialog>
 
-            {/* Conteúdo do Card */}
             <div className="flex flex-column gap-3">
                 <p className="text-sm text-gray-600 m-0">Gerencie sua senha e acesso.</p>
                 

@@ -24,8 +24,8 @@ body {
 
 .p-inputtext:enabled:focus {
 
-    box-shadow: 0 0 0 2px var(--primary-color, #3B82F6) !important;
-    border-color: var(--primary-color, #3B82F6) !important;
+    box-shadow: 0 0 0 2px var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
 }
 
 .p-inputtext.p-invalid:enabled:focus {

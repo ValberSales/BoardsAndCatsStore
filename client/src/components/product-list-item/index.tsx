@@ -5,7 +5,7 @@ import { Divider } from 'primereact/divider';
 
 import { API_BASE_URL } from "@/lib/axios";
 import type { IProduct } from '@/types/product';
-import { useWishlist } from '@/hooks/use-wishlist'; // Importando o novo hook
+import { useWishlist } from '@/hooks/use-wishlist';
 
 import './ProductListItem.css';
 
@@ -22,7 +22,6 @@ export function ProductListItem({
 }: ProductListItemProps) {
     const navigate = useNavigate();
     
-    // Utilizando o hook para gerenciar o estado da wishlist
     const { inWishlist, toggleWishlist, wishlistLoading } = useWishlist(product);
 
     const getInventoryStatus = (stock: number) => {
@@ -47,7 +46,6 @@ export function ProductListItem({
                         src={`${API_BASE_URL}${product.imageUrl}`} 
                         alt={product.name} 
                         className="search-item-img"
-                        onError={(e) => (e.currentTarget.src = 'https://primefaces.org/cdn/primereact/images/product/bamboo-watch.jpg')}
                     />
                     {product.promo && <span className="promo-badge">%</span>}
                 </div>
@@ -62,16 +60,14 @@ export function ProductListItem({
                     </div>
 
                     <Tag value={stockInfo.label} severity={stockInfo.severity as any} className="w-max" />
-                    
-                    {/* Preço Mobile */}
-                    <div className="block lg:hidden text-xl font-bold mt-2 text-900">
+                    <div className="search-price-mobile">
                         R$ {product.price.toFixed(2)}
                     </div>
                 </div>
 
                 {/* Ações (Direita) */}
                 <div className="search-item-actions">
-                    <span className="search-price hidden lg:block">
+                    <span className="search-price-desktop">
                         R$ {product.price.toFixed(2)}
                     </span>
 
@@ -81,8 +77,8 @@ export function ProductListItem({
                             className={`btn-circle-action heart ${inWishlist ? 'btn-circle-action heartfill' : 'btn-circle-action heart'}`}
                             tooltip="Salvar na Lista de Desejos"
                             tooltipOptions={{ position: 'bottom' }}
-                            onClick={toggleWishlist} // Usa a função do hook diretamente
-                            loading={wishlistLoading} // Opcional: mostra loading no botão enquanto processa
+                            onClick={toggleWishlist} 
+                            loading={wishlistLoading}
                         />
 
                         <Button 

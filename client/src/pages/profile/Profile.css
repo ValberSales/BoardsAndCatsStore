@@ -95,31 +95,30 @@
         display: block;
     }
 
-    /* 2. Transforma o "Trilho" em um Container Flutuante no Rodapé */
+   
     .profile-nav-rail {
-        display: block;          /* Torna visível novamente */
-        position: fixed;         /* Fixa na tela */
-        bottom: 20px;            /* Margem inferior */
-        left: 50%;               /* Centraliza horizontalmente */
+        display: block;          
+        position: fixed;         
+        bottom: 20px;            
+        left: 50%;              
         transform: translateX(-50%);
-        width: auto;             /* Largura automática baseada nos ícones */
+        width: auto;            
         height: auto;
-        z-index: 1000;           /* Garante que fique sobre tudo */
+        z-index: 1000;         
     }
 
-    /* 3. Remove o comportamento sticky/top do desktop */
+
     .profile-nav-wrapper {
         position: static;
         transform: none;
     }
 
-    /* 4. Transforma o Cartão Vertical em Horizontal (Estilo Pílula) */
     .profile-nav-card {
-        flex-direction: row;     /* Ícones lado a lado */
-        gap: 1rem;               /* Espaço entre ícones */
+        flex-direction: row;     
+        gap: 1rem;              
         padding: 0.75rem 1.5rem;
-        border-radius: 50px;     /* Borda totalmente redonda (pílula) */
-        box-shadow: 0 8px 30px rgba(0,0,0,0.2); /* Sombra mais forte para destacar */
+        border-radius: 50px;     
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2); 
         border: 1px solid var(--surface-border);
     }
 

@@ -5,6 +5,7 @@ import { Toast } from "primereact/toast";
 import { confirmDialog } from 'primereact/confirmdialog';
 import { DataView } from 'primereact/dataview';
 import { Tag } from 'primereact/tag';
+
 import AddressService from "@/services/address-service";
 import { AddressForm } from "@/components/address-form";
 import type { IAddress } from "@/types/address";
@@ -82,15 +83,11 @@ export const AddressList = () => {
             <div className="col-12 p-0">
                 <div className="address-list-item">
                     <div className="flex flex-column md:flex-row justify-content-between align-items-center md:align-items-center gap-4 address-list-item-content">
-                        
-                        {/* Informações do Endereço */}
                         <div className="address-info-container flex-1">
-                            {/* Exibindo Rua e Número (com fallback para S/N) */}
                             <span className="address-street font-bold text-lg">
                                 {address.street}, {address.number || "S/N"}
                             </span>
                             
-                            {/* Exibe Bairro apenas se existir */}
                             {address.neighborhood && (
                                 <div className="text-600 text-sm mt-1">
                                     Bairro: {address.neighborhood}
@@ -110,7 +107,6 @@ export const AddressList = () => {
                             )}
                         </div>
 
-                        {/* Ações */}
                         <div className="address-actions">
                             <Button 
                                 icon="pi pi-pencil" 

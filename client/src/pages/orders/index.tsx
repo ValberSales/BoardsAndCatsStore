@@ -7,7 +7,6 @@ import OrderService from "@/services/order-service";
 import { OrderDetailDialog } from "@/components/order-detail-dialog";
 import type { IOrder } from '@/types/order';
 
-// Importa CSS externo
 import "./OrdersPage.css";
 
 export const OrdersPage = () => {
@@ -85,7 +84,6 @@ export const OrdersPage = () => {
             <div className="container mx-auto px-4">
                 <div className="flex align-items-center justify-content-between mb-5">
                     <h1 className="text-3xl font-bold text-900 m-0">Meus Pedidos</h1>
-                    {/* Tooltip ajustado para a esquerda para não quebrar na tela */}
                     <Button icon="pi pi-refresh" rounded text onClick={loadOrders} tooltip="Atualizar Lista" tooltipOptions={{ position: 'left' }} />
                 </div>
 

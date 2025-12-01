@@ -1,27 +1,23 @@
-/* Container principal com padding do topo */
+
 .location-page {
     padding-top: 1rem;
 }
 
-/* Limite de largura central */
 .location-container {
     max-width: 1000px;
 }
 
-/* Altura total para o card de informações para alinhar com o mapa */
 .location-info-card {
     height: 100%;
     border-radius: 16px;
 }
 
-/* Padronização dos ícones de contato */
 .contact-icon {
-    font-size: 1.5rem; /* text-2xl */
+    font-size: 1.5rem; 
     color: var(--primary-color);
-    margin-top: 0.25rem; /* mt-1 */
+    margin-top: 0.25rem; 
 }
 
-/* Container do Mapa */
 .location-map-wrapper {
     min-height: 400px;
     height: 100%;

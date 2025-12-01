@@ -9,8 +9,8 @@ import ProductService from "@/services/product-service";
 import type { IProduct } from "@/types/product";
 import { ProductGallery } from "@/components/product-gallery";
 import { CartContext } from "@/context/CartContext";
-import { useToast } from "@/context/ToastContext"; // Usando o contexto global
-import { useWishlist } from "@/hooks/use-wishlist"; // <--- Importando o Hook criado
+import { useToast } from "@/context/ToastContext"; 
+import { useWishlist } from "@/hooks/use-wishlist"; 
 
 import "./ProductDetail.css";
 
@@ -25,7 +25,6 @@ export const ProductDetailPage = () => {
     const [product, setProduct] = useState<IProduct | null>(null);
     const [loading, setLoading] = useState(true);
     
-    // Lógica da Wishlist extraída para o Hook
     const { inWishlist, toggleWishlist, wishlistLoading } = useWishlist(product);
 
     useEffect(() => {
@@ -69,11 +68,9 @@ export const ProductDetailPage = () => {
 
     return (
         <div className="container container-pdetail">
-            {/* Toast local removido, usando o global do Layout */}
             
             <div className="product-detail-container">
-                
-                {/* ESQUERDA: GALERIA (Desktop) */}
+                {/* ESQUERDA: GALERIA DE IMAGENS */}
                 <div className="detail-left-col desktop-only">
                     <div className="gallery-wrapper-desktop h-full">
                         <ProductGallery product={product} />
@@ -107,7 +104,6 @@ export const ProductDetailPage = () => {
                                 disabled={isOutOfStock}
                             />
                             
-                            {/* Botão Wishlist usando o Hook */}
                             <Button 
                                 label={inWishlist ? "Remover da Lista de Desejos" : "Adicionar à Lista de Desejos"}
                                 icon={classNames("pi", {
